@@ -136,4 +136,14 @@ public final class Constants {
     public static final double upperarmLength = 0;
     public static final double forearmLength = 0;
   }
+
+  public static class Hand {
+    public static final int compressorID = 0;
+    public static final int solenoidID = 0;
+    public static final int handMotorID = 0;
+
+    public static final int handMotorP = 0;
+    public static final int handMotorI = 0;
+    public static final int handMotorD = 0;
+  }
 }
