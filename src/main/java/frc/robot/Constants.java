@@ -114,26 +114,22 @@ public final class Constants {
       public static final double kLinFuncConstant = 0.562;
 
       public static final double kNoSpeed = 0;
-    }
+  }
   }
 
   public static class Arm {
-    public static final int armMotorID = 0;
+    public static final int shoulderMotorID = 0;
 
-    public static final int armMotorP = 0;
-    public static final int armMotorI = 0;
-    public static final int armMotorD = 0;
-    public static final int armMotorFF = 0;
-    public static final int armMotorIZone = 0;
-  }
+    public static final int shoulderMotorP = 0;
+    public static final int shoulderMotorI = 0;
+    public static final int shoulderMotorD = 0;
+    public static final int shoulderMotorIZone = 0;
+    
+    public static final int elbowMotorID = 0;
 
-  public static class Hand {
-    public static final int compressorID = 0;
-    public static final int solenoidID = 0;
-    public static final int handMotorID = 0;
-
-    public static final int handMotorP = 0;
-    public static final int handMotorI = 0;
-    public static final int handMotorD = 0;
+    public static final int elbowMotorP = 0;
+    public static final int elbowMotorI = 0;
+    public static final int elbowMotorD = 0;
+    public static final int elbowMotorIZone = 0;
   }
 }

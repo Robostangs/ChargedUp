@@ -1,19 +1,23 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyCANSparkMax;
 import frc.robot.Constants;
+import frc.robot.Utils;
 
 public class Arm extends SubsystemBase{
     private static Arm mInstance;
-    private LoggyCANSparkMax mArmMotor;
-    private SparkMaxPIDController pidController;
+    private LoggyCANSparkMax mShoulderMotor;
+    private LoggyCANSparkMax mElbowMotor;
+    private SparkMaxPIDController mShoulderPidController;
+    private SparkMaxPIDController mElbowPidController;
+
+    private Utils.Vector2D mArmPosition;
 
     public static Arm getInstance() {
         if(mInstance == null) {
@@ -23,32 +27,63 @@ public class Arm extends SubsystemBase{
     }
 
     public Arm() {
-        mArmMotor = new LoggyCANSparkMax(Constants.Arm.armMotorID, CANSparkMaxLowLevel.MotorType.kBrushless, "/Arm/");
-        pidController = mArmMotor.getPIDController();
+        mShoulderMotor = new LoggyCANSparkMax(Constants.Arm.shoulderMotorID, CANSparkMaxLowLevel.MotorType.kBrushless, "Shoulder");
+        mElbowMotor = new LoggyCANSparkMax(Constants.Arm.shoulderMotorID, CANSparkMaxLowLevel.MotorType.kBrushless, "Elbow");
 
-        pidController.setP(Constants.Arm.armMotorP);
-        pidController.setI(Constants.Arm.armMotorI);
-        pidController.setD(Constants.Arm.armMotorD);
-        pidController.setFF(Constants.Arm.armMotorFF);
-        pidController.setIZone(Constants.Arm.armMotorI, 0);
+        mShoulderPidController = mShoulderMotor.getPIDController();
+        mElbowPidController = mElbowMotor.getPIDController();
 
-        mArmMotor.setIdleMode(IdleMode.kBrake);
+        mShoulderPidController.setP(Constants.Arm.shoulderMotorP);
+        mShoulderPidController.setI(Constants.Arm.shoulderMotorI);
+        mShoulderPidController.setD(Constants.Arm.shoulderMotorD);
+        mShoulderPidController.setIZone(Constants.Arm.shoulderMotorI, 0);
+
+        mElbowPidController.setP(Constants.Arm.elbowMotorP);
+        mElbowPidController.setI(Constants.Arm.elbowMotorI);
+        mElbowPidController.setD(Constants.Arm.elbowMotorD);
+        mElbowPidController.setIZone(Constants.Arm.elbowMotorI, 0);
+
+        mShoulderMotor.setIdleMode(IdleMode.kBrake);
+        mShoulderMotor.setIdleMode(IdleMode.kBrake);
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Arm Position", this::getArmPosition, this::setArmMotorPosition);
+        builder.addDoubleProperty("Arm Position X", this.mArmPosition::getX, this.mArmPosition::setX);
+        builder.addDoubleProperty("Arm Position Y", this.mArmPosition::getY, this.mArmPosition::setY);
+        builder.addDoubleProperty( "Shoulder Rotation", this::getShoulderRotation, null);
+        builder.addDoubleProperty( "Elbow Rotation", this::getElbowRotation, null);
     }
 
-    public void setArmMotor(double speed) {
-        mArmMotor.set(speed);
+
+    public Utils.Vector2D calculateArmPosition() {
+
+        return null;
+
     }
 
-    public void setArmMotorPosition(double position) {
-        mArmMotor.set(position);
+    public Utils.Vector2D getmArmPosition() {
+        return mArmPosition;
     }
-
-    public double getArmPosition() {
-        return mArmMotor.getEncoder().getPosition();
+    
+    
+    public double getShoulderRotation() {
+        return mShoulderMotor.getEncoder().getPosition();
+    }
+    
+    public double getElbowRotation() {
+        return mElbowMotor.getEncoder().getPosition();
+    }
+    
+    public void setmArmPosition(Utils.Vector2D targetPose) {
+        mArmPosition.set(targetPose);
+    }
+    
+    public void setArmPositionX(double x) {
+        mArmPosition.setX(x);
+    }
+    
+    public void setArmPositionY(double y) {
+        mArmPosition.setY(y);
     }
 }
