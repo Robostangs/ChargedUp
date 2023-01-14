@@ -135,6 +135,10 @@ public final class Constants {
     
     public static final double upperarmLength = 0;
     public static final double forearmLength = 0;
+
+    public static final double upperarmMass = 1;
+    public static final double forearmMass = 1;
+    public static final double elbowMass = 1;
   }
 
   public static class Hand {
@@ -145,5 +149,7 @@ public final class Constants {
     public static final int handMotorP = 0;
     public static final int handMotorI = 0;
     public static final int handMotorD = 0;
+
+    public static final double handMass = 1;
   }
 }
