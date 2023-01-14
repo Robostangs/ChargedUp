@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.lang.Math;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
@@ -56,10 +58,10 @@ public class Arm extends SubsystemBase{
     }
 
 
-    public Utils.Vector2D calculateArmPosition() {
-
-        return null;
-
+    public Utils.Vector2D calculateArmPosition(Utils.Vector2D targetPos) {
+        double q2 = Math.acos(Math.pow(targetPos.x,2) + Math.pow(targetPos.y,2) - Math.pow(Constants.Arm.upperarmLength, 2) - Math.pow(Constants.Arm.forearmLength, 2));
+        double q1 = Math.atan2(targetPos.y, targetPos.x) - Math.atan2(Constants.Arm.forearmLength * Math.sin(q2), Constants.Arm.forearmLength + Constants.Arm.upperarmLength*Math.cos(q2));
+        return new Utils.Vector2D(q1, q1);
     }
 
     public Utils.Vector2D getmArmPosition() {

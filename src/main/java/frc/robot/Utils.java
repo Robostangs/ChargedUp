@@ -1,7 +1,7 @@
 package frc.robot;
 
 public class Utils {
-    public class Vector2D {
+    public static class Vector2D {
 
     public double x;
     public double y;

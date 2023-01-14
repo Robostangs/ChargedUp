@@ -118,6 +118,7 @@ public final class Constants {
   }
 
   public static class Arm {
+
     public static final int shoulderMotorID = 0;
 
     public static final int shoulderMotorP = 0;
@@ -131,5 +132,8 @@ public final class Constants {
     public static final int elbowMotorI = 0;
     public static final int elbowMotorD = 0;
     public static final int elbowMotorIZone = 0;
+    
+    public static final double upperarmLength = 0;
+    public static final double forearmLength = 0;
   }
 }
