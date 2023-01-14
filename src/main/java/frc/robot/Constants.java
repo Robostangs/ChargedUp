@@ -118,12 +118,18 @@ public final class Constants {
   }
 
   public static class Arm {
-    public static final int armMotorID = 0;
+    public static final int shoulderMotorID = 0;
 
-    public static final int armMotorP = 0;
-    public static final int armMotorI = 0;
-    public static final int armMotorD = 0;
-    public static final int armMotorFF = 0;
-    public static final int armMotorIZone = 0;
+    public static final int shoulderMotorP = 0;
+    public static final int shoulderMotorI = 0;
+    public static final int shoulderMotorD = 0;
+    public static final int shoulderMotorIZone = 0;
+    
+    public static final int elbowMotorID = 0;
+
+    public static final int elbowMotorP = 0;
+    public static final int elbowMotorI = 0;
+    public static final int elbowMotorD = 0;
+    public static final int elbowMotorIZone = 0;
   }
 }
