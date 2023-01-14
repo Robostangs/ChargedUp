@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase{
     }
 
     public Arm() {
-        mArmMotor = new LoggyCANSparkMax(Constants.Arm.armMotorID, CANSparkMaxLowLevel.MotorType.kBrushless, "Arm");
+        mArmMotor = new LoggyCANSparkMax(Constants.Arm.armMotorID, CANSparkMaxLowLevel.MotorType.kBrushless, "/Arm/");
         pidController = mArmMotor.getPIDController();
 
         pidController.setP(Constants.Arm.armMotorP);
