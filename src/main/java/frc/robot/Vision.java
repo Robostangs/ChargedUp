@@ -1,20 +1,25 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Utils;
 
-public class Vision extends SubsystemBase{
+public class Vision {
     
     private static Vision Instance;
-
-    private final NetworkTable mLimeLight = NetworkTableInstance.getDefault().getTable("limelight");
-    private DoubleArraySubscriber  position = mLimeLight.getDoubleArrayTopic("botpose").subscribe(new double[] {});;
      
     private final NetworkTable mLeftLimelight = NetworkTableInstance.getDefault().getTable("leftLimelight");
+    private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+
     private final NetworkTable mRightLimelight = NetworkTableInstance.getDefault().getTable("rightLimelight");
+    private DoubleArraySubscriber mRightPosition = mRightLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+
+
+    public enum LimelightState {
+        leftLimelight,
+        rightLimelight,
+        unknown
+    }
 
     public static Vision getInstance() {
         if (Instance == null) {
@@ -23,11 +28,29 @@ public class Vision extends SubsystemBase{
         return Instance;
     }
 
-    public Utils.Vector3D getPosition(String Limelight) {
-        if(Limelight == "leftLimelight") {
-            return fromAT(mLeftLimelight);
-        } else if(Limelight == "rightLimelight") {
-            return fromAT(mRightLimelight);
+    public boolean targetVisible(LimelightState limelight) {
+        if(limelight.compareTo(LimelightState.leftLimelight) == 1) {
+            if(Integer.parseInt(mLeftLimelight.getEntry("ta").toString()) == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } else if(limelight.compareTo(LimelightState.rightLimelight) == 1) {
+            if(Integer.parseInt(mRightLimelight.getEntry("ta").toString()) == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public Utils.Vector3D getPosition(LimelightState Limelight) {
+        if(Limelight.compareTo(LimelightState.leftLimelight) == 1) {
+            return fromAT(mLeftPosition);
+        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 1) {
+            return fromAT(mRightPosition);
         } else {
             return new Utils.Vector3D(0, 0, 0);
         }
@@ -53,8 +76,8 @@ public class Vision extends SubsystemBase{
     //     return new Utils.Vector3D(distanceX * Math.acos(tx), distanceY, distanceX * Math.asin(tx));
     // }
 
-    public Utils.Vector3D fromAT(NetworkTable nt) {
-        double[] positions = position.get();
+    public Utils.Vector3D fromAT(DoubleArraySubscriber sub) {
+        double[] positions = sub.get();
         return new Utils.Vector3D(positions[0], positions[1], positions[2]);
     }
 }

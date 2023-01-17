@@ -492,9 +492,18 @@ public class Utils {
     }
 }    
 
-public static double degToRad(double x) {
-    return (Math.PI / 180.0) * x;
-}
+    public static double degToRad(double x) {
+        return (Math.PI / 180.0) * x;
+    }
+
+    public static boolean withinRange(Vector2D v, Vector2D current) {
+        if(v.x >= current.x - Constants.Drivetrain.kRange && v.x <= current.x + Constants.Drivetrain.kRange) {
+            if(v.y >= current.y - Constants.Drivetrain.kRange && v.y <= current.y + Constants.Drivetrain.kRange) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static double customDeadzone(double input) {
         if(Math.abs(input) >= Constants.Drivetrain.CustomDeadzone.kLowerLimitExpFunc && Math.abs(input) < Constants.Drivetrain.CustomDeadzone.kUpperLimitExpFunc) {

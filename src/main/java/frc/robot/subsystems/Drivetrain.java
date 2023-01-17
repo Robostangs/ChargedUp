@@ -18,10 +18,17 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
+import frc.robot.Utils;
+import frc.robot.Vision;
+import frc.robot.Utils.Vector2D;
+import frc.robot.Vision.LimelightState;
 
 public class Drivetrain extends SubsystemBase{
     
     private static Drivetrain Instance;
+    private Vision mVision; 
+    private Vector2D v1, v2;
+    private Vector2D current;
 
     private final static SwerveModulePosition[] blankPositions = {new SwerveModulePosition(0,new Rotation2d(0)), new SwerveModulePosition(0,new Rotation2d(0)), new SwerveModulePosition(0,new Rotation2d(0)), new SwerveModulePosition(0,new Rotation2d(0))};
 
@@ -75,6 +82,8 @@ public class Drivetrain extends SubsystemBase{
         mRightFrontSteer.setNeutralMode(NeutralMode.Brake);
         mLeftBackSteer.setNeutralMode(NeutralMode.Brake);
         mRightBackSteer.setNeutralMode(NeutralMode.Brake);
+
+        mVision = Vision.getInstance();
 
         mLeftFrontModule = Mk4iSwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -156,9 +165,47 @@ public class Drivetrain extends SubsystemBase{
         mRightBackModule.set(states[0].speedMetersPerSecond / Constants.Drivetrain.maxLinearVelocity * Constants.Drivetrain.maxVoltage, states[0].angle.getRadians());
         
     }
-    
-    @Override
-    public void periodic() {
+
+    public void update() {
+        if(mVision.targetVisible(LimelightState.leftLimelight) && mVision.targetVisible(LimelightState.rightLimelight)) {
+            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
+            current.set(getPose().getX(), getPose().getY()); 
+
+            if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
+
+            } else if(Utils.withinRange(v1, current)) { 
+
+            } else if(Utils.withinRange(v2, current)) {
+
+            } else {
+                updateOdometry();
+            }
+
+        } else if(mVision.targetVisible(LimelightState.leftLimelight)) {
+            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+            current.set(getPose().getX(), getPose().getY());
+            
+            if(Utils.withinRange(v1, current)) {
+
+            } else {
+                updateOdometry();
+            }
+        } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
+            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
+            current.set(getPose().getX(), getPose().getY());
+
+            if(Utils.withinRange(v2, current)) {
+                
+            } else {
+                updateOdometry();
+            }
+        } else {
+            updateOdometry();
+        }
+    }
+
+    public void updateOdometry() {
         SwerveModuleState[] states = Constants.Drivetrain.mKinematics.toSwerveModuleStates(mChassisSpeeds);
         mOdometry.update(getGyroscopeRotation(), 
                 new SwerveModulePosition[]{ 
@@ -168,6 +215,24 @@ public class Drivetrain extends SubsystemBase{
                         new SwerveModulePosition(states[3].speedMetersPerSecond, states[3].angle),
                 }
         );
+    }
+
+    public void updateWithLimelight(Vector2D target) {
+        SwerveModuleState[] states = Constants.Drivetrain.mKinematics.toSwerveModuleStates(mChassisSpeeds);
+        mOdometry.update(getGyroscopeRotation(), 
+                new SwerveModulePosition[]{ 
+                        new SwerveModulePosition(states[0].speedMetersPerSecond, states[0].angle),
+                        new SwerveModulePosition(states[1].speedMetersPerSecond, states[1].angle),
+                        new SwerveModulePosition(states[2].speedMetersPerSecond, states[2].angle),
+                        new SwerveModulePosition(states[3].speedMetersPerSecond, states[3].angle),
+                }
+        );
+    }
+    
+    @Override
+    public void periodic() {
+        update();
+        SwerveModuleState[] states = Constants.Drivetrain.mKinematics.toSwerveModuleStates(mChassisSpeeds);
         setModuleStates(states);
-      }
+    }
 }

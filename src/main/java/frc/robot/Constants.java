@@ -114,7 +114,9 @@ public final class Constants {
       public static final double kLinFuncConstant = 0.562;
 
       public static final double kNoSpeed = 0;
-  }
+    }
+
+    public static final double kRange = 1;
   }
 
   public static class Arm {
