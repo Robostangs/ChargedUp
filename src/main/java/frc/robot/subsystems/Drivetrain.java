@@ -20,6 +20,7 @@ import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.Vision;
+import frc.robot.CustomWpilib.CustomSwerveDriveOdometry;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightState;
 
@@ -51,7 +52,7 @@ public class Drivetrain extends SubsystemBase{
 
     private ChassisSpeeds mChassisSpeeds = new ChassisSpeeds(0, 0, 0);
 
-    private final SwerveDriveOdometry mOdometry = new SwerveDriveOdometry(Constants.Drivetrain.mKinematics, new Rotation2d(0), blankPositions);
+    private final CustomSwerveDriveOdometry mOdometry = new CustomSwerveDriveOdometry(Constants.Drivetrain.mKinematics, new Rotation2d(0), blankPositions);
    
     public static Drivetrain getInstance() {
         if (Instance == null) {
@@ -173,11 +174,12 @@ public class Drivetrain extends SubsystemBase{
             current.set(getPose().getX(), getPose().getY()); 
 
             if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
-
+                Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
+                updateWithLimelight(meanV);
             } else if(Utils.withinRange(v1, current)) { 
-
+                updateWithLimelight(v1);
             } else if(Utils.withinRange(v2, current)) {
-
+                updateWithLimelight(v2);
             } else {
                 updateOdometry();
             }
@@ -187,7 +189,7 @@ public class Drivetrain extends SubsystemBase{
             current.set(getPose().getX(), getPose().getY());
             
             if(Utils.withinRange(v1, current)) {
-
+                updateWithLimelight(v1);
             } else {
                 updateOdometry();
             }
@@ -196,7 +198,7 @@ public class Drivetrain extends SubsystemBase{
             current.set(getPose().getX(), getPose().getY());
 
             if(Utils.withinRange(v2, current)) {
-                
+                updateWithLimelight(v2);
             } else {
                 updateOdometry();
             }
@@ -218,15 +220,7 @@ public class Drivetrain extends SubsystemBase{
     }
 
     public void updateWithLimelight(Vector2D target) {
-        SwerveModuleState[] states = Constants.Drivetrain.mKinematics.toSwerveModuleStates(mChassisSpeeds);
-        mOdometry.update(getGyroscopeRotation(), 
-                new SwerveModulePosition[]{ 
-                        new SwerveModulePosition(states[0].speedMetersPerSecond, states[0].angle),
-                        new SwerveModulePosition(states[1].speedMetersPerSecond, states[1].angle),
-                        new SwerveModulePosition(states[2].speedMetersPerSecond, states[2].angle),
-                        new SwerveModulePosition(states[3].speedMetersPerSecond, states[3].angle),
-                }
-        );
+        mOdometry.setPoseMeters(new Pose2d(target.x, target.y, getPose().getRotation()));
     }
     
     @Override
