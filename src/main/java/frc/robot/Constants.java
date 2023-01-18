@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenixpro.configs.CurrentLimitsConfigs;
 import com.revrobotics.SparkMaxPIDController;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
@@ -39,6 +41,9 @@ public final class Constants {
     SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
     SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;
     public static final double maxAngularVelocity = maxLinearVelocity / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    public static final double kCurrentLimit = 10;
+    public static final double kCurrentThreshold = 10;
+    public static final double kCurrentThresholdTime = 10;
     
     public static final SwerveDriveKinematics mKinematics = new SwerveDriveKinematics(
       new Translation2d(trackWidth/2.0, wheelBase/2.0),
@@ -74,7 +79,7 @@ public final class Constants {
       leftFrontMotorConfig.slot0.kI = 0;
       leftFrontMotorConfig.slot0.kD = 0;
     }
-    
+        
     public static final TalonFXConfiguration leftBackMotorConfig = new TalonFXConfiguration();
     static {
       leftBackMotorConfig.slot0 = new SlotConfiguration();

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -83,6 +84,12 @@ public class Drivetrain extends SubsystemBase{
         mRightFrontSteer.setNeutralMode(NeutralMode.Brake);
         mLeftBackSteer.setNeutralMode(NeutralMode.Brake);
         mRightBackSteer.setNeutralMode(NeutralMode.Brake);
+
+        mLeftFrontDrive.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.Drivetrain.kCurrentLimit, Constants.Drivetrain.kCurrentThreshold, Constants.Drivetrain.kCurrentThresholdTime));
+        mRightFrontDrive.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.Drivetrain.kCurrentLimit, Constants.Drivetrain.kCurrentThreshold, Constants.Drivetrain.kCurrentThresholdTime));
+        mLeftBackDrive.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.Drivetrain.kCurrentLimit, Constants.Drivetrain.kCurrentThreshold, Constants.Drivetrain.kCurrentThresholdTime));
+        mLeftBackDrive.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.Drivetrain.kCurrentLimit, Constants.Drivetrain.kCurrentThreshold, Constants.Drivetrain.kCurrentThresholdTime));
+        
 
         mVision = Vision.getInstance();
 
