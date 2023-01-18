@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.revrobotics.SparkMaxPIDController;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -62,9 +61,9 @@ public final class Constants {
     public static final int backLeftEncoderID = 8;
     public static final double backLeftEncoderOffset = 0;
 
-    public static final int backRightDriveID = 0;
-    public static final int backRightSteerID = 0;
-    public static final int backRightEncoderID = 0;
+    public static final int backRightDriveID = 9;
+    public static final int backRightSteerID = 10;
+    public static final int backRightEncoderID = 11;
     public static final double backRightEncoderOffset = 0;
 
     public static final TalonFXConfiguration leftFrontMotorConfig = new TalonFXConfiguration();
@@ -119,26 +118,28 @@ public final class Constants {
 
   public static class Arm {
 
-    public static final int shoulderMotorID = 0;
+    public static final int shoulderMotorID = 16;
 
-    public static final int shoulderMotorP = 0;
-    public static final int shoulderMotorI = 0;
-    public static final int shoulderMotorD = 0;
-    public static final int shoulderMotorIZone = 0;
+    public static final double shoulderMotorP = 0.0003;
+    public static final double shoulderMotorI = 0;
+    public static final double shoulderMotorD = 0.00005;
+    public static final double shoulderMotorF = 0;
+    public static final double shoulderMotorIZone = 0;
     
-    public static final int elbowMotorID = 0;
+    public static final int elbowMotorID = 17;
 
-    public static final int elbowMotorP = 0;
-    public static final int elbowMotorI = 0;
-    public static final int elbowMotorD = 0;
-    public static final int elbowMotorIZone = 0;
+    public static final double elbowMotorP = 1;
+    public static final double elbowMotorI = 0;
+    public static final double elbowMotorD = 0;
+    public static final double elbowMotorIZone = 0;
     
-    public static final double upperarmLength = 0;
-    public static final double forearmLength = 0;
+    public static final double upperarmLength = 0.58;
+    public static final double forearmLength = 0.51;
 
-    public static final double upperarmMass = 1;
-    public static final double forearmMass = 1;
-    public static final double elbowMass = 1;
+    public static final double upperarmMass = 0.50;
+    public static final double forearmMass = 0.55;
+    
+    public static final double elbowMass = 0.00;
   }
 
   public static class Hand {

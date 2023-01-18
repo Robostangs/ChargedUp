@@ -1,18 +1,14 @@
 package frc.robot.subsystems;
 
 import java.lang.Math;
-import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
 
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.LoggyThings.LoggyCANSparkMax;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
@@ -25,6 +21,8 @@ public class Arm extends SubsystemBase{
     private Utils.Vector2D mArmPosition;
     private Utils.Vector2D mElbowPosition;
 
+    private DoubleSupplier mStickPower;
+
     public static Arm getInstance() {
         if(mInstance == null) {
             mInstance = new Arm();
@@ -33,6 +31,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Arm() {
+        mElbowPosition = new Utils.Vector2D();
+
         mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Shoulder");
         mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Elbow");
     
@@ -42,6 +42,7 @@ public class Arm extends SubsystemBase{
         mShoulderMotor.config_kP(0, Constants.Arm.shoulderMotorP);
         mShoulderMotor.config_kI(0, Constants.Arm.shoulderMotorI);
         mShoulderMotor.config_kD(0, Constants.Arm.shoulderMotorD);
+        mShoulderMotor.config_kF(0, Constants.Arm.shoulderMotorF);
         mShoulderMotor.config_IntegralZone(0, Constants.Arm.shoulderMotorIZone);
 
         mElbowMotor.config_kP(0, Constants.Arm.elbowMotorP);
@@ -51,6 +52,11 @@ public class Arm extends SubsystemBase{
 
         mShoulderMotor.setNeutralMode(NeutralMode.Brake);
         mElbowMotor.setNeutralMode(NeutralMode.Brake);
+        
+    }
+
+    public void setStickPowerSupplier(DoubleSupplier stickPowerSupplier) {
+        mStickPower = stickPowerSupplier;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class Arm extends SubsystemBase{
 
     private void calculateElbowPosition(Utils.Vector2D angles) {
         mElbowPosition.setX(Constants.Arm.upperarmLength * Math.cos(angles.x));
-        mElbowPosition.setY(Constants.Arm.upperarmLength * Math.cos(angles.y));
+        mElbowPosition.setY(Constants.Arm.upperarmLength * Math.sin(angles.x));
     }
 
     private double calculateShoulderTorque() {
@@ -112,20 +118,35 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic() {
+        double totalArmLengths = Constants.Arm.forearmLength + Constants.Arm.upperarmLength;
+        double armAngle = (mShoulderMotor.getSelectedSensorPosition() / 8.72 / 2048) * 360;
+        mArmPosition = new Utils.Vector2D(totalArmLengths * Math.cos(armAngle), totalArmLengths * Math.sin(armAngle));
+
         Utils.Vector2D jointAngles = calculateArmPosition(mArmPosition);
         calculateElbowPosition(jointAngles);
 
-        double shoulderMotorVoltage = (calculateShoulderTorque() * 0.0467) / 0.05512;
-        double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
+        double shoulderMotorVoltage = ((calculateShoulderTorque() * 0.0467) / 0.05512) * 0.7;
+        // double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
 
-        mShoulderMotor.set(ControlMode.Position, jointAngles.getX() / Math.PI, DemandType.ArbitraryFeedForward, shoulderMotorVoltage / 10);
-        mElbowMotor.set(ControlMode.Position, jointAngles.getY() / Math.PI, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
+        mShoulderMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, shoulderMotorVoltage/10);
+
+        // mElbowMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
+
+        // mShoulderMotor.set(ControlMode.PercentOutput, shoulderMotorVoltage / 100);
+
+        /*
+        if(mStickPower != null) {
+            mShoulderMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
+        }
+        */
+
+        System.out.println("Predicted percent output: "+ (shoulderMotorVoltage / 100) + " Angle: " + armAngle + " Encoder Ticks: " + mShoulderMotor.getSelectedSensorPosition());
+
     }
 
     public Utils.Vector2D getmArmPosition() {
         return mArmPosition;
     }
-    
     
     public double getShoulderRotation() {
         return mShoulderMotor.getSelectedSensorPosition();
