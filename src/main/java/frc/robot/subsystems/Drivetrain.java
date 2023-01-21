@@ -229,7 +229,7 @@ public class Drivetrain extends SubsystemBase{
     public void updateWithLimelight(Vector2D target) {
         mOdometry.setPoseMeters(new Pose2d(target.x, target.y, getPose().getRotation()));
     }
-    
+
     @Override
     public void periodic() {
         update();

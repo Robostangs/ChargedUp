@@ -10,9 +10,11 @@ public class Vision {
      
     private final NetworkTable mLeftLimelight = NetworkTableInstance.getDefault().getTable("leftLimelight");
     private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    private DoubleArraySubscriber mLeftTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
     private final NetworkTable mRightLimelight = NetworkTableInstance.getDefault().getTable("rightLimelight");
     private DoubleArraySubscriber mRightPosition = mRightLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    private DoubleArraySubscriber mRightTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
 
     public enum LimelightState {
@@ -56,6 +58,16 @@ public class Vision {
         }
     }
 
+    public Utils.Vector3D getLimelightPosition(LimelightState Limelight) {
+        if(Limelight.compareTo(LimelightState.leftLimelight) == 1) {
+            return forTarget(mLeftTarget);
+        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 1) {
+            return forTarget(mRightTarget);
+        } else {
+            return new Utils.Vector3D(100, 100, 100);
+        }
+    }
+
     /**
      * Calculates 3 Dimensional Coordinates from the information of the limelight
      * @param tx
@@ -77,6 +89,11 @@ public class Vision {
     // }
 
     public Utils.Vector3D fromAT(DoubleArraySubscriber sub) {
+        double[] positions = sub.get();
+        return new Utils.Vector3D(positions[0], positions[1], positions[2]);
+    }
+
+    public Utils.Vector3D forTarget(DoubleArraySubscriber sub) {
         double[] positions = sub.get();
         return new Utils.Vector3D(positions[0], positions[1], positions[2]);
     }
