@@ -156,7 +156,7 @@ public class Arm extends SubsystemBase{
         return mElbowMotor.getSelectedSensorPosition();
     }
     
-    public void setmArmPosition(Utils.Vector2D targetPose) {
+    public void setArmPosition(Utils.Vector2D targetPose) {
         mArmPosition.set(targetPose);
     }
     
@@ -166,5 +166,9 @@ public class Arm extends SubsystemBase{
     
     public void setArmPositionY(double y) {
         mArmPosition.setY(y);
+    }
+
+    public void setBrakeMode(boolean brake) {
+        //TODO: Implement brake mode
     }
 }

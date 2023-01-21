@@ -10,6 +10,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import frc.robot.Utils.Vector2D;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -140,6 +141,15 @@ public final class Constants {
     public static final double forearmMass = 0.55;
     
     public static final double elbowMass = 0.00;
+
+    public static class Positions {
+      public final static Vector2D stowPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D lowPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D mediumPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D highPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D loadingStationPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D intakePosition = new Vector2D(0.0, 0.0);
+    }
   }
 
   public static class Hand {
