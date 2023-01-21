@@ -73,6 +73,7 @@ public final class Constants {
     public static final double backRightEncoderOffset = 0;
 
     public static final TalonFXConfiguration leftFrontMotorConfig = new TalonFXConfiguration();
+    public static final double targetOffset = 0;
     static {
       leftFrontMotorConfig.slot0 = new SlotConfiguration();
       leftFrontMotorConfig.slot0.kP = 0;
