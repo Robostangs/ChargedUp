@@ -123,6 +123,18 @@ public final class Constants {
     }
 
     public static final double kRange = 1;
+
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+
+    public static final double kMaxAngularAccelerationRadiansPerSecondSquared = 0;
+
+    public static final double angularP = 0;
+    public static final double angularI = 0;
+    public static final double angularD = 0;
+
+    public static final double linearP = 0;
+    public static final double linearI = 0;
+    public static final double linearD = 0;
   }
 
   public static class Arm {

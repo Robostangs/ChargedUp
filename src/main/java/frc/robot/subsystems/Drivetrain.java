@@ -25,7 +25,7 @@ import frc.robot.CustomWpilib.CustomSwerveDriveOdometry;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightState;
 
-public class Drivetrain extends SubsystemBase{
+public class Drivetrain extends SubsystemBase {
     
     private static Drivetrain Instance;
     private Vision mVision; 
