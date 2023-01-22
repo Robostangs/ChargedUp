@@ -33,8 +33,8 @@ public final class Constants {
 
     public static final double maxVoltage = 12.0;
     //TODO: add left-right trackWidth , add front-back wheelBase
-    public static final double trackWidth = 0.0;
-    public static final double wheelBase = 0.0;
+    public static final double trackWidth = 0.501;
+    public static final double wheelBase = 0.615;
     public static final double maxLinearVelocity = motorConstants.falconFreeSpeedRPM / 60.0 *
     SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
     SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;
@@ -50,22 +50,22 @@ public final class Constants {
     public static final int frontLeftDriveID = 0;
     public static final int frontLeftSteerID = 1;
     public static final int frontLeftEncoderID = 2;
-    public static final double frontLeftEncoderOffset = 0;
+    public static final double frontLeftEncoderOffset = 209 *(2048/360)*(12.8);
 
     public static final int frontRightDriveID = 3;
     public static final int frontRightSteerID = 4;
     public static final int frontRightEncoderID = 5;
-    public static final double frontRightEncoderOffset = 0;
+    public static final double frontRightEncoderOffset = -217.79*(2048/360)*(12.8);
 
     public static final int backLeftDriveID = 6;
     public static final int backLeftSteerID = 7;
     public static final int backLeftEncoderID = 8;
-    public static final double backLeftEncoderOffset = 0;
+    public static final double backLeftEncoderOffset = -265.87*(2048/360)*(12.8);
 
     public static final int backRightDriveID = 9;
     public static final int backRightSteerID = 10;
     public static final int backRightEncoderID = 11;
-    public static final double backRightEncoderOffset = 0;
+    public static final double backRightEncoderOffset = -395.86*(2048/360)*(12.8);
 
     public static final TalonFXConfiguration leftFrontMotorConfig = new TalonFXConfiguration();
     static {
