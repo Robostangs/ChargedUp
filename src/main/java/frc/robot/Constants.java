@@ -1,5 +1,10 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+
+import frc.robot.Utils.Vector2D;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,7 +19,6 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
 
     public static final class Swerve {
-        public static final int pigeonID = 1;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -145,4 +149,96 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
+  public static class motorConstants {
+    public static final double falconFreeSpeedRPM = 6380.0;
+  }
+
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+  }
+
+  public static class Drivetrain{
+
+    public static final double maxVoltage = 12.0;
+    //TODO: add left-right trackWidth , add front-back wheelBase
+    public static final double trackWidth = 0.501;
+    public static final double wheelBase = 0.615;
+    public static final double maxLinearVelocity = motorConstants.falconFreeSpeedRPM / 60.0 *
+    SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
+    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;
+    public static final double maxAngularVelocity = maxLinearVelocity / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    
+    public static final SwerveDriveKinematics mKinematics = new SwerveDriveKinematics(
+      new Translation2d(trackWidth/2.0, wheelBase/2.0),
+      new Translation2d(trackWidth/2.0, -wheelBase/2.0),
+      new Translation2d(-trackWidth/2.0, wheelBase/2.0),
+      new Translation2d(-trackWidth/2.0, -wheelBase/2.0)
+    );
+
+
+    public static class CustomDeadzone {
+
+      public static final double kLowerLimitExpFunc = 0.1;
+      public static final double kUpperLimitExpFunc = 0.5;
+      public static final double kUpperLimitLinFunc = 1;
+
+      public static final double kExpFuncConstant = 0.3218;
+      public static final double kExpFuncBase = 12.5;
+      public static final double kExpFuncMult = 0.25;
+
+      public static final double kLinFuncMult = 0.876;
+      public static final double kLinFuncOffset = 0.5;
+      public static final double kLinFuncConstant = 0.562;
+
+      public static final double kNoSpeed = 0;
+  }
+  }
+
+  public static class Arm {
+
+    public static final int shoulderMotorID = 16;
+
+    public static final double shoulderMotorP = 0.0003;
+    public static final double shoulderMotorI = 0;
+    public static final double shoulderMotorD = 0.00005;
+    public static final double shoulderMotorF = 0;
+    public static final double shoulderMotorIZone = 0;
+    
+    public static final int elbowMotorID = 17;
+
+    public static final double elbowMotorP = 1;
+    public static final double elbowMotorI = 0;
+    public static final double elbowMotorD = 0;
+    public static final double elbowMotorIZone = 0;
+    
+    public static final double upperarmLength = 0.58;
+    public static final double forearmLength = 0.51;
+
+    public static final double upperarmMass = 0.50;
+    public static final double forearmMass = 0.55;
+    
+    public static final double elbowMass = 0.00;
+
+    public static class Positions {
+      public final static Vector2D stowPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D lowPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D mediumPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D highPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D loadingStationPosition = new Vector2D(0.0, 0.0);
+      public final static Vector2D intakePosition = new Vector2D(0.0, 0.0);
+    }
+  }
+
+  public static class Hand {
+    public static final int compressorID = 0;
+    public static final int solenoidID = 0;
+    public static final int handMotorID = 0;
+
+    public static final int handMotorP = 0;
+    public static final int handMotorI = 0;
+    public static final int handMotorD = 0;
+
+    public static final double handMass = 1;
+  }
 }
