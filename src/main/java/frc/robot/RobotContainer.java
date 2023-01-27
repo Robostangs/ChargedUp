@@ -43,7 +43,7 @@ public class RobotContainer {
                 () -> -mDriverController.getRawAxis(translationAxis), 
                 () -> -mDriverController.getRawAxis(strafeAxis), 
                 () -> -mDriverController.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                () -> true
             )
         );
 
