@@ -30,6 +30,15 @@ public class Arm extends SubsystemBase{
         return mInstance;
     }
 
+    public enum ArmState {
+        khighPosition,
+        kmediumPosition,
+        klowPosition,
+        kStowedPosition,
+        kIntakePosition,
+        kLoadingZonePosition
+    }
+
     public Arm() {
         mElbowPosition = new Utils.Vector2D();
 
