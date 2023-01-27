@@ -497,8 +497,8 @@ public class Utils {
     }
 
     public static boolean withinRange(Vector2D v, Vector2D current) {
-        if(v.x >= current.x - Constants.Drivetrain.kRange && v.x <= current.x + Constants.Drivetrain.kRange) {
-            if(v.y >= current.y - Constants.Drivetrain.kRange && v.y <= current.y + Constants.Drivetrain.kRange) {
+        if(v.x >= current.x - Constants.Swerve.kRange && v.x <= current.x + Constants.Swerve.kRange) {
+            if(v.y >= current.y - Constants.Swerve.kRange && v.y <= current.y + Constants.Swerve.kRange) {
                 return true;
             }
         }
@@ -506,11 +506,11 @@ public class Utils {
     }
 
     public static double customDeadzone(double input) {
-        if(Math.abs(input) >= Constants.Drivetrain.CustomDeadzone.kLowerLimitExpFunc && Math.abs(input) < Constants.Drivetrain.CustomDeadzone.kUpperLimitExpFunc) {
-            return Math.signum(input) * ((Constants.Drivetrain.CustomDeadzone.kExpFuncMult) * Math.pow((Constants.Drivetrain.CustomDeadzone.kExpFuncBase), Math.abs(input)) - Constants.Drivetrain.CustomDeadzone.kExpFuncConstant); 
-        } else if(Math.abs(input) >= Constants.Drivetrain.CustomDeadzone.kUpperLimitExpFunc && Math.abs(input) <= Constants.Drivetrain.CustomDeadzone.kUpperLimitLinFunc) {
-            return Math.signum(input) * ((Constants.Drivetrain.CustomDeadzone.kLinFuncMult) * (Math.abs(input) - Constants.Drivetrain.CustomDeadzone.kLinFuncOffset) + (Constants.Drivetrain.CustomDeadzone.kLinFuncConstant));
+        if(Math.abs(input) >= Constants.Swerve.CustomDeadzone.kLowerLimitExpFunc && Math.abs(input) < Constants.Swerve.CustomDeadzone.kUpperLimitExpFunc) {
+            return Math.signum(input) * ((Constants.Swerve.CustomDeadzone.kExpFuncMult) * Math.pow((Constants.Swerve.CustomDeadzone.kExpFuncBase), Math.abs(input)) - Constants.Swerve.CustomDeadzone.kExpFuncConstant); 
+        } else if(Math.abs(input) >= Constants.Swerve.CustomDeadzone.kUpperLimitExpFunc && Math.abs(input) <= Constants.Swerve.CustomDeadzone.kUpperLimitLinFunc) {
+            return Math.signum(input) * ((Constants.Swerve.CustomDeadzone.kLinFuncMult) * (Math.abs(input) - Constants.Swerve.CustomDeadzone.kLinFuncOffset) + (Constants.Swerve.CustomDeadzone.kLinFuncConstant));
         }
-        return Constants.Drivetrain.CustomDeadzone.kNoSpeed;
+        return Constants.Swerve.CustomDeadzone.kNoSpeed;
     }
 }

@@ -1,10 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-
 import frc.robot.Utils.Vector2D;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -12,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -21,6 +15,25 @@ public final class Constants {
 
     public static final class Swerve {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+
+        public static final double kRange = 1;
+
+        public static class CustomDeadzone {
+
+          public static final double kLowerLimitExpFunc = 0.1;
+          public static final double kUpperLimitExpFunc = 0.5;
+          public static final double kUpperLimitLinFunc = 1;
+    
+          public static final double kExpFuncConstant = 0.3218;
+          public static final double kExpFuncBase = 12.5;
+          public static final double kExpFuncMult = 0.25;
+    
+          public static final double kLinFuncMult = 0.876;
+          public static final double kLinFuncOffset = 0.5;
+          public static final double kLinFuncConstant = 0.562;
+    
+          public static final double kNoSpeed = 0;
+        }
 
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
             COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L1);
@@ -93,6 +106,8 @@ public final class Constants {
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
+        public static final double targetOffset = 0;
+
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
@@ -133,6 +148,12 @@ public final class Constants {
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
+
+        public static final class balancePID {
+            public static final double kP = 0.0;
+            public static final double kI = 0.0;
+            public static final double kD = 0.0;
+        }
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
@@ -157,60 +178,6 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-  }
-
-  public static class Drivetrain{
-
-    public static final double maxVoltage = 12.0;
-    //TODO: add left-right trackWidth , add front-back wheelBase
-    public static final double trackWidth = 0.501;
-    public static final double wheelBase = 0.615;
-    public static final double maxLinearVelocity = motorConstants.falconFreeSpeedRPM / 60.0 *
-    SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
-    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;
-    public static final double maxAngularVelocity = maxLinearVelocity / Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-    public static final double kCurrentLimit = 10;
-    public static final double kCurrentThreshold = 10;
-    public static final double kCurrentThresholdTime = 10;
-    
-    public static final SwerveDriveKinematics mKinematics = new SwerveDriveKinematics(
-      new Translation2d(trackWidth/2.0, wheelBase/2.0),
-      new Translation2d(trackWidth/2.0, -wheelBase/2.0),
-      new Translation2d(-trackWidth/2.0, wheelBase/2.0),
-      new Translation2d(-trackWidth/2.0, -wheelBase/2.0)
-    );
-
-
-    public static class CustomDeadzone {
-
-      public static final double kLowerLimitExpFunc = 0.1;
-      public static final double kUpperLimitExpFunc = 0.5;
-      public static final double kUpperLimitLinFunc = 1;
-
-      public static final double kExpFuncConstant = 0.3218;
-      public static final double kExpFuncBase = 12.5;
-      public static final double kExpFuncMult = 0.25;
-
-      public static final double kLinFuncMult = 0.876;
-      public static final double kLinFuncOffset = 0.5;
-      public static final double kLinFuncConstant = 0.562;
-
-      public static final double kNoSpeed = 0;
-    }
-
-    public static final double kRange = 1;
-
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0;
-
-    public static final double kMaxAngularAccelerationRadiansPerSecondSquared = 0;
-
-    public static final double angularP = 0;
-    public static final double angularI = 0;
-    public static final double angularD = 0;
-
-    public static final double linearP = 0;
-    public static final double linearI = 0;
-    public static final double linearD = 0;
   }
 
   public static class Arm {

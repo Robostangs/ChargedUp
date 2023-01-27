@@ -23,6 +23,14 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
+    public static Swerve mInstance;
+
+    public static Swerve getInstance() {
+        if(mInstance == null) {
+            mInstance = new Swerve();
+        }
+        return mInstance;
+    }
 
     public Swerve() {
         gyro = new AHRS(SPI.Port.kMXP);
@@ -100,6 +108,10 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro(){
         gyro.reset();;
+    }
+
+    public double getGyroAngle(){
+        return gyro.getAngle();
     }
 
     public Rotation2d getYaw() {

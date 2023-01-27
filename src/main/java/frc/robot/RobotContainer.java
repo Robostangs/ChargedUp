@@ -18,6 +18,10 @@ public class RobotContainer {
     /* Controllers */
     private final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
+
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
   
     private final Hand mHand = Hand.getInstance();
     private final Arm mArm = Arm.getInstance();
@@ -31,7 +35,6 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {

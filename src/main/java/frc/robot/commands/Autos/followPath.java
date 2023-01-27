@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -20,12 +21,12 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Swerve;
 
 public class followPath extends CommandBase {
 
     Trajectory mTrajectory = new Trajectory();
-    Drivetrain mDrivetrain = Drivetrain.getInstance();
+    Swerve mDrivetrain = Swerve.getInstance();
     String mPath = "";
     Double mSpeed;
     
@@ -46,27 +47,27 @@ public class followPath extends CommandBase {
     @Override
     public void execute() {
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-                Constants.Drivetrain.maxLinearVelocity,
-                Constants.Drivetrain.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(Constants.Drivetrain.mKinematics);
+                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                        .setKinematics(Constants.Swerve.swerveKinematics);
 
 
-        PIDController xController = new PIDController(Constants.Drivetrain.linearP, Constants.Drivetrain.linearI, Constants.Drivetrain.linearD);
-        PIDController yController = new PIDController(Constants.Drivetrain.linearP, Constants.Drivetrain.linearI, Constants.Drivetrain.linearD);
+        PIDController xController = new PIDController(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD);
+        PIDController yController = new PIDController(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD);
 
         ProfiledPIDController thetaController = new ProfiledPIDController(
-               Constants.Drivetrain.angularP,
-               Constants.Drivetrain.angularI,
-               Constants.Drivetrain.angularD,
+               Constants.Swerve.angleKP,
+               Constants.Swerve.angleKI,
+               Constants.Swerve.angleKD,
                new TrapezoidProfile.Constraints(
-                Constants.Drivetrain.maxAngularVelocity,
-                Constants.Drivetrain.kMaxAngularAccelerationRadiansPerSecondSquared));
+                Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,
+                Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                 mTrajectory,
                 mDrivetrain.getPose(),
-                Constants.Drivetrain.mKinematics,
+                Constants.Swerve.swerveKinematics,
                 xController,
                 yController,
                 thetaController,
@@ -77,12 +78,13 @@ public class followPath extends CommandBase {
         new SequentialCommandGroup(
                 new InstantCommand(() -> mDrivetrain.resetOdometry(mTrajectory.getInitialPose())),
                 swerveControllerCommand,
-                new InstantCommand(() -> mDrivetrain.drive(new ChassisSpeeds(0,0,0))));
+                new InstantCommand(() -> mDrivetrain.drive(new Translation2d(0, 0), 0, false, false)));
     }
 
     @Override
     public void end(boolean interrupted) {
-        mDrivetrain.drive(new ChassisSpeeds(0, 0, 0));
+        mDrivetrain.drive(new Translation2d(0, 0), 0, false, false);
+
     }
 
 }

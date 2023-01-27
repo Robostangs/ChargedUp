@@ -1,15 +1,16 @@
 package frc.robot.commands.Drivetrain;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector3D;
 import frc.robot.Vision.LimelightState;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Swerve;
 
 public class GetToPosition extends CommandBase {
-    Drivetrain mDrivetrain = Drivetrain.getInstance();
+    Swerve mDrivetrain = Swerve.getInstance();
     Vision mVision = Vision.getInstance();
     double mSpeed;
     Vision.LimelightState mState;
@@ -27,25 +28,25 @@ public class GetToPosition extends CommandBase {
         if(mVision.targetVisible(LimelightState.leftLimelight)) {
             v1 = mVision.getLimelightPosition(LimelightState.leftLimelight);
 
-            if(v1.y + Constants.Drivetrain.targetOffset < mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new ChassisSpeeds(0, mSpeed, 0));
-            } else if(v1.y + Constants.Drivetrain.targetOffset > mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new ChassisSpeeds(0, -mSpeed, 0));
+            if(v1.y + Constants.Swerve.targetOffset < mDrivetrain.getPose().getY()) {
+                mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, false);
+            } else if(v1.y + Constants.Swerve.targetOffset > mDrivetrain.getPose().getY()) {
+                mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, false);
             }
         } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
             v2 = mVision.getLimelightPosition(LimelightState.rightLimelight);
             
-            if(v2.y - Constants.Drivetrain.targetOffset > mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new ChassisSpeeds(0, mSpeed, 0));
-            } else if(v1.y - Constants.Drivetrain.targetOffset < mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new ChassisSpeeds(0, -mSpeed, 0));
+            if(v2.y - Constants.Swerve.targetOffset > mDrivetrain.getPose().getY()) {
+                mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, false);
+            } else if(v1.y - Constants.Swerve.targetOffset < mDrivetrain.getPose().getY()) {
+                mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, false);
             }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        mDrivetrain.drive(new ChassisSpeeds(0, 0, 0));
+        mDrivetrain.drive(new Translation2d(0, 0), 0, false, false);
     }
 
 }
