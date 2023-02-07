@@ -10,6 +10,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
+//Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
+
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
@@ -109,21 +111,21 @@ public final class Constants {
         public static final double targetOffset = 0;
 
         /* Module Specific Constants */
-        /* Front Left Module - Module 0 */
+        /* Front Right Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 20;
-            public static final int angleMotorID = 21;
-            public static final int canCoderID = 22;
+            public static final int driveMotorID = 27;
+            public static final int angleMotorID = 1;
+            public static final int canCoderID = 12;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Front Right Module - Module 1 */
+        /* Front Left Module - Module 1 */
         public static final class Mod1 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 10;
-            public static final int angleMotorID = 11;
-            public static final int canCoderID = 12;
+            public static final int driveMotorID = 20;
+            public static final int angleMotorID = 21;
+            public static final int canCoderID = 22;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(10.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);

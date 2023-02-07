@@ -26,7 +26,7 @@ public class GetToPosition extends CommandBase {
     @Override
     public void execute() {
         if(mVision.targetVisible(LimelightState.leftLimelight)) {
-            v1 = mVision.getLimelightPosition(LimelightState.leftLimelight);
+            v1 = mVision.getPosition(LimelightState.leftLimelight);
 
             if(v1.y + Constants.Swerve.targetOffset < mDrivetrain.getPose().getY()) {
                 mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, false);
@@ -34,7 +34,7 @@ public class GetToPosition extends CommandBase {
                 mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, false);
             }
         } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
-            v2 = mVision.getLimelightPosition(LimelightState.rightLimelight);
+            v2 = mVision.getPosition(LimelightState.rightLimelight);
             
             if(v2.y - Constants.Swerve.targetOffset > mDrivetrain.getPose().getY()) {
                 mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, false);
