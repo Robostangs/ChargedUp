@@ -113,10 +113,10 @@ public final class Constants {
         /* Module Specific Constants */
         /* Front Right Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 27;
-            public static final int angleMotorID = 1;
+            public static final int driveMotorID = 11;
+            public static final int angleMotorID = 10;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.0);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(10);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -126,7 +126,7 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(10.0);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(257.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -184,7 +184,7 @@ public final class Constants {
 
   public static class Arm {
 
-    public static final int shoulderMotorID = 16;
+    public static final int shoulderMotorID = 14;
 
     public static final double shoulderMotorP = 0.0003;
     public static final double shoulderMotorI = 0;
@@ -192,7 +192,7 @@ public final class Constants {
     public static final double shoulderMotorF = 0;
     public static final double shoulderMotorIZone = 0;
     
-    public static final int elbowMotorID = 17;
+    public static final int elbowMotorID = 51;
 
     public static final double elbowMotorP = 1;
     public static final double elbowMotorI = 0;

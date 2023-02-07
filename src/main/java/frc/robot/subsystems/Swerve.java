@@ -2,10 +2,10 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.Utils;
-import frc.robot.Vision;
+// import frc.robot.Vision;
 import frc.robot.CustomWpilib.CustomSwerveDriveOdometry;
 import frc.robot.Utils.Vector2D;
-import frc.robot.Vision.LimelightState;
+// import frc.robot.Vision.LimelightState;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,8 +28,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     public CustomSwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public AHRS gyro;
-    private Vision mVision = Vision.getInstance();
+    public Pigeon2 gyro;
+    // private Vision mVision = Vision.getInstance();
     private Vector2D v1, v2;
     private Vector2D current;
     public static Swerve mInstance;
@@ -41,7 +42,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new AHRS(SPI.Port.kMXP);
+        gyro = new Pigeon2(0);
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
@@ -115,11 +116,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.reset();;
+        gyro.setYaw(0);
     }
 
     public double getGyroAngle(){
-        return gyro.getAngle();
+        return gyro.getYaw();
     }
 
     public Rotation2d getYaw() {
@@ -133,44 +134,48 @@ public class Swerve extends SubsystemBase {
     }
 
 
-    public void update() {
-        if(mVision.targetVisible(LimelightState.leftLimelight) && mVision.targetVisible(LimelightState.rightLimelight)) {
-            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
-            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
-            current.set(getPose().getX(), getPose().getY()); 
+    // public void update() {
+    //     if(mVision.targetVisible(LimelightState.leftLimelight) && mVision.targetVisible(LimelightState.rightLimelight)) {
+    //         v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+    //         v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
+    //         current.set(getPose().getX(), getPose().getY()); 
 
-            if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
-                Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
-                updateWithLimelight(meanV);
-            } else if(Utils.withinRange(v1, current)) { 
-                updateWithLimelight(v1);
-            } else if(Utils.withinRange(v2, current)) {
-                updateWithLimelight(v2);
-            } else {
-                updateOdometry();
-            }
+    //         if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
+    //             Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
+    //             updateWithLimelight(meanV);
+    //         } else if(Utils.withinRange(v1, current)) { 
+    //             updateWithLimelight(v1);
+    //         } else if(Utils.withinRange(v2, current)) {
+    //             updateWithLimelight(v2);
+    //         } else {
+    //             updateOdometry();
+    //         }
 
-        } else if(mVision.targetVisible(LimelightState.leftLimelight)) {
-            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
-            current.set(getPose().getX(), getPose().getY());
+    //     } else if(mVision.targetVisible(LimelightState.leftLimelight)) {
+    //         v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+    //         current.set(getPose().getX(), getPose().getY());
             
-            if(Utils.withinRange(v1, current)) {
-                updateWithLimelight(v1);
-            } else {
-                updateOdometry();
-            }
-        } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
-            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
-            current.set(getPose().getX(), getPose().getY());
+    //         if(Utils.withinRange(v1, current)) {
+    //             updateWithLimelight(v1);
+    //         } else {
+    //             updateOdometry();
+    //         }
+    //     } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
+    //         v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
+    //         current.set(getPose().getX(), getPose().getY());
 
-            if(Utils.withinRange(v2, current)) {
-                updateWithLimelight(v2);
-            } else {
-                updateOdometry();
-            }
-        } else {
-            updateOdometry();
-        }
+    //         if(Utils.withinRange(v2, current)) {
+    //             updateWithLimelight(v2);
+    //         } else {
+    //             updateOdometry();
+    //         }
+    //     } else {
+    //         updateOdometry();
+    //     }
+    // }
+
+    public void update() {
+        updateOdometry();
     }
 
     public void updateOdometry() {
