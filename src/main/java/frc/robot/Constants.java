@@ -184,7 +184,7 @@ public final class Constants {
 
   public static class Arm {
 
-    public static final int shoulderMotorID = 14;
+    public static final int shoulderMotorID = 50;
 
     public static final double shoulderMotorP = 0.0003;
     public static final double shoulderMotorI = 0;
