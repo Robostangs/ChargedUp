@@ -1,7 +1,5 @@
-# Teem 458 the robitstang code
+# Team 548 Robostangs Charged Up Code
 
-2024 watter geam confirmed
-
-plz follow us in tiktok
-
-(c) bill wozniak all rights reserved
+Contributers:
+  Saket Kulkarni
+  Charlie Sands
