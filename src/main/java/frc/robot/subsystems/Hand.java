@@ -12,6 +12,11 @@ public class Hand extends SubsystemBase {
     private static Compressor mCompressor;
     private static Solenoid mSolenoid;
 
+    public enum HandState {
+        OPEN, 
+        CLOSED
+    }
+
     public static Hand getInstance() {
         if(mInstance == null) {
             mInstance = new Hand();

@@ -18,28 +18,28 @@ public class RobotContainer {
     /* Controllers */
     private final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
-  
-    private final Hand mHand = Hand.getInstance();
-    private final Arm mArm = Arm.getInstance();
 
-    /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
+  
+    // private final Hand mHand = Hand.getInstance();
+    // private final Arm mArm = Arm.getInstance();
+
+  //private final Drivetrain mDrivetrain = Drivetrain.getInstance();
+//   private final Vision mVision = Vision.getInstance();
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kY.value);
+    private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
     private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
-
+    private final Swerve s_Swerve = Swerve.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
-                s_Swerve, 
                 () -> -mDriverController.getRawAxis(translationAxis), 
                 () -> -mDriverController.getRawAxis(strafeAxis), 
                 () -> -mDriverController.getRawAxis(rotationAxis), 

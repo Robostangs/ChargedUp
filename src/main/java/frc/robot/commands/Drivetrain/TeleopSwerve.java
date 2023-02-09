@@ -1,6 +1,7 @@
 package frc.robot.commands.Drivetrain;
 
 import frc.robot.Constants;
+import frc.robot.Utils;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.BooleanSupplier;
@@ -12,14 +13,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class TeleopSwerve extends CommandBase {    
-    private Swerve s_Swerve;    
+    private Swerve s_Swerve = Swerve.getInstance();    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
-        this.s_Swerve = s_Swerve;
+    public TeleopSwerve(DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
         addRequirements(s_Swerve);
 
         this.translationSup = translationSup;
@@ -31,9 +31,9 @@ public class TeleopSwerve extends CommandBase {
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
-        double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+        double translationVal = Utils.customDeadzone(translationSup.getAsDouble());
+        double strafeVal = Utils.customDeadzone(strafeSup.getAsDouble());
+        double rotationVal = Utils.customDeadzone(rotationSup.getAsDouble());
 
         /* Drive */
         s_Swerve.drive(
