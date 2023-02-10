@@ -6,6 +6,8 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +23,8 @@ public class Arm extends SubsystemBase{
     private Utils.Vector2D mArmPosition;
     private Utils.Vector2D mElbowPosition;
 
-    private DoubleSupplier mStickPower;
+    private CANCoder mArmCanCoder, mElbowCanCoder;
+    private Utils.Vector2D mEncoderValues;
 
     public static Arm getInstance() {
         if(mInstance == null) {
@@ -43,7 +46,7 @@ public class Arm extends SubsystemBase{
         mElbowPosition = new Utils.Vector2D();
 
         mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Shoulder");
-        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Elbow");
+        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "Elbow");
     
         mShoulderMotor.configVoltageCompSaturation(10);
         mElbowMotor.configVoltageCompSaturation(10);
@@ -62,18 +65,16 @@ public class Arm extends SubsystemBase{
         mShoulderMotor.setNeutralMode(NeutralMode.Brake);
         mElbowMotor.setNeutralMode(NeutralMode.Brake);
         
-    }
-
-    public void setStickPowerSupplier(DoubleSupplier stickPowerSupplier) {
-        mStickPower = stickPowerSupplier;
+        mArmCanCoder = new CANCoder(Constants.Arm.mArmCanCoderID);
+        mElbowCanCoder = new CANCoder(Constants.Arm.mElbowCanCoderID);
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Arm Position X", this.mArmPosition::getX, this.mArmPosition::setX);
         builder.addDoubleProperty("Arm Position Y", this.mArmPosition::getY, this.mArmPosition::setY);
-        builder.addDoubleProperty( "Shoulder Rotation", this::getShoulderRotation, null);
-        builder.addDoubleProperty( "Elbow Rotation", this::getElbowRotation, null);
+        builder.addDoubleProperty( "Shoulder Rotation", this::getIncludedShoulderRotation, null);
+        builder.addDoubleProperty( "Elbow Rotation", this::getIncludedElbowRotation, null);
     }
 
 
@@ -125,31 +126,56 @@ public class Arm extends SubsystemBase{
         return torqueOfGravity;
     }
 
+    private Utils.Vector2D getEncoderValue() {
+        if(mArmCanCoder.getStickyFaults(null) != null) {
+            mEncoderValues.setX(getOutsideShoulderRotation());
+        } else {
+            double value = getIncludedShoulderRotation() + mEncoderValues.getX();
+            if(value >= 360) {
+                mEncoderValues.setX(value-360);
+            } else {
+                mEncoderValues.setX(value);
+            }
+        }
+
+        if(mElbowCanCoder.getStickyFaults(null) != null) {
+            mEncoderValues.setY(getOutsideElbowRotation());
+        } else {
+            double value = getIncludedElbowRotation() + mEncoderValues.getY();
+            if(value >= 360) {
+                mEncoderValues.setY(value-360);
+            } else {
+                mEncoderValues.setY(value);
+            }
+        }
+        return mEncoderValues;
+    }
+
     @Override
     public void periodic() {
-        double totalArmLengths = Constants.Arm.forearmLength + Constants.Arm.upperarmLength;
-        double armAngle = (mShoulderMotor.getSelectedSensorPosition() / 8.72 / 2048) * 360;
-        mArmPosition = new Utils.Vector2D(totalArmLengths * Math.cos(armAngle), totalArmLengths * Math.sin(armAngle));
+        // double totalArmLengths = Constants.Arm.forearmLength + Constants.Arm.upperarmLength;
+        // double armAngle = (mShoulderMotor.getSelectedSensorPosition() / 8.72 / 2048) * 360;
+        // mArmPosition = new Utils.Vector2D(totalArmLengths * Math.cos(armAngle), totalArmLengths * Math.sin(armAngle));
 
-        Utils.Vector2D jointAngles = calculateArmPosition(mArmPosition);
-        calculateElbowPosition(jointAngles);
+        // Utils.Vector2D jointAngles = calculateArmPosition(mArmPosition);
+        // calculateElbowPosition(jointAngles);
 
-        double shoulderMotorVoltage = ((calculateShoulderTorque() * 0.0467) / 0.05512) * 0.7;
-        // double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
+        // double shoulderMotorVoltage = ((calculateShoulderTorque() * 0.0467) / 0.05512) * 0.7;
+        // // double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
 
-        mShoulderMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, shoulderMotorVoltage/10);
+        // mShoulderMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, shoulderMotorVoltage/10);
 
-        // mElbowMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
+        // // mElbowMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
 
-        // mShoulderMotor.set(ControlMode.PercentOutput, shoulderMotorVoltage / 100);
+        // // mShoulderMotor.set(ControlMode.PercentOutput, shoulderMotorVoltage / 100);
 
-        /*
-        if(mStickPower != null) {
-            mShoulderMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
-        }
-        */
+        // /*
+        // if(mStickPower != null) {
+        //     mShoulderMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
+        // }
+        // */
 
-        System.out.println("Predicted percent output: "+ (shoulderMotorVoltage / 100) + " Angle: " + armAngle + " Encoder Ticks: " + mShoulderMotor.getSelectedSensorPosition());
+        // System.out.println("Predicted percent output: "+ (shoulderMotorVoltage / 100) + " Angle: " + armAngle + " Encoder Ticks: " + mEncoderPositions.getX());
 
     }
 
@@ -157,14 +183,23 @@ public class Arm extends SubsystemBase{
         return mArmPosition;
     }
     
-    public double getShoulderRotation() {
+    public double getIncludedShoulderRotation() {
         return mShoulderMotor.getSelectedSensorPosition();
     }
     
-    public double getElbowRotation() {
+    public double getIncludedElbowRotation() {
         return mElbowMotor.getSelectedSensorPosition();
     }
     
+    public double getOutsideShoulderRotation() {
+        return mArmCanCoder.getPosition();
+    }
+    
+    public double getOutsideElbowRotation() {
+        return mElbowCanCoder.getPosition();
+    }
+
+
     public void setArmPosition(Utils.Vector2D targetPose) {
         mArmPosition.set(targetPose);
     }
@@ -179,5 +214,13 @@ public class Arm extends SubsystemBase{
 
     public void setBrakeMode(boolean brake) {
         //TODO: Implement brake mode
+    }
+
+    public void setShoulderMotorPower(double power) {
+        mShoulderMotor.set(ControlMode.PercentOutput, power);
+    }
+
+    public void setElbowMotorPower(double power) {
+        mElbowMotor.set(ControlMode.PercentOutput, power);
     }
 }

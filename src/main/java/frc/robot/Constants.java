@@ -186,9 +186,9 @@ public final class Constants {
 
     public static final int shoulderMotorID = 50;
 
-    public static final double shoulderMotorP = 0.0003;
+    public static final double shoulderMotorP = 1;
     public static final double shoulderMotorI = 0;
-    public static final double shoulderMotorD = 0.00005;
+    public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0;
     public static final double shoulderMotorIZone = 0;
     
@@ -199,13 +199,17 @@ public final class Constants {
     public static final double elbowMotorD = 0;
     public static final double elbowMotorIZone = 0;
     
-    public static final double upperarmLength = 0.58;
-    public static final double forearmLength = 0.51;
+    public static final double upperarmLength = 0.9398;
+    public static final double forearmLength = 0.616712;
 
-    public static final double upperarmMass = 0.50;
-    public static final double forearmMass = 0.55;
+    public static final double upperarmMass = 0.44639;
+    public static final double forearmMass = 0.293;
     
-    public static final double elbowMass = 0.00;
+    public static final double elbowMass = 0.95;
+
+    public static final int mArmCanCoderID = 0;
+
+    public static final int mElbowCanCoderID = 0;
 
     public static class Positions {
       public final static Vector2D stowPosition = new Vector2D(0.0, 0.0);
@@ -226,6 +230,6 @@ public final class Constants {
     public static final int handMotorI = 0;
     public static final int handMotorD = 0;
 
-    public static final double handMass = 1;
+    public static final double handMass = 2.1;
   }
 }

@@ -27,6 +27,8 @@ public class Hand extends SubsystemBase {
     public Hand() {
         mCompressor = new Compressor(Constants.Hand.compressorID, PneumaticsModuleType.CTREPCM);
         mSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Hand.solenoidID);
+
+        mCompressor.enableDigital();
     }
 
     public void setSolenoid(boolean state) {
