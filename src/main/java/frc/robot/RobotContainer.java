@@ -23,12 +23,6 @@ public class RobotContainer {
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
   
-    // private final Hand mHand = Hand.getInstance();
-    // private final Arm mArm = Arm.getInstance();
-
-  //private final Drivetrain mDrivetrain = Drivetrain.getInstance();
-//   private final Vision mVision = Vision.getInstance();
-
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
     private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
