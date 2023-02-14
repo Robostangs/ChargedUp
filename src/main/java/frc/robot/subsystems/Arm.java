@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
+import frc.robot.Utils.Vector2D;
 
 public class Arm extends SubsystemBase{
     private static Arm mInstance;
@@ -26,8 +27,8 @@ public class Arm extends SubsystemBase{
     private Utils.Vector2D mElbowPosition;
 
     private CANCoder mArmCanCoder, mElbowCanCoder;
-    private Utils.Vector2D mEncoderValues;
-    private Solenoid mBrakeSolenoid;
+    private Utils.Vector2D mEncoderValues = new Vector2D(0,0);
+    private Solenoid mElbowBrakeSolenoid, mArmBrakeSolenoid;
 
     public static Arm getInstance() {
         if(mInstance == null) {
@@ -70,8 +71,11 @@ public class Arm extends SubsystemBase{
         
         mArmCanCoder = new CANCoder(Constants.Arm.mArmCanCoderID);
         mElbowCanCoder = new CANCoder(Constants.Arm.mElbowCanCoderID);
-        mBrakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.brakeSolenoidID);
-        mBrakeSolenoid.set(false);
+
+        mArmBrakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.mArmBrakeID);
+        mArmBrakeSolenoid.set(false);
+        mElbowBrakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.mElbowBrakeSolenoid);
+        mElbowBrakeSolenoid.set(false);
     }
 
     @Override
@@ -158,29 +162,29 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic() {
-        // double totalArmLengths = Constants.Arm.forearmLength + Constants.Arm.upperarmLength;
-        // double armAngle = (mShoulderMotor.getSelectedSensorPosition() / 8.72 / 2048) * 360;
-        // mArmPosition = new Utils.Vector2D(totalArmLengths * Math.cos(armAngle), totalArmLengths * Math.sin(armAngle));
+        double totalArmLengths = Constants.Arm.forearmLength + Constants.Arm.upperarmLength;
+        double armAngle = (mShoulderMotor.getSelectedSensorPosition() / 8.72 / 2048) * 360;
+        mArmPosition = new Utils.Vector2D(totalArmLengths * Math.cos(armAngle), totalArmLengths * Math.sin(armAngle));
 
-        // Utils.Vector2D jointAngles = calculateArmPosition(mArmPosition);
-        // calculateElbowPosition(jointAngles);
+        Utils.Vector2D jointAngles = calculateArmPosition(mArmPosition);
+        calculateElbowPosition(jointAngles);
 
-        // double shoulderMotorVoltage = ((calculateShoulderTorque() * 0.0467) / 0.05512) * 0.7;
-        // // double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
+        double shoulderMotorVoltage = ((calculateShoulderTorque() * 0.0467) / 0.05512) * 0.7;
+        // double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
 
-        // mShoulderMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, shoulderMotorVoltage/10);
+        mShoulderMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, shoulderMotorVoltage/10);
 
-        // // mElbowMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
+        // mElbowMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
 
-        // // mShoulderMotor.set(ControlMode.PercentOutput, shoulderMotorVoltage / 100);
+        // mShoulderMotor.set(ControlMode.PercentOutput, shoulderMotorVoltage / 100);
 
-        // /*
-        // if(mStickPower != null) {
-        //     mShoulderMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
-        // }
-        // */
+        /*
+        if(mStickPower != null) {
+            mShoulderMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
+        }
+        */
 
-        // System.out.println("Predicted percent output: "+ (shoulderMotorVoltage / 100) + " Angle: " + armAngle + " Encoder Ticks: " + mEncoderPositions.getX());
+        System.out.println("Predicted percent output: "+ (shoulderMotorVoltage / 100) + " Angle: " + armAngle + " Encoder Ticks: " + mEncoderValues.getX());
 
     }
 

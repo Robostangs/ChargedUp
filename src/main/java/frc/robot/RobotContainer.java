@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Arm.ArmManager;
 import frc.robot.commands.Arm.ArmStupid;
+import frc.robot.commands.Drivetrain.TeleopSwerve;
 // import frc.robot.commands.Drivetrain.TeleopSwerve;
 import frc.robot.subsystems.*;
 
@@ -30,11 +31,11 @@ public class RobotContainer {
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
   
-    // private final Hand mHand = Hand.getInstance();
-    // private final Arm mArm = Arm.getInstance();
+    private final Hand mHand = Hand.getInstance();
+    private final Arm mArm = Arm.getInstance();
 
-  //private final Drivetrain mDrivetrain = Drivetrain.getInstance();
-//   private final Vision mVision = Vision.getInstance();
+  private final Swerve s_Swerve = Swerve.getInstance();
+  private final Vision mVision = Vision.getInstance();
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
@@ -60,15 +61,15 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        // s_Swerve.setDefaultCommand(
-        //     new TeleopSwerve(
-        //         () -> -mDriverController.getRawAxis(translationAxis), 
-        //         () -> -mDriverController.getRawAxis(strafeAxis), 
-        //         () -> -mDriverController.getRawAxis(rotationAxis), 
-        //         () -> true
-        //     )
-        // );
-        // // Configure the button bindings
+        s_Swerve.setDefaultCommand(
+             new TeleopSwerve(
+                 () -> -mDriverController.getRawAxis(translationAxis), 
+                 () -> -mDriverController.getRawAxis(strafeAxis), 
+                 () -> -mDriverController.getRawAxis(rotationAxis), 
+                 () -> true
+             )
+         );
+        // Configure the button bindings
 
         
 
