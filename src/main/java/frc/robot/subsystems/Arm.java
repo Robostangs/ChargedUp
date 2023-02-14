@@ -10,6 +10,8 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
@@ -25,6 +27,7 @@ public class Arm extends SubsystemBase{
 
     private CANCoder mArmCanCoder, mElbowCanCoder;
     private Utils.Vector2D mEncoderValues;
+    private Solenoid mBrakeSolenoid;
 
     public static Arm getInstance() {
         if(mInstance == null) {
@@ -67,6 +70,8 @@ public class Arm extends SubsystemBase{
         
         mArmCanCoder = new CANCoder(Constants.Arm.mArmCanCoderID);
         mElbowCanCoder = new CANCoder(Constants.Arm.mElbowCanCoderID);
+        mBrakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.brakeSolenoidID);
+        mBrakeSolenoid.set(false);
     }
 
     @Override
@@ -213,7 +218,7 @@ public class Arm extends SubsystemBase{
     }
 
     public void setBrakeMode(boolean brake) {
-        //TODO: Implement brake mode
+        
     }
 
     public void setShoulderMotorPower(double power) {
@@ -223,4 +228,12 @@ public class Arm extends SubsystemBase{
     public void setElbowMotorPower(double power) {
         mElbowMotor.set(ControlMode.PercentOutput, power);
     }
-}
+
+    public boolean isSwitchShoulder() {
+        return mShoulderMotor.isFwdLimitSwitchClosed() == 1 ? true : false;
+    }
+
+    public boolean isSwitchElbow() {
+        return mElbowMotor.isRevLimitSwitchClosed() == 1 ? true : false;
+    }
+} 
