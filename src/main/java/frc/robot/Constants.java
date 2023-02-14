@@ -211,6 +211,8 @@ public final class Constants {
 
     public static final int mElbowCanCoderID = 0;
 
+    public static final int brakeSolenoidID = 0;
+
     public static class Positions {
       public final static Vector2D stowPosition = new Vector2D(0.0, 0.0);
       public final static Vector2D lowPosition = new Vector2D(0.0, 0.0);
