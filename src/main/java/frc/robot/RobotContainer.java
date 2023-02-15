@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.MusicCMD;
 import frc.robot.commands.Arm.ArmManager;
 import frc.robot.commands.Arm.ArmStupid;
 // import frc.robot.commands.Drivetrain.TeleopSwerve;
@@ -70,7 +72,16 @@ public class RobotContainer {
         // );
         // // Configure the button bindings
 
-        
+            //Music Selector
+        Music mMusic = Music.getInstance();
+        Arm mArm = new Arm();
+        mMusic.setDefaultCommand(new MusicCMD(
+            mManipController.getStartButton(),
+            "Crab-Rave.chrp",
+            false,
+            mArm.getTalonFXs()
+        )
+        );        
 
         s_Arm.setDefaultCommand(
             new ArmStupid(

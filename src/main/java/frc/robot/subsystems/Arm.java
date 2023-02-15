@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 
@@ -235,5 +236,10 @@ public class Arm extends SubsystemBase{
 
     public boolean isSwitchElbow() {
         return mElbowMotor.isRevLimitSwitchClosed() == 1 ? true : false;
+    }
+
+    public LoggyWPI_TalonFX[] getTalonFXs() {
+        LoggyWPI_TalonFX[] a = {mShoulderMotor, mElbowMotor};
+        return a;
     }
 } 
