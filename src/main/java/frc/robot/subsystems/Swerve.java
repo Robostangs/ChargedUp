@@ -42,12 +42,12 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new Pigeon2(0);
+        gyro = new Pigeon2(3);
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
+            new SwerveModule(1, Constants.Swerve.Mod0.constants),
+            new SwerveModule(0, Constants.Swerve.Mod1.constants),
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };

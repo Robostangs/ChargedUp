@@ -126,7 +126,7 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(257.0);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(254);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -207,11 +207,13 @@ public final class Constants {
     
     public static final double elbowMass = 0.95;
 
-    public static final int mArmCanCoderID = 0;
+    public static final int mArmCanCoderID = 1;
 
-    public static final int mElbowCanCoderID = 0;
+    public static final int mElbowCanCoderID = 2;
 
-    public static final int brakeSolenoidID = 0;
+    public static final int mElbowBrakeSolenoid = 1;
+
+    public static final int mArmBrakeID = 2;
 
     public static class Positions {
       public final static Vector2D stowPosition = new Vector2D(0.0, 0.0);
@@ -224,9 +226,9 @@ public final class Constants {
   }
 
   public static class Hand {
-    public static final int compressorID = 0;
-    public static final int solenoidID = 0;
-    public static final int handMotorID = 0;
+    // public static final int compressorID = 0;
+    public static final int solenoidID = 3;
+    // public static final int handMotorID = 0;
 
     public static final int handMotorP = 0;
     public static final int handMotorI = 0;
