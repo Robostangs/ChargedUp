@@ -29,8 +29,6 @@ public class MusicCMD extends CommandBase {
 
     @Override
     public void execute() {
-        Music.defaultCode();
-
         if (CMD1) {
             Music.playSong();
         }
@@ -40,7 +38,10 @@ public class MusicCMD extends CommandBase {
         if (CMD3) {
             //Need CMD3
         }
+        Music.defaultCode();
     }
 
-    public void end() {}
+    public void end() {
+        SmartDashboard.putString("Music Player", "Deactivated");
+    }
 }

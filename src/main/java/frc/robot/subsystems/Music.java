@@ -28,13 +28,23 @@ public class Music extends SubsystemBase {
 
     public static void playSong() {
         mOrchestra.play();
-        Status = mOrchestra.isPlaying();
-        SmartDashboard.putBoolean("Song Playing", Status);
+        playerStatus();
     }
 
     public static void loadSong(String filePath) {
         mOrchestra.loadMusic(filePath);
         Song = filePath;
+    }
+
+    public static void pauseSong() {
+        mOrchestra.pause();
+        playerStatus();
+
+    }
+
+    public static void playerStatus() {
+        Status = mOrchestra.isPlaying();
+        SmartDashboard.putBoolean("Song Playing", Status);
     }
     
 }
