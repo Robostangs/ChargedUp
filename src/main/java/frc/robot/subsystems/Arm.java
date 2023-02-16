@@ -1,13 +1,12 @@
 package frc.robot.subsystems;
 
 import java.lang.Math;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -23,12 +22,12 @@ public class Arm extends SubsystemBase{
     private LoggyWPI_TalonFX mShoulderMotor;
     private LoggyWPI_TalonFX mElbowMotor;
 
-    private Utils.Vector2D mArmPosition;
-    private Utils.Vector2D mElbowPosition;
-
     private CANCoder mArmCanCoder, mElbowCanCoder;
     private Utils.Vector2D mEncoderValues = new Vector2D(0,0);
     private Solenoid mElbowBrakeSolenoid, mArmBrakeSolenoid;
+    private DoubleSupplier mStickPower;
+    private BooleanSupplier mStickEnable;
+
 
     public static Arm getInstance() {
         if(mInstance == null) {
@@ -47,8 +46,6 @@ public class Arm extends SubsystemBase{
     }
 
     public Arm() {
-        mElbowPosition = new Utils.Vector2D();
-
         mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Shoulder");
         mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "Elbow");
     
@@ -76,38 +73,47 @@ public class Arm extends SubsystemBase{
         mArmBrakeSolenoid.set(false);
         mElbowBrakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.mElbowBrakeSolenoid);
         mElbowBrakeSolenoid.set(false);
+
+        mElbowMotor.setInverted(true);
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Arm Position X", this.mArmPosition::getX, this.mArmPosition::setX);
-        builder.addDoubleProperty("Arm Position Y", this.mArmPosition::getY, this.mArmPosition::setY);
         builder.addDoubleProperty( "Shoulder Rotation", this::getIncludedShoulderRotation, null);
         builder.addDoubleProperty( "Elbow Rotation", this::getIncludedElbowRotation, null);
     }
 
 
-    private Utils.Vector2D calculateArmPosition(Utils.Vector2D targetPos) {
+    private Utils.Vector2D calculateArmAngles(Utils.Vector2D targetPos) {
         double q2 = Math.acos(Math.pow(targetPos.x,2) + Math.pow(targetPos.y,2) - Math.pow(Constants.Arm.upperarmLength, 2) - Math.pow(Constants.Arm.forearmLength, 2));
         double q1 = Math.atan2(targetPos.y, targetPos.x) - Math.atan2(Constants.Arm.forearmLength * Math.sin(q2), Constants.Arm.forearmLength + Constants.Arm.upperarmLength*Math.cos(q2));
         return new Utils.Vector2D(q1, q1);
     }
 
-    private void calculateElbowPosition(Utils.Vector2D angles) {
-        mElbowPosition.setX(Constants.Arm.upperarmLength * Math.cos(angles.x));
-        mElbowPosition.setY(Constants.Arm.upperarmLength * Math.sin(angles.x));
+    private Utils.Vector2D calculateElbowPosition(Utils.Vector2D angles) {
+        Utils.Vector2D position = new Utils.Vector2D();
+        position.setX(Constants.Arm.upperarmLength * Math.cos(angles.x));
+        position.setY(Constants.Arm.upperarmLength * Math.sin(angles.x));
+        return position;
     }
 
-    private double calculateShoulderTorque() {
+    public Utils.Vector2D calculateHandPosition(Utils.Vector2D jointAngles) {
+        Utils.Vector2D position = new Utils.Vector2D();
+        position.setX((Constants.Arm.upperarmLength * Math.sin(jointAngles.x)) + (Constants.Arm.forearmLength * Math.sin(jointAngles.y)));
+        position.setY((Constants.Arm.upperarmLength * Math.cos(jointAngles.x)) + (Constants.Arm.forearmLength * Math.cos(jointAngles.y)));
+        return position;
+    }
+
+    private double calculateShoulderTorque(Utils.Vector2D elbowPosition, Utils.Vector2D handPosition) {
         double mass = Constants.Arm.elbowMass + Constants.Hand.handMass + Constants.Arm.forearmMass + Constants.Arm.upperarmMass;
 
-        Utils.Vector2D forearmCenterOfMass = new Utils.Vector2D(mElbowPosition.getX() / 2, mElbowPosition.getY() / 2);
-        Utils.Vector2D upperarmCenterOfMass = new Utils.Vector2D((mElbowPosition.getX() + mArmPosition.getX()) / 2, (mElbowPosition.getY() + mArmPosition.getAngle()) / 2 );
-        double armCenterOfMassX = (mElbowPosition.getX() * Constants.Arm.elbowMass + mArmPosition.getX() * Constants.Hand.handMass +
+        Utils.Vector2D forearmCenterOfMass = new Utils.Vector2D(elbowPosition.getX() / 2, elbowPosition.getY() / 2);
+        Utils.Vector2D upperarmCenterOfMass = new Utils.Vector2D((elbowPosition.getX() + handPosition.getX()) / 2, (elbowPosition.getY() + handPosition.getAngle()) / 2 );
+        double armCenterOfMassX = (elbowPosition.getX() * Constants.Arm.elbowMass + handPosition.getX() * Constants.Hand.handMass +
                                    forearmCenterOfMass.getX() * Constants.Arm.forearmMass + upperarmCenterOfMass.getX() * Constants.Arm.upperarmMass) /
                                   mass;
         
-        double armCenterOfMassY = (mElbowPosition.getY() * Constants.Arm.elbowMass + mArmPosition.getY() * Constants.Hand.handMass +
+        double armCenterOfMassY = (elbowPosition.getY() * Constants.Arm.elbowMass + handPosition.getY() * Constants.Hand.handMass +
                                    forearmCenterOfMass.getY() * Constants.Arm.forearmMass + upperarmCenterOfMass.getY() * Constants.Arm.upperarmMass) /
                                   mass;
         
@@ -118,16 +124,16 @@ public class Arm extends SubsystemBase{
         return torqueOfGravity;
     }
 
-    private double calculateElbowTorque() {
+    private double calculateElbowTorque(Utils.Vector2D elbowPosition, Utils.Vector2D handPosition) {
         double mass = Constants.Arm.elbowMass + Constants.Hand.handMass;
+        
+        Utils.Vector2D forearmCenterOfMass = new Utils.Vector2D(elbowPosition.getX() / 2, elbowPosition.getY() / 2);
+        double armCenterOfMassX = (handPosition.getX() * Constants.Hand.handMass + forearmCenterOfMass.getX() * Constants.Arm.forearmMass) /
+                                  mass;
+        
+        double armCenterOfMassY = (handPosition.getY() * Constants.Hand.handMass + forearmCenterOfMass.getY() * Constants.Arm.forearmMass) /
+                                  mass;
 
-        Utils.Vector2D forearmCenterOfMass = new Utils.Vector2D(mElbowPosition.getX() / 2, mElbowPosition.getY() / 2);
-        double armCenterOfMassX = (mArmPosition.getX() * Constants.Hand.handMass + forearmCenterOfMass.getX() * Constants.Arm.forearmMass) /
-                                  mass;
-        
-        double armCenterOfMassY = (mArmPosition.getY() * Constants.Hand.handMass + forearmCenterOfMass.getY() * Constants.Arm.forearmMass) /
-                                  mass;
-        
         double distance = Math.sqrt(Math.pow(armCenterOfMassX, 2) + Math.pow(armCenterOfMassY, 2));
         double angle = Math.atan(armCenterOfMassY / armCenterOfMassX);
         double torqueOfGravity = (mass * 9.81) * distance * Math.cos(angle);
@@ -160,38 +166,44 @@ public class Arm extends SubsystemBase{
         return mEncoderValues;
     }
 
+    
+
     @Override
     public void periodic() {
         double totalArmLengths = Constants.Arm.forearmLength + Constants.Arm.upperarmLength;
-        double armAngle = (mShoulderMotor.getSelectedSensorPosition() / 8.72 / 2048) * 360;
-        mArmPosition = new Utils.Vector2D(totalArmLengths * Math.cos(armAngle), totalArmLengths * Math.sin(armAngle));
+        double shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360;
+        double elbowAngle = (mElbowMotor.getSelectedSensorPosition() / 4096) * 360;
 
-        Utils.Vector2D jointAngles = calculateArmPosition(mArmPosition);
-        calculateElbowPosition(jointAngles);
+        Utils.Vector2D jointAngles = new Utils.Vector2D(shoulderAngle, elbowAngle);
 
-        double shoulderMotorVoltage = ((calculateShoulderTorque() * 0.0467) / 0.05512) * 0.7;
-        // double elbowMotorVoltage = (calculateElbowTorque() * 0.0467) / 0.05512;
+        Utils.Vector2D handPosition = calculateHandPosition(jointAngles);
+        Utils.Vector2D elbowPosition = calculateElbowPosition(jointAngles);
 
-        mShoulderMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, shoulderMotorVoltage/10);
+        double shoulderMotorVoltage = ((calculateShoulderTorque(elbowPosition, handPosition) * 0.0467) / 0.05512) * 0.7;
+        double elbowMotorVoltage = (calculateElbowTorque(elbowPosition, handPosition) * 0.0467) / 0.05512;
+        double elbowMotorVoltagePercent = elbowMotorVoltage / 100;
 
-        // mElbowMotor.set(ControlMode.Position, 5, DemandType.ArbitraryFeedForward, elbowMotorVoltage / 10);
-
-        // mShoulderMotor.set(ControlMode.PercentOutput, shoulderMotorVoltage / 100);
-
-        /*
-        if(mStickPower != null) {
-            mShoulderMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
+        if(mStickPower != null && mStickEnable != null) {
+            if(mStickEnable.getAsBoolean() == true) {
+                mElbowMotor.set(ControlMode.PercentOutput, mStickPower.getAsDouble());
+            } else {
+                mElbowMotor.set(ControlMode.PercentOutput, elbowMotorVoltagePercent / Constants.Arm.elbowMotorCompensationFactor);
+            }
+            
         }
-        */
-
-        System.out.println("Predicted percent output: "+ (shoulderMotorVoltage / 100) + " Angle: " + armAngle + " Encoder Ticks: " + mEncoderValues.getX());
+        
+        System.out.println("Angle: " + jointAngles.y + " Predicted percent output: "+ (elbowMotorVoltage / 100) + " Actual Output: " + mStickPower.getAsDouble());
 
     }
 
-    public Utils.Vector2D getmArmPosition() {
-        return mArmPosition;
+    public void setStickSupplier(DoubleSupplier s) {
+        mStickPower = s;
     }
     
+    public void setStickEnableSupplier(BooleanSupplier b) {
+        mStickEnable = b;
+    }
+
     public double getIncludedShoulderRotation() {
         return mShoulderMotor.getSelectedSensorPosition();
     }
@@ -206,19 +218,6 @@ public class Arm extends SubsystemBase{
     
     public double getOutsideElbowRotation() {
         return mElbowCanCoder.getPosition();
-    }
-
-
-    public void setArmPosition(Utils.Vector2D targetPose) {
-        mArmPosition.set(targetPose);
-    }
-    
-    public void setArmPositionX(double x) {
-        mArmPosition.setX(x);
-    }
-    
-    public void setArmPositionY(double y) {
-        mArmPosition.setY(y);
     }
 
     public void setBrakeMode(boolean brake) {

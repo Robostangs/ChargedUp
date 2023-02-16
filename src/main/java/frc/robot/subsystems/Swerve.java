@@ -2,10 +2,10 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.Utils;
-// import frc.robot.Vision;
+import frc.robot.Vision;
 import frc.robot.CustomWpilib.CustomSwerveDriveOdometry;
 import frc.robot.Utils.Vector2D;
-// import frc.robot.Vision.LimelightState;
+import frc.robot.Vision.LimelightState;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,7 +29,7 @@ public class Swerve extends SubsystemBase {
     public CustomSwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
-    // private Vision mVision = Vision.getInstance();
+    private Vision mVision = Vision.getInstance();
     private Vector2D v1, v2;
     private Vector2D current;
     public static Swerve mInstance;
@@ -120,7 +120,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getGyroAngle(){
-        return gyro.getYaw();
+        return Math.abs(gyro.getYaw() % 360);
+    }
+
+    public double getPitchAngle() {
+        return gyro.getRoll() + 1.31;
     }
 
     public Rotation2d getYaw() {

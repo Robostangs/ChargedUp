@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import frc.robot.commands.Autos.balance;
+import frc.robot.commands.Drivetrain.Flatten;
 import frc.robot.commands.Drivetrain.TeleopSwerve;
 import frc.robot.subsystems.*;
 
@@ -29,18 +30,26 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
+    private final Arm s_Arm = Arm.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                () -> -mDriverController.getRawAxis(translationAxis), 
-                () -> -mDriverController.getRawAxis(strafeAxis), 
-                () -> -mDriverController.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
-            )
-        );
 
+        
+        // if(mDriverController.getAButton()) {
+        //     new Flatten(0.3); 
+        // } else if(mDriverController.getBButton()) {
+        //     new balance();
+        // } else {
+        //     s_Swerve.setDefaultCommand(
+        //         new TeleopSwerve(
+        //             () -> -mDriverController.getRawAxis(translationAxis), 
+        //             () -> -mDriverController.getRawAxis(strafeAxis), 
+        //             () -> -mDriverController.getRawAxis(rotationAxis), 
+        //             () -> robotCentric.getAsBoolean()
+        //         )
+        //     );
+        // }
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -52,7 +61,20 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                () -> -mDriverController.getRawAxis(translationAxis), 
+                () -> -mDriverController.getRawAxis(strafeAxis), 
+                () -> -mDriverController.getRawAxis(rotationAxis), 
+                () -> robotCentric.getAsBoolean()
+            )
+        );
+
+        s_Arm.setStickSupplier(() -> mManipController.getRawAxis(translationAxis));
+        s_Arm.setStickEnableSupplier(() -> mManipController.getAButton());
+
+        new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new balance());
+        new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Flatten(0.3));
     }
 }

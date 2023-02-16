@@ -17,7 +17,7 @@ public class balance extends CommandBase {
 
     @Override
     public void execute() {
-        mDrivetrain.drive(new Translation2d(balancePID.calculate(mDrivetrain.getYaw().getDegrees(), 0), 0), 0, false, false);
+        mDrivetrain.drive(new Translation2d(-balancePID.calculate(0, mDrivetrain.getPitchAngle()) * 4.5, 0), 0, false, true);
     }
 
     @Override
