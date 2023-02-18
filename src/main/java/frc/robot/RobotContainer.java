@@ -4,9 +4,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.Autos.balance;
-import frc.robot.commands.Drivetrain.Flatten;
-import frc.robot.commands.Drivetrain.TeleopSwerve;
+import frc.robot.commands.Arm.ChangeSetPoint;
+import frc.robot.commands.Autos.Balance;
+import frc.robot.commands.Hand.SetHand;
+import frc.robot.commands.Swerve.Flatten;
+import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 
 /**
@@ -23,6 +25,8 @@ public class RobotContainer {
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final int extraAxis = XboxController.Axis.kRightY.value;
+
   
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
@@ -31,26 +35,10 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
+    private final Hand s_Hand = Hand.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-
-        
-        // if(mDriverController.getAButton()) {
-        //     new Flatten(0.3); 
-        // } else if(mDriverController.getBButton()) {
-        //     new balance();
-        // } else {
-        //     s_Swerve.setDefaultCommand(
-        //         new TeleopSwerve(
-        //             () -> -mDriverController.getRawAxis(translationAxis), 
-        //             () -> -mDriverController.getRawAxis(strafeAxis), 
-        //             () -> -mDriverController.getRawAxis(rotationAxis), 
-        //             () -> robotCentric.getAsBoolean()
-        //         )
-        //     );
-        // }
-        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -70,11 +58,14 @@ public class RobotContainer {
             )
         );
 
-        s_Arm.setStickSupplier(() -> mManipController.getRawAxis(translationAxis));
-        s_Arm.setStickEnableSupplier(() -> mManipController.getAButton());
+        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whileTrue(new SetHand());
+
+        s_Arm.setElbowStickSupplier(() -> mManipController.getRawAxis(translationAxis));
+        s_Arm.setShoulderStickSupplier(() -> mManipController.getRawAxis(extraAxis));
+        s_Arm.setStickEnableSupplier(() -> mDriverController.getRightBumper());
 
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new balance());
+        new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new Balance());
         new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Flatten(0.3));
     }
 }
