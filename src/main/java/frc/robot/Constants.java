@@ -152,9 +152,9 @@ public final class Constants {
         }
 
         public static final class balancePID {
-            public static final double kP = 0.0;
-            public static final double kI = 0.0;
-            public static final double kD = 0.0;
+            public static final double kP = 0.02;
+            public static final double kI = 0.00002;
+            public static final double kD = 0.003;
         }
     }
 
@@ -198,6 +198,7 @@ public final class Constants {
     public static final double elbowMotorI = 0;
     public static final double elbowMotorD = 0;
     public static final double elbowMotorIZone = 0;
+    public static final double elbowMotorCompensationFactor = 1.5;
     
     public static final double upperarmLength = 0.9398;
     public static final double forearmLength = 0.616712;

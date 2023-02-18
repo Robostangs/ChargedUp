@@ -1,5 +1,9 @@
+
 package frc.robot.commands.Drivetrain;
 
+import com.ctre.phoenixpro.hardware.Pigeon2;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Vision;
@@ -8,22 +12,28 @@ import frc.robot.subsystems.Swerve;
 public class Flatten extends CommandBase {
     Swerve mDrivetrain = Swerve.getInstance();
     Vision mVision = Vision.getInstance();
-    double mSpeed;
-    Vision.LimelightState mState;
+    PIDController pidController = new PIDController(0.01, 0, 0.002);
+    double startAngle;
 
-    public Flatten(double speed, Vision.LimelightState state) {
+    public Flatten(double speed) {
         addRequirements(mDrivetrain);
+
         setName("Straighten Against Wall");
-        mSpeed = speed;
-        mState = state;
+    }
+
+    @Override
+    public void initialize() {
+        startAngle = mDrivetrain.getGyroAngle();
     }
 
     @Override
     public void execute() {
-        if(mDrivetrain.getGyroAngle() < 90 && mDrivetrain.getGyroAngle() > 0) {
-            mDrivetrain.drive(new Translation2d(0, 0), mSpeed, false, false);
-        } else if(mDrivetrain.getGyroAngle() > -90 && mDrivetrain.getGyroAngle() < 0) {
-            mDrivetrain.drive(new Translation2d(0, 0), -mSpeed, false, false);
+        if(startAngle < 180 && startAngle > 00) {
+            mDrivetrain.drive(new Translation2d(0, 0), -pidController.calculate(mDrivetrain.getGyroAngle(), 0) *10, false, true);
+        } else if(startAngle > 180 && startAngle < 360) {
+            mDrivetrain.drive(new Translation2d(0, 0), pidController.calculate(mDrivetrain.getGyroAngle(), 0) *10, false, true);
+        } else {
+            end(false);
         }
     }
 

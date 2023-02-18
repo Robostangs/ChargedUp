@@ -13,6 +13,9 @@ import frc.robot.commands.MusicCMD;
 import frc.robot.commands.Arm.ArmManager;
 import frc.robot.commands.Arm.ArmStupid;
 // import frc.robot.commands.Drivetrain.TeleopSwerve;
+import frc.robot.commands.Autos.balance;
+import frc.robot.commands.Drivetrain.Flatten;
+import frc.robot.commands.Drivetrain.TeleopSwerve;
 import frc.robot.subsystems.*;
 
 /**
@@ -43,7 +46,7 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
-    // private final Swerve s_Swerve = Swerve.getInstance();
+    private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -51,6 +54,23 @@ public class RobotContainer {
         talonShoulder = new TalonFX(50);
         talonElbow = new TalonFX(51);
 
+
+        
+        // if(mDriverController.getAButton()) {
+        //     new Flatten(0.3); 
+        // } else if(mDriverController.getBButton()) {
+        //     new balance();
+        // } else {
+        //     s_Swerve.setDefaultCommand(
+        //         new TeleopSwerve(
+        //             () -> -mDriverController.getRawAxis(translationAxis), 
+        //             () -> -mDriverController.getRawAxis(strafeAxis), 
+        //             () -> -mDriverController.getRawAxis(rotationAxis), 
+        //             () -> robotCentric.getAsBoolean()
+        //         )
+        //     );
+        // }
+        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -76,9 +96,7 @@ public class RobotContainer {
         Music mMusic = Music.getInstance();
         Arm mArm = new Arm();
         mMusic.setDefaultCommand(new MusicCMD(
-            mManipController.getStartButton(),
-            "Crab-Rave.chrp",
-            false,
+            mMusic,
             mArm.getTalonFXs()
         )
         );        
@@ -97,6 +115,22 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                () -> -mDriverController.getRawAxis(translationAxis), 
+                () -> -mDriverController.getRawAxis(strafeAxis), 
+                () -> -mDriverController.getRawAxis(rotationAxis), 
+                () -> robotCentric.getAsBoolean()
+            )
+        );
+
+        s_Arm.setStickSupplier(() -> mManipController.getRawAxis(translationAxis));
+        s_Arm.setStickEnableSupplier(() -> mManipController.getAButton());
+
+        new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new balance());
+        new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Flatten(0.3));
+
         return null;
     }
 }

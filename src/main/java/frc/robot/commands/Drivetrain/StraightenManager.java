@@ -13,7 +13,7 @@ public class StraightenManager extends SequentialCommandGroup {
         setName("Straighten Against Wall");
 
         addCommands(
-            new Flatten(angleSpeed, state),
+            new Flatten(angleSpeed),
             new GetToPosition(moveSpeed, state)
         );
     }

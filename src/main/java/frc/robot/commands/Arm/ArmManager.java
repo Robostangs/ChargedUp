@@ -25,6 +25,7 @@ public class ArmManager extends CommandBase{
     public void execute() {
         if(mDesiredState != currentState) {
             switch(mDesiredState) {
+                /*
                 case kStowedPosition:
                     mArm.setArmPosition(Constants.Arm.Positions.stowPosition);
                     break;
@@ -43,13 +44,14 @@ public class ArmManager extends CommandBase{
                 case khighPosition:
                     mArm.setArmPosition(Constants.Arm.Positions.highPosition);
                     break;
+                    */
             }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        mArm.setArmPosition(Constants.Arm.Positions.stowPosition);
+        // mArm.setArmPosition(Constants.Arm.Positions.stowPosition);
         mArm.setBrakeMode(true);
         currentState = mDesiredState;
     }

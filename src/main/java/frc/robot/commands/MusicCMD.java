@@ -1,44 +1,58 @@
 package frc.robot.commands;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.LoggyThings.LoggyWPI_TalonFX;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Music;
 
 public class MusicCMD extends CommandBase {
-    private Boolean CMD1;
-    private String CMD2;
-    private Boolean CMD3;
+    private final XboxController xDrive = new XboxController(OperatorConstants.kDriverControllerPort);
 
-    public MusicCMD(Boolean Command1, String Command2, Boolean Command3, TalonFX ... talonFXs) {
-        CMD1 = Command1;
-        CMD2 = Command2;
-        CMD3 = Command3;
+    private final Music mMusic;
+    private TalonFX[] talonFXs;
+    public static ArrayList<TalonFX> instruments = new ArrayList<TalonFX>();
 
+    public MusicCMD(Music mMusic, TalonFX ... talons) {
             
-        for(int i = 0; i < talonFXs.length; i++) {
-            talonFXs[i].changeMotionControlFramePeriod(0);
+        for(int i = 0; i < talons.length; i++) {
+            instruments.add(talons[i]);
         }
+
+        Music.init(instruments);
+        this.mMusic = mMusic;
+        addRequirements(mMusic);
     }
 
     @Override
     public void initialize() {
         SmartDashboard.putString("Music Player", "Activated");
+        mMusic.loadSong(Music.playlistOrder());
     }
+
+//A for Play
+//B for Pause
+//Y for LoadSong
 
     @Override
     public void execute() {
-        if (CMD1) {
-            Music.playSong();
+        if (xDrive.getAButton()) {  
+            mMusic.playSong();
         }
-        if (CMD2 != "null") {
-            Music.loadSong(CMD2);
+        if (xDrive.getBButton()) {
+            mMusic.pauseSong();
         }
-        if (CMD3) {
-            //Need CMD3
+        if (xDrive.getYButton()) {
+            mMusic.loadSong(Music.playlistOrder());
         }
-        Music.defaultCode();
+        if (xDrive.getXButton()) {
+        }
+        mMusic.defaultCode();
     }
 
     public void end() {
