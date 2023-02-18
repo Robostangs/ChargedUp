@@ -1,6 +1,6 @@
 # Team 548 Robostangs Charged Up Code
 
 Contributers:
-  Saket Kulkarni \n
-  Charlie Sands \n
+  Saket Kulkarni 
+  Charlie Sands 
   Ankur Desai
