@@ -2,12 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.OperatorConstants;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,9 +16,9 @@ public class Music extends SubsystemBase {
 
     private static final Spark blinken = new Spark(0);
     
-    private static Boolean Status;
     private static String Song = "Song";
     
+    private static boolean Status;
     public static String[] playlist = {
         "TwinkleStar.chrp",
         "HotCrossBuns.chrp"
@@ -37,8 +32,6 @@ public class Music extends SubsystemBase {
     public static int x = playlist.length;
     public static int playlistLength = playlist.length;
     public static int SongNum = playlistLength - 1;
-
-    private static ArrayList<TalonFX> instruments = new ArrayList<TalonFX>();
 
     public static Music getInstance() {
         if (mMusic == null) {
@@ -73,7 +66,7 @@ public class Music extends SubsystemBase {
         mOrchestra.play();
     }
     
-    public void loadSong(String filename) {
+    public static void loadSong(String filename) {
         Song = filename;
         mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
     }
@@ -91,18 +84,18 @@ public class Music extends SubsystemBase {
         return playlist[SongNum];
     }
     
-    public static void lights() {
+    public static void setLights() {
         if (mOrchestra.isPlaying()) {
             blinken.set(0.65);
         } else {
             blinken.set(0.03);
         }
     }
-    /*
+    
 
     public static void skipSong() {
 //        loadSong(playlistOrder());
-        loadSong(playlist[1]);
+        loadSong(playlistOrder());
 
 }
 
@@ -116,8 +109,8 @@ public class Music extends SubsystemBase {
 
     public static void restartPlaylist() {
         SongNum = (playlistLength - 1);
-//        loadSong(playlistOrder());
+        loadSong(playlistOrder());
     }
-*/
+
 
 }
