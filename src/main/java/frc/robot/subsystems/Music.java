@@ -5,18 +5,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
 
 public class Music extends SubsystemBase {
     private static Music mMusic;
-    private static Orchestra mOrchestra;
+    private static Orchestra mOrchestra, nOrchestra;
 
     private static final Spark blinken = new Spark(0);
     
-    private static String Song = "Song";
+    private static String Song;
+    private static int instrumentNum = 0;
     
     private static boolean Status;
     public static String[] playlist = {
@@ -33,6 +33,8 @@ public class Music extends SubsystemBase {
     public static int playlistLength = playlist.length;
     public static int SongNum = playlistLength - 1;
 
+    private final int crossfade = 1000;
+
     public static Music getInstance() {
         if (mMusic == null) {
             mMusic = new Music();
@@ -40,39 +42,46 @@ public class Music extends SubsystemBase {
         return mMusic;
     }    
     
-    public Music() {}    
-    
-    public static void init(ArrayList<TalonFX> instruments) {
-        mOrchestra = new Orchestra(instruments);
-    }
+    public Music() {
+        mOrchestra = new Orchestra();
+        nOrchestra = new Orchestra();
+    }    
 
     public static void insertInstrument(TalonFX ... talons) {
         for (int i = 0; i < talons.length; i++) {
-            mOrchestra.addInstrument(talons[i]);
+            if (instrumentNum <= 5) {
+                    mOrchestra.addInstrument(talons[i]);
+            } else {
+                    nOrchestra.addInstrument(talons[i]);
+            }
+            instrumentNum++;
         }
     }
     
     public void defaultCode() {
-        if (mOrchestra.getCurrentTime() >= (songLength[SongNum] + 200)) {
+        if (mOrchestra.getCurrentTime() >= (songLength[SongNum] + crossfade)) {
             loadSong(playlistOrder());
             playSong();
         }
         SmartDashboard.putNumber("TimeStamp", mOrchestra.getCurrentTime());
         SmartDashboard.putString("Song", Song);
-        lights();
+        setLights();
     }
 
     public void playSong() {
         mOrchestra.play();
+        nOrchestra.play();
     }
     
-    public static void loadSong(String filename) {
+    public void loadSong(String filename) {
         Song = filename;
         mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
+        nOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
     }
     
     public void pauseSong() {
         mOrchestra.pause();
+        nOrchestra.pause();
     }
         
     public static String playlistOrder() {
@@ -83,34 +92,30 @@ public class Music extends SubsystemBase {
         }
         return playlist[SongNum];
     }
-    
+
     public static void setLights() {
+        double lightVal = 0;
         if (mOrchestra.isPlaying()) {
-            blinken.set(0.65);
+            //if (Song == playlist[0]) {}
+            lightVal = -0.03;
         } else {
-            blinken.set(0.03);
+            lightVal = 0.67;
         }
+        blinken.set(lightVal);
     }
     
-
-    public static void skipSong() {
-//        loadSong(playlistOrder());
+    public void skipSong() {
         loadSong(playlistOrder());
+    }
 
-}
-
-
-    public static void playerStatus() {
+    public boolean playerStatus() {
         Status = mOrchestra.isPlaying();
         SmartDashboard.putBoolean("Song Playing", Status);
+        return Status;
     }
 
-
-
-    public static void restartPlaylist() {
+    public void restartPlaylist() {
         SongNum = (playlistLength - 1);
         loadSong(playlistOrder());
     }
-
-
 }

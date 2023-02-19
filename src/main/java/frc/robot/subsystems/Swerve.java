@@ -1,27 +1,21 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.Utils;
-import frc.robot.Vision;
 import frc.robot.CustomWpilib.CustomSwerveDriveOdometry;
 import frc.robot.Utils.Vector2D;
-import frc.robot.Vision.LimelightState;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -29,9 +23,8 @@ public class Swerve extends SubsystemBase {
     public CustomSwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
-    private Vision mVision = Vision.getInstance();
-    private Vector2D v1, v2;
-    private Vector2D current;
+    // The Swerve class should not hold the vision systems, this is a great way to end up in dependecy hell
+    // Use double suppliers or something instead and keep vision in robot container...
     public static Swerve mInstance;
 
     public static Swerve getInstance() {
