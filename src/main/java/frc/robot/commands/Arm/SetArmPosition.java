@@ -6,7 +6,7 @@ import frc.robot.subsystems.Arm;
 public class SetArmPosition extends CommandBase{
 
     private static Arm mArm = Arm.getInstance();
-    private static Arm.ArmPosition mDesiredState = null;
+    private Arm.ArmPosition mDesiredState = null;
     private static Arm.ArmPosition mCurrentState = null;
     
     public SetArmPosition(Arm.ArmPosition state) {
@@ -19,28 +19,34 @@ public class SetArmPosition extends CommandBase{
 
     @Override
     public void execute() {
-        if(mDesiredState != mCurrentState) {
+        System.out.println(mDesiredState);
+
             switch(mDesiredState) {
                 case kStowPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
+                    new ChangeSetPoint(new Utils.Vector2D(0.2, 0.45)).schedule();
                     break;
                 case kIntakePosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
+                    new ChangeSetPoint(new Utils.Vector2D(0.7, -0.05)).schedule();
                     break;
                 case kLoadingZonePosition:
                     new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
                     break;
                 case kLowPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
+                    new ChangeSetPoint(new Utils.Vector2D(0.87, 0.16)).schedule();
                     break;
-                case kMediumPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
+                case kMediumPositionCone:
+                    new ChangeSetPoint(new Utils.Vector2D(1.1, 0.9)).schedule();
                     break;
-                case kHighPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
+                case kHighPositionCone:
+                    new ChangeSetPoint(new Utils.Vector2D(1.45, 1.2)).schedule();
+                    break;
+                case kMediumPositionCube:
+                    new ChangeSetPoint(new Utils.Vector2D(1.15, 1.0)).schedule();
+                    break;
+                case kHighPositionCube:
+                    new ChangeSetPoint(new Utils.Vector2D(1.5, 1.0)).schedule();
                     break;
             }
-        }
     }
 
     @Override

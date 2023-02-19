@@ -185,9 +185,9 @@ public final class Constants {
 
     public static final int shoulderMotorID = 50;
 
-    public static final double shoulderMotorP = 6;
+    public static final double shoulderMotorP = 10;
     public static final double shoulderMotorI = 0;
-    public static final double shoulderMotorD = 0.5;
+    public static final double shoulderMotorD = 5;
     public static final double shoulderMotorF = 0;
     public static final double shoulderMotorIZone = 0;
     
@@ -201,26 +201,30 @@ public final class Constants {
     public static final double elbowMotorCompensationFactor = 1.5;
     
     public static final double upperarmLength = 0.9398;
-    public static final double forearmLength = 0.616712;
+    public static final double forearmLength = 0.95;
 
     public static final double upperarmMass = 0.44639;
     public static final double forearmMass = 0.293;
     public static final double elbowMass = 0.95;
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 89.54;
-    public static final double shoulderAngleSensor = 216.65;
+    public static final double shoulderAngleActual = -89.54;
+    public static final double shoulderAngleSensor = 360 - 216.65;
+    public static final double shoulderAngleReverseSoftStop = 25;
+    public static final double shoulderAngleForwardSoftStop = 120;
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference =-( 88 + 13.3);
-    public static final double elbowAngleSensor = 147.568;
+    public static final double elbowAngleActualDifference = ( 88 + 13.3);
+    public static final double elbowAngleSensor = 360-147.568;
+    public static final double elbowAngleForwardSoftStop = 90;
+    public static final double elbowAngleReverseSoftStop = -160;
 
     public static final int extraSolenoid = 0;
     public static final int elbowBrakeSolenoid = 1;
     public static final int shoulderBrakeSolenoid = 2;
 
     public static final double lockThreshold = 50;
-    public static final double noReduceThreshold = 200;
+    public static final double noReduceThreshold = 150;
   }
 
   public static class Hand {
