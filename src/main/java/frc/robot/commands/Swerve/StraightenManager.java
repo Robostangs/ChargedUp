@@ -1,4 +1,4 @@
-package frc.robot.commands.Drivetrain;
+package frc.robot.commands.Swerve;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Vision;
@@ -13,7 +13,7 @@ public class StraightenManager extends SequentialCommandGroup {
         setName("Straighten Against Wall");
 
         addCommands(
-            new Flatten(angleSpeed, state),
+            new Flatten(angleSpeed),
             new GetToPosition(moveSpeed, state)
         );
     }

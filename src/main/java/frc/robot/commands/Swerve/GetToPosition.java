@@ -1,4 +1,4 @@
-package frc.robot.commands.Drivetrain;
+package frc.robot.commands.Swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,17 +29,17 @@ public class GetToPosition extends CommandBase {
             v1 = mVision.getPosition(LimelightState.leftLimelight);
 
             if(v1.y + Constants.Swerve.targetOffset < mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, false);
+                mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, true);
             } else if(v1.y + Constants.Swerve.targetOffset > mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, false);
+                mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, true);
             }
         } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
             v2 = mVision.getPosition(LimelightState.rightLimelight);
             
             if(v2.y - Constants.Swerve.targetOffset > mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, false);
+                mDrivetrain.drive(new Translation2d(0, mSpeed), 0, false, true);
             } else if(v1.y - Constants.Swerve.targetOffset < mDrivetrain.getPose().getY()) {
-                mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, false);
+                mDrivetrain.drive(new Translation2d(0, -mSpeed), 0, false, true);
             }
         }
     }

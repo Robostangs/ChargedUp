@@ -1,6 +1,5 @@
 package frc.robot;
 
-import frc.robot.Utils.Vector2D;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -152,9 +151,9 @@ public final class Constants {
         }
 
         public static final class balancePID {
-            public static final double kP = 0.0;
-            public static final double kI = 0.0;
-            public static final double kD = 0.0;
+            public static final double kP = 0.02;
+            public static final double kI = 0.00002;
+            public static final double kD = 0.003;
         }
     }
 
@@ -186,53 +185,46 @@ public final class Constants {
 
     public static final int shoulderMotorID = 50;
 
-    public static final double shoulderMotorP = 1;
+    public static final double shoulderMotorP = 6;
     public static final double shoulderMotorI = 0;
-    public static final double shoulderMotorD = 0;
+    public static final double shoulderMotorD = 0.5;
     public static final double shoulderMotorF = 0;
     public static final double shoulderMotorIZone = 0;
     
     public static final int elbowMotorID = 51;
 
-    public static final double elbowMotorP = 1;
-    public static final double elbowMotorI = 0;
+    public static final double elbowMotorP = 5;
+    public static final double elbowMotorI = 0.04;
     public static final double elbowMotorD = 0;
-    public static final double elbowMotorIZone = 0;
+    public static final double elbowMotorIZone = 100;
+    public static final double maxIntegeralAccumulator = 100000000;
+    public static final double elbowMotorCompensationFactor = 1.5;
     
     public static final double upperarmLength = 0.9398;
     public static final double forearmLength = 0.616712;
 
     public static final double upperarmMass = 0.44639;
     public static final double forearmMass = 0.293;
-    
     public static final double elbowMass = 0.95;
 
-    public static final int mArmCanCoderID = 1;
+    public static final int shoulderCanCoderID = 1;
+    public static final double shoulderAngleActual = 89.54;
+    public static final double shoulderAngleSensor = 216.65;
 
-    public static final int mElbowCanCoderID = 2;
+    public static final int elbowCanCoderID = 2;
+    public static final double elbowAngleActualDifference =-( 88 + 13.3);
+    public static final double elbowAngleSensor = 147.568;
 
-    public static final int mElbowBrakeSolenoid = 1;
+    public static final int extraSolenoid = 0;
+    public static final int elbowBrakeSolenoid = 1;
+    public static final int shoulderBrakeSolenoid = 2;
 
-    public static final int mArmBrakeID = 2;
-
-    public static class Positions {
-      public final static Vector2D stowPosition = new Vector2D(0.0, 0.0);
-      public final static Vector2D lowPosition = new Vector2D(0.0, 0.0);
-      public final static Vector2D mediumPosition = new Vector2D(0.0, 0.0);
-      public final static Vector2D highPosition = new Vector2D(0.0, 0.0);
-      public final static Vector2D loadingStationPosition = new Vector2D(0.0, 0.0);
-      public final static Vector2D intakePosition = new Vector2D(0.0, 0.0);
-    }
+    public static final double lockThreshold = 50;
+    public static final double noReduceThreshold = 200;
   }
 
   public static class Hand {
-    // public static final int compressorID = 0;
-    public static final int solenoidID = 3;
-    // public static final int handMotorID = 0;
-
-    public static final int handMotorP = 0;
-    public static final int handMotorI = 0;
-    public static final int handMotorD = 0;
+    public static final int mHandSolenoid = 3;
 
     public static final double handMass = 2.1;
   }

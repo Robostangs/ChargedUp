@@ -31,17 +31,17 @@ public class Vision {
     }
 
     public boolean targetVisible(LimelightState limelight) {
-        if(limelight.compareTo(LimelightState.leftLimelight) == 1) {
-            if(mLeftLimelight.getEntry("ta").getDouble(100) == 0) {
-                return false;
-            } else {
+        if(limelight.compareTo(LimelightState.leftLimelight) == 0) {
+            if(mLeftLimelight.getEntry("ta").getDouble(100) != 0) {
                 return true;
+            } else {
+                return false;
             }
-        } else if(limelight.compareTo(LimelightState.rightLimelight) == 1) {
-            if(mRightLimelight.getEntry("ta").getDouble(100) == 0) {
-                return false;
-            } else {
+        } else if(limelight.compareTo(LimelightState.rightLimelight) == 0) {
+            if(mRightLimelight.getEntry("ta").getDouble(100) != 0) {
                 return true;
+            } else {
+                return false;
             }
         } else {
             return false;
@@ -49,9 +49,9 @@ public class Vision {
     }
 
     public Utils.Vector3D getPosition(LimelightState Limelight) {
-        if(Limelight.compareTo(LimelightState.leftLimelight) == 1) {
+        if(Limelight.compareTo(LimelightState.leftLimelight) == 0) {
             return fromAT(mLeftPosition);
-        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 1) {
+        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 0) {
             return fromAT(mRightPosition);
         } else {
             return new Utils.Vector3D(0, 0, 0);
