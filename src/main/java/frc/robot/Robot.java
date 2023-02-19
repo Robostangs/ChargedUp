@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Test.PITTest;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static final PowerDistribution mPowerDistributionPanel = new PowerDistribution();
   private RobotContainer m_robotContainer;
+  private PITTest m_PitTest = new PITTest();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -94,5 +96,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    m_PitTest.schedule();
+  }
 }
