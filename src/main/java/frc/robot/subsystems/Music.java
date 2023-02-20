@@ -96,7 +96,6 @@ public class Music extends SubsystemBase {
     public static void setLights() {
         double lightVal = 0;
         if (mOrchestra.isPlaying()) {
-            //if (Song == playlist[0]) {}
             lightVal = -0.03;
         } else {
             lightVal = 0.67;

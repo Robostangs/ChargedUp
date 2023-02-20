@@ -1,3 +1,4 @@
+/*
 package frc.robot.Test;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -29,8 +30,8 @@ public class PITTest extends SequentialCommandGroup {
             new TeleopSwerve(() -> 0, () -> 0.2, () -> 0, () -> false),
             new TeleopSwerve(() -> 0, () -> 0, () -> 0.2, () -> false),
 
-            new SetHand(/* HandState.OPEN */),
-            new SetHand(/* HandState.CLOSED */),
+            new SetHand(/* HandState.OPEN),
+            new SetHand(/* HandState.CLOSED),
 
             new SetArmPosition(ArmPosition.kIntakePosition),
             new SetArmPosition(ArmPosition.kLoadingZonePosition),
@@ -67,3 +68,4 @@ public class PITTest extends SequentialCommandGroup {
         return ran;
     }
 }
+*/
