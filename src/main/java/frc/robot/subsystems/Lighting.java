@@ -21,8 +21,10 @@ public class Lighting extends SubsystemBase {
         blinken1 = new Spark(0);
     }
 
-    public void setLights(double x) {
-        blinken1.set(x);
-        blinken2.set(x);
+    public void setLights(double PWMVal) {
+        blinken1.set(PWMVal);
+        blinken2.set(PWMVal);
     }
+
+    
 }
