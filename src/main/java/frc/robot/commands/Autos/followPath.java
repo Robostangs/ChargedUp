@@ -5,10 +5,7 @@ import java.nio.file.Path;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
@@ -17,7 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
@@ -78,13 +74,12 @@ public class FollowPath extends CommandBase {
         new SequentialCommandGroup(
                 new InstantCommand(() -> mDrivetrain.resetOdometry(mTrajectory.getInitialPose())),
                 swerveControllerCommand,
-                new InstantCommand(() -> mDrivetrain.drive(new Translation2d(0, 0), 0, false, false)));
+                new InstantCommand(() -> mDrivetrain.drive(new Translation2d(0, 0), 0, false, true)));
     }
 
     @Override
     public void end(boolean interrupted) {
-        mDrivetrain.drive(new Translation2d(0, 0), 0, false, false);
-
+        mDrivetrain.drive(new Translation2d(0, 0), 0, false, true);
     }
 
 }

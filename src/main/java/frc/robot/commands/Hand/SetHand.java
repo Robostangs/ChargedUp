@@ -2,7 +2,7 @@ package frc.robot.commands.Hand;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hand;
-import frc.robot.subsystems.Hand.HandState;
+
 public class SetHand extends CommandBase{
 
     private static Hand mHand = Hand.getInstance();
@@ -20,6 +20,4 @@ public class SetHand extends CommandBase{
     public void end(boolean interrupted) {
         mHand.setSolenoid(false);;
     }
-
-
 }

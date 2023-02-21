@@ -185,46 +185,69 @@ public final class Constants {
 
     public static final int shoulderMotorID = 50;
 
+    /*
     public static final double shoulderMotorP = 10;
     public static final double shoulderMotorI = 0;
     public static final double shoulderMotorD = 5;
     public static final double shoulderMotorF = 0;
     public static final double shoulderMotorIZone = 0;
-    
+    */
+
+    public static final double shoulderMotorP = 5.1;
+    public static final double shoulderMotorI = 0;
+    public static final double shoulderMotorD = 0;
+    public static final double shoulderMotorF = 0;
+    public static final double shoulderMotorIZone = 0;
+
     public static final int elbowMotorID = 51;
 
+    /*
     public static final double elbowMotorP = 5;
     public static final double elbowMotorI = 0.04;
     public static final double elbowMotorD = 0;
     public static final double elbowMotorIZone = 100;
     public static final double maxIntegeralAccumulator = 100000000;
     public static final double elbowMotorCompensationFactor = 1.5;
-    
-    public static final double upperarmLength = 0.9398;
-    public static final double forearmLength = 0.95;
+    */
 
-    public static final double upperarmMass = 0.44639;
-    public static final double forearmMass = 0.293;
-    public static final double elbowMass = 0.95;
+    public static final double elbowMotorP = 4.8;
+    public static final double elbowMotorI = 0.0;
+    public static final double elbowMotorD = 0.16;
+    public static final double elbowMotorF = 1;
+    public static final double elbowMotorIZone = 100;
+    public static final double maxIntegeralAccumulator = 100000000;
+    public static final double elbowMotorCompensationFactor = 1.5;
+
+    public static final double upperarmLength = 0.9398; // Meters
+    public static final double forearmLength = 0.95; // Meters
+
+    public static final double upperarmMass = 0.44639; // Kilograms
+    public static final double forearmMass = 0.293; // Kilograms
+    public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = -89.54;
-    public static final double shoulderAngleSensor = 360 - 216.65;
-    public static final double shoulderAngleReverseSoftStop = 25;
-    public static final double shoulderAngleForwardSoftStop = 120;
+    public static final double shoulderAngleActual = -89.54; // Degrees
+    public static final double shoulderAngleSensor = 360 - 216.65; // Degrees
+    public static final double shoulderAngleReverseSoftStop = 25; // Degrees
+    public static final double shoulderAngleForwardSoftStop = 120; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = ( 88 + 13.3);
-    public static final double elbowAngleSensor = 360-147.568;
-    public static final double elbowAngleForwardSoftStop = 90;
-    public static final double elbowAngleReverseSoftStop = -160;
+    public static final double elbowAngleActualDifference = ( 88 + 13.3); // Degrees
+    public static final double elbowAngleSensor = 360-147.568; // Degrees
+    public static final double elbowAngleForwardSoftStop = 90; // Degrees
+    public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
     public static final int extraSolenoid = 0;
     public static final int elbowBrakeSolenoid = 1;
     public static final int shoulderBrakeSolenoid = 2;
 
-    public static final double lockThreshold = 50;
-    public static final double noReduceThreshold = 150;
+    public static final double lockThreshold = 50; // CANCoder sensor units
+    public static final double noReduceThreshold = 150; // CANCoder Sensor units
+
+    public static final double cruiseVelocity = 30; // Degrees per second
+    public static final double accelerationFactor = 22; // Degrees per second squared
+
+    public static final int smoothingFactor = 2; // Arbitrary 1-8
   }
 
   public static class Hand {
