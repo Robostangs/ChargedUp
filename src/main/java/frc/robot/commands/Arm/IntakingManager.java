@@ -3,6 +3,7 @@ package frc.robot.commands.Arm;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector2D;
+import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
@@ -18,12 +19,18 @@ public class IntakingManager extends SequentialCommandGroup {
 
     public IntakingManager() {
         mTX = mVision.getDrivetrainAngle();
-        mDistance = mVision.getDrivetrainDistance();
+        if(mTX < 0) {
+            mTX = 360 - mTX;
+        }
+
+        mDistance = mVision.getDrivetrainDistance() + mArm.getHandPositionX();
         addRequirements(mArm, mDrivetrain);
     
         addCommands(
+            new SetGrip(),
             new Flatten(mTX),
-            new ChangeSetPoint(new Vector2D(0.7+mDistance, -0.07)),
+            new ChangeSetPoint(new Vector2D(mDistance, -0.07)),
+            new SetGrip(),
             new SetArmPosition(ArmPosition.kStowPosition, true)
         );
     }

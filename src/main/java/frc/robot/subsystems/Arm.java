@@ -36,6 +36,7 @@ public class Arm extends SubsystemBase{
     private Compressor mCompressor;
 
     private Utils.Vector2D mCurrentSetpoint;
+    private Utils.Vector2D handPos;
 
     private int mShoulderLockoutCounter;
     private int mElbowLockoutCounter;
@@ -319,7 +320,7 @@ public class Arm extends SubsystemBase{
         SmartDashboard.putNumber("Target Elbow Angle", motorAngles.x);
         SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
         
-        Utils.Vector2D handPos = calculateHandPosition(motorAngles);
+        handPos = calculateHandPosition(motorAngles);
         SmartDashboard.putNumber("Hand X", handPos.x);
         SmartDashboard.putNumber("Hand Y", handPos.y);
         // System.out.println("Angle: " + jointAngles.y + " Predicted percent output: "+ (elbowMotorPercent) + " Actual Output: " + mElbowStickPower.getAsDouble());
@@ -328,6 +329,10 @@ public class Arm extends SubsystemBase{
 
     public double getShoulderAngle() {
         return shoulderAngle;
+    }
+
+    public double getHandPositionX() {
+        return handPos.x;
     }
 
     public void changeSetpoint(Utils.Vector2D s) {
