@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -12,7 +10,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
@@ -45,18 +42,18 @@ public class Arm extends SubsystemBase{
     
     // public Spark mBlinken = new Spark(0);
 
-    Debouncer mElbowDebouncer = new Debouncer(2.8, DebounceType.kRising);
-    Debouncer mShoulderDebouncer = new Debouncer(2.8, DebounceType.kRising);
+    Debouncer mElbowDebouncer = new Debouncer(
+        0.3, DebounceType.kRising);
+    Debouncer mShoulderDebouncer = new Debouncer(
+        0.3, DebounceType.kRising);
 
     public enum ArmPosition {
         kStowPosition,
         kIntakePosition,
         kLoadingZonePosition,
         kLowPosition,
-        kMediumPositionCone,
-        kHighPositionCone,
-        kMediumPositionCube,
-        kHighPositionCube,
+        kMediumPosition,
+        kHighPosition
     }
 
     public static Arm getInstance() {
@@ -228,11 +225,12 @@ public class Arm extends SubsystemBase{
         elbowPeakOutputs.x = 1.00;
         elbowPeakOutputs.y = 1.00;
 
+        double elbowError = motorAngles.x*4096/360 - mElbowMotor.getSelectedSensorPosition();
+        double shoulderError = motorAngles.y*4096/360 - mShoulderMotor.getSelectedSensorPosition();
+
         if(mCurrentSetpoint != null) {
-            double elbowError = motorAngles.x*4096/360 - mElbowMotor.getSelectedSensorPosition();
-            double shoulderError = motorAngles.y*4096/360 - mShoulderMotor.getSelectedSensorPosition();
             if(Math.abs(elbowError) < Constants.Arm.noReduceThreshold) {
-                elbowPeakOutputs.y = 0.06;
+                elbowPeakOutputs.y = 0.1;
                 if(mElbowMotor.getIntegralAccumulator() > 1000) {
                     mElbowMotor.setIntegralAccumulator(0);
                 }
@@ -302,18 +300,18 @@ public class Arm extends SubsystemBase{
         mShoulderBrakeSolenoid.set(true);
         mElbowBrakeSolenoid.set(false);
 
-        if(mShoulderDebouncer.calculate(mShoulderMotor.getMotorOutputPercent() == 0)) {
-            mShoulderBrakeSolenoid.set(false);
-        } else {
+        if(mShoulderDebouncer.calculate(mShoulderMotor.getMotorOutputPercent() != 0 || Math.abs(elbowError) >= Constants.Arm.lockThreshold)) {
             mShoulderBrakeSolenoid.set(true);
+        } else {
+            mShoulderBrakeSolenoid.set(false);
         }
 
         
 
-        if(mElbowDebouncer.calculate(mElbowMotor.getMotorOutputPercent() == 0)) {
-            mElbowBrakeSolenoid.set(false);
-        } else {
+        if(mElbowDebouncer.calculate(mElbowMotor.getMotorOutputPercent() != 0 || Math.abs(elbowError) >= Constants.Arm.lockThreshold)) {
             mElbowBrakeSolenoid.set(true);
+        } else {
+            mElbowBrakeSolenoid.set(false);
         }
 
         SmartDashboard.putNumber("Elbow Angle", elbowAngle);

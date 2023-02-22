@@ -24,7 +24,7 @@ public class IntakingManager extends SequentialCommandGroup {
         addCommands(
             new Flatten(mTX),
             new ChangeSetPoint(new Vector2D(0.7+mDistance, -0.07)),
-            new SetArmPosition(ArmPosition.kStowPosition)
+            new SetArmPosition(ArmPosition.kStowPosition, true)
         );
     }
     

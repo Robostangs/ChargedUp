@@ -77,7 +77,7 @@ public class Vision {
         double theta1 = Arm.getInstance().getShoulderAngle();
         double ty = mObjectTY.get();
         double value = ((Constants.Arm.upperarmLength) * Math.sin((theta1 - 90 + ty))) / (Math.sin(270 - (2*theta1) -ty));
-        System.out.println(value);
+        // System.out.println(value);
         return value;
     }
 
