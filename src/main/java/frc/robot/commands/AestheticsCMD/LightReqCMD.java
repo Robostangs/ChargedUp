@@ -1,7 +1,5 @@
 package frc.robot.commands.AestheticsCMD;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -11,6 +9,7 @@ public class LightReqCMD extends CommandBase {
     private final Lighting mLighting = Lighting.getInstance();
     Boolean Cone;
     Boolean Cube;
+    String reqPiece;
     
     double coneLight = 0;
     double cubeLight = -0.57;
@@ -35,14 +34,17 @@ public class LightReqCMD extends CommandBase {
     public void execute() {
         if (Cone) {
             mLighting.setLights(coneLight);
+            reqPiece = "Cone";
         } else if (Cube) {
             mLighting.setLights(cubeLight);
+            reqPiece = "Cube";
         } else {
             mLighting.setLights(0);
+            reqPiece = "None";
         }
     }
 
     public void end() {
-        SmartDashboard.putString("Music Player", "Deactivated");
+        SmartDashboard.putString("Requested piece", reqPiece);
     }
 }

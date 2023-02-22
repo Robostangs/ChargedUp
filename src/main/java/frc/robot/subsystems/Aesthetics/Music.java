@@ -2,7 +2,6 @@ package frc.robot.subsystems.Aesthetics;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 import java.io.File;
 
@@ -12,8 +11,6 @@ import com.ctre.phoenix.music.Orchestra;
 public class Music extends SubsystemBase {
     private static Music mMusic;
     private static Orchestra mOrchestra, nOrchestra;
-
-    private static final Spark blinken = new Spark(0);
     
     private static String Song;
     private static int instrumentNum = 0;
@@ -65,7 +62,6 @@ public class Music extends SubsystemBase {
         }
         SmartDashboard.putNumber("TimeStamp", mOrchestra.getCurrentTime());
         SmartDashboard.putString("Song", Song);
-        setLights();
     }
 
     public void playSong() {
@@ -91,16 +87,6 @@ public class Music extends SubsystemBase {
             SongNum++;
         }
         return playlist[SongNum];
-    }
-
-    public static void setLights() {
-        double lightVal = 0;
-        if (mOrchestra.isPlaying()) {
-            lightVal = -0.03;
-        } else {
-            lightVal = 0.67;
-        }
-        blinken.set(lightVal);
     }
     
     public void skipSong() {

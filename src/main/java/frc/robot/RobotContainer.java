@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.AestheticsCMD.MusicCMD;
-import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetHand;
 import frc.robot.commands.Swerve.Flatten;
@@ -79,5 +78,10 @@ public class RobotContainer {
         new POVButton(mManipController, 90).toggleOnTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).toggleOnTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).toggleOnTrue(new LightReqCMD(180));
+    }
+    /** Autonomous Commands that run in the first 15 seconds of the game. */
+    public Command getAutonomousCommand() {
+        //Autonomous Command
+        return null;
     }
 }
