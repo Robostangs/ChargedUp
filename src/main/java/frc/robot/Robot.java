@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 //import frc.robot.Test.PITTest;
+import frc.robot.commands.Aesthetics.LightCMD;
+import frc.robot.commands.Aesthetics.MusicCMD;
+import frc.robot.subsystems.Lighting;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -98,7 +102,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    
+    Command LightCMD = new LightCMD();
+    LightCMD.schedule();
   }
 
   @Override
@@ -106,8 +111,13 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
     RobostangsLight.schedule();
+>>>>>>> Stashed changes
+=======
+    Command MusicCMD = new MusicCMD();
+    MusicCMD.schedule();
 >>>>>>> Stashed changes
   }
 

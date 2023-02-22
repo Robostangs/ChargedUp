@@ -63,6 +63,8 @@ public class RobotContainer {
         
         SmartDashboard.putData("Play Music", new MusicCMD());
 
+        SmartDashboard.getEntry("Music");
+
         new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whileTrue(new SetHand());
 
         s_Arm.setElbowStickSupplier(() -> mManipController.getRawAxis(translationAxis));
