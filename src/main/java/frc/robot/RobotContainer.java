@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.Arm.ChangeSetPoint;
+import frc.robot.commands.Arm.FineAdjust;
+import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.Balance;
 import frc.robot.commands.Hand.SetHand;
 import frc.robot.commands.Swerve.Flatten;
@@ -21,21 +22,11 @@ public class RobotContainer {
     /* Controllers */
     private final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
-
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final int extraAxis = XboxController.Axis.kRightY.value;
-
   
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
-    private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
-
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
-    private final Hand s_Hand = Hand.getInstance();
+    // private final Hand s_Hand = Hand.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -51,21 +42,35 @@ public class RobotContainer {
     private void configureButtonBindings() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
-                () -> -mDriverController.getRawAxis(translationAxis), 
-                () -> -mDriverController.getRawAxis(strafeAxis), 
-                () -> -mDriverController.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                () -> -mDriverController.getLeftX(), 
+                () -> -mDriverController.getLeftY(), 
+                () -> -mDriverController.getRightX(), 
+                () ->  mDriverController.getBackButton()
             )
         );
 
-        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whileTrue(new SetHand());
+        // mDriverController.getYButton().whenPressed(new Flatten(0.3));
+        // mDriverController.getXButton().whenPressed(new Balance());
+        // mDriverController.getBackButton().whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
-        s_Arm.setElbowStickSupplier(() -> mManipController.getRawAxis(translationAxis));
-        s_Arm.setShoulderStickSupplier(() -> mManipController.getRawAxis(extraAxis));
-        s_Arm.setStickEnableSupplier(() -> mDriverController.getRightBumper());
+        s_Arm.setDefaultCommand(
+            new FineAdjust(
+                () -> mManipController.getLeftY(),
+                () -> mManipController.getRightY()
+            )
+        );
 
-        new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new Balance());
-        new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Flatten(0.3));
+        // mManipController.getLeft().whileHeld(new Hand(0.5));
+
+        // new JoystickButton(mManipController, XBoxController.class).whileTrue(new SetHand());
+
+        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new SetArmPosition(Arm.ArmPosition.kHighPositionCone));
+        new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kHighPositionCube));
+        new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCube));
+        new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
+        new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
+
     }
+
 }

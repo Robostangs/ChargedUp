@@ -11,6 +11,7 @@ public class ChangeSetPoint extends CommandBase {
     private static Utils.Vector2D setPoint;
     
     public ChangeSetPoint(Utils.Vector2D s) {
+        setPoint = s;
         addRequirements(mArm);
     }
 
