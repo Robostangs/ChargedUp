@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.ResourceBundle.Control;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -10,6 +12,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
@@ -24,6 +27,7 @@ public class Arm extends SubsystemBase{
 
     private double mElbowOffset;
     private double mShoulderOffset;
+    private double shoulderAngle = 0;
 
     private Solenoid mShoulderBrakeSolenoid;
     private Solenoid mElbowBrakeSolenoid;
@@ -38,9 +42,11 @@ public class Arm extends SubsystemBase{
 
     private int mShoulderLockoutCounter;
     private int mElbowLockoutCounter;
+    
+    // public Spark mBlinken = new Spark(0);
 
-    Debouncer mElbowDebouncer = new Debouncer(0.45, DebounceType.kRising);
-    Debouncer mShoulderDebouncer = new Debouncer(0.45, DebounceType.kRising);
+    Debouncer mElbowDebouncer = new Debouncer(2.8, DebounceType.kRising);
+    Debouncer mShoulderDebouncer = new Debouncer(2.8, DebounceType.kRising);
 
     public enum ArmPosition {
         kStowPosition,
@@ -101,7 +107,7 @@ public class Arm extends SubsystemBase{
         mExtraSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.extraSolenoid);
         mExtraSolenoid.set(false);
 
-        // mCurrentSetpoint = new Utils.Vector2D(1.00,0.00);
+        mCurrentSetpoint = new Utils.Vector2D(1.00,0.00);
 
         double correctedShoulderCanCoderPostion = mShoulderCanCoder.getAbsolutePosition() - (Constants.Arm.shoulderAngleSensor - Constants.Arm.shoulderAngleActual);
         correctedShoulderCanCoderPostion=(correctedShoulderCanCoderPostion+180)%360-180;
@@ -206,7 +212,7 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic() {
-        double shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360;
+        shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360;
         double elbowAngle = (mElbowMotor.getSelectedSensorPosition() / 4096) * 360;
 
         Utils.Vector2D elbowPeakOutputs = new Utils.Vector2D(1.0, 1.0);
@@ -322,6 +328,10 @@ public class Arm extends SubsystemBase{
 
     }
 
+    public double getShoulderAngle() {
+        return shoulderAngle;
+    }
+
     public void changeSetpoint(Utils.Vector2D s) {
         mCurrentSetpoint = s;
         mShoulderOffset = 0;
@@ -335,4 +345,8 @@ public class Arm extends SubsystemBase{
     public void offsetShoulder(double o) {
         mShoulderOffset += o;
     }
+
+    // public void setLight(double input) {
+    //     mBlinken.set(input);
+    // }
 } 

@@ -226,14 +226,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = -89.54; // Degrees
-    public static final double shoulderAngleSensor = 360 - 216.65; // Degrees
+    public static final double shoulderAngleActual = -48; // Degrees
+    public static final double shoulderAngleSensor = 180.8; // Degrees
     public static final double shoulderAngleReverseSoftStop = 25; // Degrees
     public static final double shoulderAngleForwardSoftStop = 120; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = ( 88 + 13.3); // Degrees
-    public static final double elbowAngleSensor = 360-147.568; // Degrees
+    public static final double elbowAngleActualDifference = ( 90 - 37 + 11); // Degrees
+    public static final double elbowAngleSensor = 113.3; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -244,14 +244,15 @@ public final class Constants {
     public static final double lockThreshold = 50; // CANCoder sensor units
     public static final double noReduceThreshold = 150; // CANCoder Sensor units
 
-    public static final double cruiseVelocity = 30; // Degrees per second
-    public static final double accelerationFactor = 22; // Degrees per second squared
+    public static final double cruiseVelocity = 100; // Degrees per second
+    public static final double accelerationFactor = 70; // Degrees per second squared
 
     public static final int smoothingFactor = 2; // Arbitrary 1-8
   }
 
   public static class Hand {
-    public static final int mHandSolenoid = 3;
+    public static final int mHandSolenoidFwd = 7;
+    public static final int mHandSolenoidRev = 6;
 
     public static final double handMass = 2.1;
   }

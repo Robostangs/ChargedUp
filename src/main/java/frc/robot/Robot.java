@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.Arm;
+import frc.robot.subsystems.Hand.HandHolding;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,8 +25,8 @@ public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
-  public static final PowerDistribution mPowerDistributionPanel = new PowerDistribution();
   private RobotContainer m_robotContainer;
+  // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -51,7 +57,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    // mArm.setLight(0.67);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -80,11 +88,14 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    // mArm.setLight(-.57);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Vision.getInstance().getDrivetrainDistance();
+  }
 
   @Override
   public void testInit() {

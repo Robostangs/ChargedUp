@@ -1,12 +1,15 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.subsystems.Arm;
 
 public class Vision {
     
     private static Vision Instance;
+    private double value;
    
     private final NetworkTable mLeftLimelight = NetworkTableInstance.getDefault().getTable("limelight-left");
     private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
@@ -15,6 +18,10 @@ public class Vision {
     private final NetworkTable mRightLimelight = NetworkTableInstance.getDefault().getTable("limelight-right");
     private DoubleArraySubscriber mRightPosition = mRightLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     // private DoubleArraySubscriber mRightTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
+
+    private final NetworkTable mDriverLimelight = NetworkTableInstance.getDefault().getTable("limelight-driver");
+    private DoubleSubscriber mObjectTY = mDriverLimelight.getDoubleTopic("ty").subscribe(value);
+    private DoubleSubscriber mObjectTX = mDriverLimelight.getDoubleTopic("tx").subscribe(value);
 
 
     public enum LimelightState {
@@ -56,6 +63,26 @@ public class Vision {
         } else {
             return new Utils.Vector3D(0, 0, 0);
         }
+    }
+
+    public void switchPipelinesDrivetrain() {
+        if(mDriverLimelight.getEntry("getpipe").getInteger(100) == 1) {
+            mDriverLimelight.getEntry("pipeline").setValue("0");
+        } else {
+            mDriverLimelight.getEntry("pipeline").setValue("1");
+        }
+    }
+
+    public double getDrivetrainDistance() {
+        double theta1 = Arm.getInstance().getShoulderAngle();
+        double ty = mObjectTY.get();
+        double value = ((Constants.Arm.upperarmLength) * Math.sin((theta1 - 90 + ty))) / (Math.sin(270 - (2*theta1) -ty));
+        System.out.println(value);
+        return value;
+    }
+
+    public double getDrivetrainAngle() {
+        return mObjectTX.get();
     }
 
     // public Utils.Vector3D getLimelightPosition(LimelightState Limelight) {

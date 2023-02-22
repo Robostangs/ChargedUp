@@ -1,3 +1,4 @@
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -6,11 +7,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Arm.ToggleHand;
 import frc.robot.commands.Autos.Balance;
 import frc.robot.commands.Hand.SetHand;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.ArmPosition;
+import frc.robot.subsystems.Hand.HandHolding;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,6 +32,8 @@ public class RobotContainer {
     private final Arm s_Arm = Arm.getInstance();
     // private final Hand s_Hand = Hand.getInstance();
 
+    public HandHolding currentHolding = HandHolding.CONE;
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         configureButtonBindings();
@@ -42,16 +48,16 @@ public class RobotContainer {
     private void configureButtonBindings() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
-                () -> -mDriverController.getLeftX(), 
                 () -> -mDriverController.getLeftY(), 
+                () -> -mDriverController.getLeftX(), 
                 () -> -mDriverController.getRightX(), 
-                () ->  mDriverController.getBackButton()
+                () ->  mDriverController.getAButton()
             )
         );
 
-        // mDriverController.getYButton().whenPressed(new Flatten(0.3));
-        // mDriverController.getXButton().whenPressed(new Balance());
-        // mDriverController.getBackButton().whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
+        new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new Balance());
+        new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         s_Arm.setDefaultCommand(
             new FineAdjust(
@@ -60,17 +66,25 @@ public class RobotContainer {
             )
         );
 
-        // mManipController.getLeft().whileHeld(new Hand(0.5));
-
-        // new JoystickButton(mManipController, XBoxController.class).whileTrue(new SetHand());
-
+        new JoystickButton(mManipController, XboxController.Button.kY.value).whileTrue(new ToggleHand());
+        
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new SetArmPosition(Arm.ArmPosition.kHighPositionCone));
-        new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
+        new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
         new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kHighPositionCube));
-        new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCube));
+        new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCube));
         new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
 
+        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new InstantCommand(() -> switchHandHolding()));
+        
+    }
+
+    public void switchHandHolding() {
+        currentHolding = currentHolding == HandHolding.CUBE ? HandHolding.CONE : HandHolding.CUBE;
+    }
+
+    public HandHolding getHandHolding() {
+        return currentHolding;
     }
 
 }
