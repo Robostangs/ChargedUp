@@ -22,7 +22,14 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static final PowerDistribution mPowerDistributionPanel = new PowerDistribution();
   private RobotContainer m_robotContainer;
+<<<<<<< Updated upstream
 //  private PITTest m_PitTest = new PITTest();
+=======
+  final Command mMusicCMD = new MusicCMD();
+  final Command RobostangsLight = new LightCMD(0.6);
+  final Command BlueLight = new LightCMD(0.6);
+
+>>>>>>> Stashed changes
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -53,7 +60,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    RobostangsLight.schedule();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -66,6 +75,7 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
+      BlueLight.schedule();
     }
   }
 
@@ -82,6 +92,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
   }
 
   /** This function is called periodically during operator control. */
@@ -94,6 +105,10 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+<<<<<<< Updated upstream
+=======
+    RobostangsLight.schedule();
+>>>>>>> Stashed changes
   }
 
   /** This function is called periodically during test mode. */
