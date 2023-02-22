@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class exampleAuto extends SequentialCommandGroup {
-    public exampleAuto(Swerve s_Swerve){
+public class rotation extends SequentialCommandGroup {
+    public rotation(Swerve s_Swerve, double rotation){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -34,9 +34,9 @@ public class exampleAuto extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(0, 0), new Translation2d(1, 0)),
+                List.of(new Translation2d(0, 0), new Translation2d(0, 0)),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(1, 0, Rotation2d.fromDegrees(90)),
+                new Pose2d(0, 0, Rotation2d.fromDegrees(rotation)),
                 config);
 
 
