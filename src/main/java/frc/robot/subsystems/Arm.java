@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
+import frc.robot.subsystems.Aesthetics.Music;
 
 public class Arm extends SubsystemBase{
     private static Arm mInstance;
@@ -125,6 +126,8 @@ public class Arm extends SubsystemBase{
 
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
+
+        Music.insertInstrument(mElbowMotor, mShoulderMotor);
 
         // SmartDashboard.putNumber("Set Point X", 1.0);
         // SmartDashboard.putNumber("Set Point Y", 1.0);
