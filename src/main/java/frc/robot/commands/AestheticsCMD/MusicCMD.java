@@ -1,8 +1,8 @@
-package frc.robot.commands.Aesthetics;
+package frc.robot.commands.AestheticsCMD;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Music;
+import frc.robot.subsystems.Aesthetics.Music;
 
 public class MusicCMD extends CommandBase {
     private final Music mMusic = Music.getInstance();

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
+import frc.robot.subsystems.Aesthetics.Music;
 
 public class Arm extends SubsystemBase{
     private static Arm mInstance;
@@ -113,19 +114,15 @@ public class Arm extends SubsystemBase{
     
     // Not needed if we use normal pid for predefined positions
     private Utils.Vector2D calculateArmAngles(Utils.Vector2D targetPos) {
-<<<<<<< Updated upstream
         double q2 = Math.acos(Math.pow(targetPos.x,2) + Math.pow(targetPos.y,2) - Math.pow(Constants.Arm.upperarmLength, 2) - Math.pow(Constants.Arm.forearmLength, 2));
-=======
-        /*double targetDist=Math.sqrt(targetPos.x*targetPos.x+targetPos.y*targetPos.y);
+        double targetDist=Math.sqrt(targetPos.x*targetPos.x+targetPos.y*targetPos.y);
         if(targetDist>Constants.Arm.forearmLength+Constants.Arm.upperarmLength-0.05){
             double targetAngle=Math.atan2(targetPos.y,targetPos.x);
             targetPos.y=Math.sin(targetAngle)*(Constants.Arm.forearmLength+Constants.Arm.upperarmLength-0.05);
             targetPos.x=Math.cos(targetAngle)*(Constants.Arm.forearmLength+Constants.Arm.upperarmLength-0.05);
 
         }
-        */
-        double q2 = -Math.acos((Math.pow(targetPos.x,2) + Math.pow(targetPos.y,2) - Math.pow(Constants.Arm.upperarmLength, 2) - Math.pow(Constants.Arm.forearmLength, 2))/(2*Constants.Arm.forearmLength*Constants.Arm.upperarmLength));
->>>>>>> Stashed changes
+        
         double q1 = Math.atan2(targetPos.y, targetPos.x) - Math.atan2(Constants.Arm.forearmLength * Math.sin(q2), Constants.Arm.forearmLength + Constants.Arm.upperarmLength*Math.cos(q2));
         return new Utils.Vector2D(q1, q1);
     }

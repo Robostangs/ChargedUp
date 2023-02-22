@@ -6,7 +6,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.Aesthetics.MusicCMD;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.AestheticsCMD.LightReqCMD;
+import frc.robot.commands.AestheticsCMD.MusicCMD;
 import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetHand;
@@ -74,5 +76,8 @@ public class RobotContainer {
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Flatten(0.3));
+        new POVButton(mManipController, 90).toggleOnTrue(new LightReqCMD(90));
+        new POVButton(mManipController, 270).toggleOnTrue(new LightReqCMD(270));
+        new POVButton(mManipController, 180).toggleOnTrue(new LightReqCMD(180));
     }
 }
