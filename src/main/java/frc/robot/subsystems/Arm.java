@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.filter.Debouncer;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
-import frc.robot.subsystems.Aesthetics.Music;
 
 public class Arm extends SubsystemBase{
     private static Arm mInstance;
@@ -26,6 +24,7 @@ public class Arm extends SubsystemBase{
 
     private double mElbowOffset;
     private double mShoulderOffset;
+    private double shoulderAngle = 0;
 
     private Solenoid mShoulderBrakeSolenoid;
     private Solenoid mElbowBrakeSolenoid;
@@ -37,22 +36,25 @@ public class Arm extends SubsystemBase{
     private Compressor mCompressor;
 
     private Utils.Vector2D mCurrentSetpoint;
+    private Utils.Vector2D handPos;
 
     private int mShoulderLockoutCounter;
     private int mElbowLockoutCounter;
+    
+    // public Spark mBlinken = new Spark(0);
 
-    Debouncer mElbowDebouncer = new Debouncer(0.45, DebounceType.kRising);
-    Debouncer mShoulderDebouncer = new Debouncer(0.45, DebounceType.kRising);
+    Debouncer mElbowDebouncer = new Debouncer(
+        0.3, DebounceType.kRising);
+    Debouncer mShoulderDebouncer = new Debouncer(
+        0.3, DebounceType.kRising);
 
     public enum ArmPosition {
         kStowPosition,
         kIntakePosition,
         kLoadingZonePosition,
         kLowPosition,
-        kMediumPositionCone,
-        kHighPositionCone,
-        kMediumPositionCube,
-        kHighPositionCube,
+        kMediumPosition,
+        kHighPosition
     }
 
     public static Arm getInstance() {
@@ -103,7 +105,7 @@ public class Arm extends SubsystemBase{
         mExtraSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.extraSolenoid);
         mExtraSolenoid.set(false);
 
-        // mCurrentSetpoint = new Utils.Vector2D(1.00,0.00);
+        mCurrentSetpoint = new Utils.Vector2D(1.00,0.00);
 
         double correctedShoulderCanCoderPostion = mShoulderCanCoder.getAbsolutePosition() - (Constants.Arm.shoulderAngleSensor - Constants.Arm.shoulderAngleActual);
         correctedShoulderCanCoderPostion=(correctedShoulderCanCoderPostion+180)%360-180;
@@ -126,8 +128,6 @@ public class Arm extends SubsystemBase{
 
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
-
-        Music.insertInstrument(mElbowMotor, mShoulderMotor);
 
         // SmartDashboard.putNumber("Set Point X", 1.0);
         // SmartDashboard.putNumber("Set Point Y", 1.0);
@@ -210,7 +210,7 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic() {
-        double shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360;
+        shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360;
         double elbowAngle = (mElbowMotor.getSelectedSensorPosition() / 4096) * 360;
 
         Utils.Vector2D elbowPeakOutputs = new Utils.Vector2D(1.0, 1.0);
@@ -226,11 +226,12 @@ public class Arm extends SubsystemBase{
         elbowPeakOutputs.x = 1.00;
         elbowPeakOutputs.y = 1.00;
 
+        double elbowError = motorAngles.x*4096/360 - mElbowMotor.getSelectedSensorPosition();
+        double shoulderError = motorAngles.y*4096/360 - mShoulderMotor.getSelectedSensorPosition();
+
         if(mCurrentSetpoint != null) {
-            double elbowError = motorAngles.x*4096/360 - mElbowMotor.getSelectedSensorPosition();
-            double shoulderError = motorAngles.y*4096/360 - mShoulderMotor.getSelectedSensorPosition();
             if(Math.abs(elbowError) < Constants.Arm.noReduceThreshold) {
-                elbowPeakOutputs.y = 0.06;
+                elbowPeakOutputs.y = 0.1;
                 if(mElbowMotor.getIntegralAccumulator() > 1000) {
                     mElbowMotor.setIntegralAccumulator(0);
                 }
@@ -300,18 +301,18 @@ public class Arm extends SubsystemBase{
         mShoulderBrakeSolenoid.set(true);
         mElbowBrakeSolenoid.set(false);
 
-        if(mShoulderDebouncer.calculate(mShoulderMotor.getMotorOutputPercent() == 0)) {
-            mShoulderBrakeSolenoid.set(false);
-        } else {
+        if(mShoulderDebouncer.calculate(mShoulderMotor.getMotorOutputPercent() != 0 || Math.abs(elbowError) >= Constants.Arm.lockThreshold)) {
             mShoulderBrakeSolenoid.set(true);
+        } else {
+            mShoulderBrakeSolenoid.set(false);
         }
 
         
 
-        if(mElbowDebouncer.calculate(mElbowMotor.getMotorOutputPercent() == 0)) {
-            mElbowBrakeSolenoid.set(false);
-        } else {
+        if(mElbowDebouncer.calculate(mElbowMotor.getMotorOutputPercent() != 0 || Math.abs(elbowError) >= Constants.Arm.lockThreshold)) {
             mElbowBrakeSolenoid.set(true);
+        } else {
+            mElbowBrakeSolenoid.set(false);
         }
 
         SmartDashboard.putNumber("Elbow Angle", elbowAngle);
@@ -319,11 +320,19 @@ public class Arm extends SubsystemBase{
         SmartDashboard.putNumber("Target Elbow Angle", motorAngles.x);
         SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
         
-        Utils.Vector2D handPos = calculateHandPosition(motorAngles);
+        handPos = calculateHandPosition(motorAngles);
         SmartDashboard.putNumber("Hand X", handPos.x);
         SmartDashboard.putNumber("Hand Y", handPos.y);
         // System.out.println("Angle: " + jointAngles.y + " Predicted percent output: "+ (elbowMotorPercent) + " Actual Output: " + mElbowStickPower.getAsDouble());
 
+    }
+
+    public double getShoulderAngle() {
+        return shoulderAngle;
+    }
+
+    public double getHandPositionX() {
+        return handPos.x;
     }
 
     public void changeSetpoint(Utils.Vector2D s) {
@@ -340,8 +349,7 @@ public class Arm extends SubsystemBase{
         mShoulderOffset += o;
     }
 
-    public LoggyWPI_TalonFX[] getTalonFXs() {
-        LoggyWPI_TalonFX[] a = {mShoulderMotor, mElbowMotor};
-        return a;
-    }
+    // public void setLight(double input) {
+    //     mBlinken.set(input);
+    // }
 } 

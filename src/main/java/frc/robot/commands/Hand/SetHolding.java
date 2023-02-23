@@ -3,21 +3,23 @@ package frc.robot.commands.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hand;
 
-public class SetHand extends CommandBase{
+public class SetHolding extends CommandBase{
 
-    private static Hand mHand = Hand.getInstance();
+    private Hand mHand = Hand.getInstance();
     
-    public SetHand() {
+    public SetHolding() {
         addRequirements(mHand);
+        System.out.println("hi");
     }
 
     @Override
     public void execute() {
-        mHand.setSolenoid(true); 
+        mHand.setHandHolding(true);
     }
 
     @Override
     public void end(boolean interrupted) {
-        mHand.setSolenoid(false);;
+        mHand.setHandHolding(false);
+        super.end(interrupted);
     }
 }
