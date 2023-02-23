@@ -1,20 +1,15 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class Hand extends SubsystemBase {
 
     private static Hand mInstance;
-    private static Solenoid mSolenoid;
-
-    public enum HandState {
-        OPEN, 
-        CLOSED,
-        TOGGLE,
-    }
+    private DoubleSolenoid mSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 6,7);
+    public boolean holdingCone = true;
+    public boolean gripping = true;
 
     public static Hand getInstance() {
         if(mInstance == null) {
@@ -23,15 +18,31 @@ public class Hand extends SubsystemBase {
         return mInstance;
     }
 
-    public Hand() {
-        mSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Hand.mHandSolenoid);
+    public void periodic() {
+        if(gripping) {
+            mSolenoid.set(DoubleSolenoid.Value.kForward);
+        } else {
+            mSolenoid.set(DoubleSolenoid.Value.kReverse);
+        }
     }
 
-    public void setSolenoid(boolean state) {
-        mSolenoid.set(state);
+    public void setGripping(boolean g) {
+        gripping = g;
     }
 
-    public boolean getSolenoid() {
-        return mSolenoid.get();
+    public void setHandHolding(boolean s) {
+        holdingCone = s;
+    }
+
+    public boolean getGripping() {
+        return mSolenoid.get() == DoubleSolenoid.Value.kForward;
+    }
+
+    public void setHolding(boolean h) {
+        holdingCone = h;
+    }
+
+    public boolean getHolding() {
+        return holdingCone;
     }
 }
