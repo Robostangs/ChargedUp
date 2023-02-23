@@ -22,8 +22,4 @@ public class SetHolding extends CommandBase{
         mHand.setHandHolding(false);
         super.end(interrupted);
     }
-}package frc.robot.commands.Hand;
-
-public class SetHolding {
-    
 }
