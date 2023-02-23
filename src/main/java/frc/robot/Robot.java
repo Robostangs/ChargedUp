@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AestheticsCMD.LightCMD;
 
+import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.subsystems.Arm.ArmPosition;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -23,8 +26,11 @@ public class Robot extends TimedRobot {
   public static final PowerDistribution mPowerDistributionPanel = new PowerDistribution();
   private RobotContainer m_robotContainer;
 //  private PITTest m_PitTest = new PITTest();
-  final Command RobostangsLight = new LightCMD(0.6);
-  final Command BlueLight = new LightCMD(0.6);
+  final Command RobostangsLight = new LightCMD(0.62);
+  final Command BlueLight = new LightCMD(0.87);
+  /** Delete this later */
+  final Command initCommand = new SetArmPosition(ArmPosition.kHighPosition, true);
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -55,9 +61,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    RobostangsLight.schedule();
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -66,7 +70,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    BlueLight.schedule();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -86,24 +89,23 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    RobostangsLight.schedule();
+    //m_robotContainer = new RobotContainer();
+    System.out.println("SetArmPosition");
   }
-
+  
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-//    m_PitTest.schedule();
+    //    m_PitTest.schedule();
   }
 }

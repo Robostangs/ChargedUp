@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.rotation;
+import frc.robot.commands.AestheticsCMD.LightCMD;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.AestheticsCMD.MusicCMD;
 import frc.robot.commands.Arm.FineAdjust;
@@ -31,11 +32,12 @@ public class RobotContainer {
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
-    // private final Hand s_Hand = Hand.getInstance();
+    private final Command lights = new LightCMD(0.67);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         configureButtonBindings();
+        lights.schedule();
     }
 
     /**
@@ -85,8 +87,6 @@ public class RobotContainer {
 
     /** Autonomous Commands that run in the first 15 seconds of the game. */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
         return new rotation(s_Swerve, 30);
     }
-
 }

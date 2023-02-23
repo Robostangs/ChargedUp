@@ -10,7 +10,8 @@ import com.ctre.phoenix.music.Orchestra;
 
 public class Music extends SubsystemBase {
     private static Music mMusic;
-    private static Orchestra mOrchestra, nOrchestra;
+    private static Orchestra mOrchestra = new Orchestra();
+    private static Orchestra nOrchestra = new Orchestra();
     
     private static String Song;
     private static int instrumentNum = 0;
@@ -40,8 +41,6 @@ public class Music extends SubsystemBase {
     }    
     
     public Music() {
-        mOrchestra = new Orchestra();
-        nOrchestra = new Orchestra();
     }    
 
     public static void insertInstrument(TalonFX ... talons) {
