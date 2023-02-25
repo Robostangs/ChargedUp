@@ -34,6 +34,7 @@ public class Arm extends SubsystemBase {
 
     private CANCoder mElbowCanCoder;
     private CANCoder mShoulderCanCoder;
+    // private int shoulderTimer;
 
     private Compressor mCompressor;
 
@@ -158,8 +159,8 @@ public class Arm extends SubsystemBase {
         if(targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
         }
-        if(targetPos.y < 0) {
-            targetPos.y = 0;
+        if(targetPos.y < -0.15) {
+            targetPos.y = -0.15;
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)
@@ -287,8 +288,9 @@ public class Arm extends SubsystemBase {
             if (Math.abs(shoulderError) < Constants.Arm.noReduceThreshold) {
                 shoulderPeakOutputs.y = 0.05;
             }
-            if (Math.abs(shoulderError) < Constants.Arm.noReduceThreshold
-                    && mShoulderDebouncer.calculate(mShoulderHysteresis.calculate(Math.abs(shoulderError)))) {
+            if ((Math.abs(shoulderError) < Constants.Arm.noReduceThreshold
+                    && mShoulderDebouncer.calculate(mShoulderHysteresis.calculate(Math.abs(shoulderError)))
+                    )) {
                 mShoulderMotor.set(ControlMode.PercentOutput, 0);
                 mShoulderBrakeSolenoid.set(false);
             } else {
@@ -379,6 +381,7 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
             SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
             mLastMotorAngles=motorAngles.clone();
+            // shoulderTimer++;
         }
     }
     // System.out.println("Angle: " + jointAngles.y + " Predicted percent output: "+
@@ -394,6 +397,7 @@ public class Arm extends SubsystemBase {
 
     public void changeSetpoint(Utils.Vector2D s) {
         mCurrentSetpoint = s;
+        // shoulderTimer = 0;
     }
 
     public void offsetY(double yOffset) {
@@ -403,6 +407,14 @@ public class Arm extends SubsystemBase {
 
     public void offsetX(double xOffset) {
         mCurrentSetpoint.add(xOffset,0);
+    }
+
+    public boolean getElbowLocked() {
+        return !mElbowBrakeSolenoid.get();
+    }
+
+    public boolean getShoulderLocked() {
+        return !mShoulderBrakeSolenoid.get();
     }
 
     // public void setLight(double input) {

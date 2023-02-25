@@ -6,12 +6,14 @@ import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.subsystems.Arm;
 
-public class ChangeSetPoint extends InstantCommand {
+public class ChangeSetPoint extends CommandBase {
     // This class is needed because some arm movements needed to be treated as
     // compound operations to avoid self-intersection.
-    private static Arm mArm = Arm.getInstance();
-    private static Utils.Vector2D setPoint;
-    
+    private Arm mArm = Arm.getInstance();
+    private Utils.Vector2D setPoint;
+    private boolean hasRun = false;
+    private int repeating;
+
     public ChangeSetPoint(Utils.Vector2D s) {
         setPoint = s;
         addRequirements(mArm);
@@ -19,7 +21,25 @@ public class ChangeSetPoint extends InstantCommand {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
+        repeating = 0;
         mArm.changeSetpoint(setPoint);
+    }
+
+    @Override
+    public void execute() {
+        if(repeating >= 5) {
+            hasRun = true;
+        }
+        repeating++;
+    }
+
+    @Override
+    public boolean isFinished() {
+        if (mArm.getElbowLocked() && mArm.getShoulderLocked() && hasRun) {
+            return true
+            ;
+        }
+        return false;
     }
 }

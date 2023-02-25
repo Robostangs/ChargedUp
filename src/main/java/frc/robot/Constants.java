@@ -252,6 +252,8 @@ public final class Constants {
     public static final int smoothingFactor = 2; // Arbitrary 1-8
 
     public static final double ManualAdjustMPS = 0.1; //meters per second
+  
+    public static final double allowableError = 10;
   }
 
   public static class Hand {

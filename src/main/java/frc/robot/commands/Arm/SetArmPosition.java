@@ -2,10 +2,11 @@
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Utils;
 import frc.robot.Vision;
 import frc.robot.subsystems.Arm;
-public class SetArmPosition extends CommandBase{
+public class SetArmPosition extends InstantCommand {
 
     private static Arm mArm = Arm.getInstance();
     private double distance = 0;
@@ -33,7 +34,8 @@ public class SetArmPosition extends CommandBase{
                     break;
 
                 case kIntakePosition:
-                    new IntakingManager().schedule();
+                    // new IntakingManager().schedule();
+                    new ChangeSetPoint(new Utils.Vector2D(0.65, -0.4)).schedule();;
                     break;
 
                 case kLoadingZonePosition:
@@ -59,11 +61,13 @@ public class SetArmPosition extends CommandBase{
                     
                 case kHighPosition:
                     if(mHolding) {
-                        new ChangeSetPoint(new Utils.Vector2D(1.464, 1.432)).schedule();
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.432)).andThen(
+                        new ChangeSetPoint(new Utils.Vector2D(1.464, 1.432))).schedule();
                     } else {
-                        new ChangeSetPoint(new Utils.Vector2D(1.531, 1.04)).schedule();
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.04)).andThen(
+                        new ChangeSetPoint(new Utils.Vector2D(1.531, 1.04))).schedule();;
                     }
                     break;
             }
-    }   
+    }
 }

@@ -20,13 +20,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
     public CustomSwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public Pigeon2 gyro;
+    private Field2d mField = new Field2d();
+    private Pigeon2 mGyro;
     private Vision mVision = Vision.getInstance();
     private Utils.Vector2D v1 = new Vector2D(0, 0), v2 = new Vector2D(0, 0), current = new Vector2D(0, 0);
     int waiter = 0;
@@ -43,7 +45,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public Swerve() {
-        gyro = new Pigeon2(3);
+        mGyro = new Pigeon2(3);
+        SmartDashboard.putData("field", mField);
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
@@ -117,19 +120,19 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.setYaw(0);
+        mGyro.setYaw(0);
     }
 
     public double getGyroAngle(){
-        return (Math.abs(gyro.getYaw()) % 360);
+        return (Math.abs(mGyro.getYaw()) % 360);
     }
 
     public double getPitchAngle() {
-        return gyro.getRoll() + 1.31;
+        return mGyro.getRoll() + 1.31;
     }
 
     public Rotation2d getYaw() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - mGyro.getYaw()) : Rotation2d.fromDegrees(mGyro.getYaw());
     }
 
     public void resetModulesToAbsolute(){
@@ -138,48 +141,44 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    // public void update() {
-    //     if(mVision.targetVisible(LimelightState.leftLimelight) && mVision.targetVisible(LimelightState.rightLimelight)) {
-    //         v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
-    //         v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
-    //         current.set(getPose().getX(), getPose().getY()); 
-
-    //         if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
-    //             Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
-    //             updateWithLimelight(meanV);
-    //         } else if(Utils.withinRange(v1, current)) { 
-    //             updateWithLimelight(v1);
-    //         } else if(Utils.withinRange(v2, current)) {
-    //             updateWithLimelight(v2);
-    //         } else {
-    //             updateOdometry();
-    //         }
-
-    //     } else if(mVision.targetVisible(LimelightState.leftLimelight)) {
-    //         v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
-    //         current.set(getPose().getX(), getPose().getY());
-            
-    //         if(Utils.withinRange(v1, current)) {
-    //             updateWithLimelight(v1);
-    //         } else {
-    //             updateOdometry();
-    //         }
-    //     } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
-    //         v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
-    //         current.set(getPose().getX(), getPose().getY());
-
-    //         if(Utils.withinRange(v2, current)) {
-    //             updateWithLimelight(v2);
-    //         } else {
-    //             updateOdometry();
-    //         }
-    //     } else {
-    //         updateOdometry();
-    //     }
-    // }
-
     public void update() {
-        updateOdometry();
+        if(mVision.targetVisible(LimelightState.leftLimelight) && mVision.targetVisible(LimelightState.rightLimelight)) {
+            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
+            current.set(getPose().getX(), getPose().getY()); 
+
+            if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
+                Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
+                updateWithLimelight(meanV);
+            } else if(Utils.withinRange(v1, current)) { 
+                updateWithLimelight(v1);
+            } else if(Utils.withinRange(v2, current)) {
+                updateWithLimelight(v2);
+            } else {
+                updateOdometry();
+            }
+
+        } else if(mVision.targetVisible(LimelightState.leftLimelight)) {
+            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+            current.set(getPose().getX(), getPose().getY());
+            
+            if(Utils.withinRange(v1, current)) {
+                updateWithLimelight(v1);
+            } else {
+                updateOdometry();
+            }
+        } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
+            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
+            current.set(getPose().getX(), getPose().getY());
+
+            if(Utils.withinRange(v2, current)) {
+                updateWithLimelight(v2);
+            } else {
+                updateOdometry();
+            }
+        } else {
+            updateOdometry();
+         }
     }
 
     public void updateOdometry() {
@@ -199,8 +198,11 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
 
-        SmartDashboard.putNumber("Distance", swerveOdometry.getPoseMeters().getTranslation().getX());
-        SmartDashboard.putNumber("Angle", getGyroAngle());
+        SmartDashboard.putNumber("Physical Location X", swerveOdometry.getPoseMeters().getTranslation().getX());
+        SmartDashboard.putNumber("Physical Location Y", swerveOdometry.getPoseMeters().getTranslation().getX());
+        SmartDashboard.putNumber("Physical Angle", getGyroAngle());
         waiter++;
+
+        mField.setRobotPose(swerveOdometry.getPoseMeters());
     }
 }
