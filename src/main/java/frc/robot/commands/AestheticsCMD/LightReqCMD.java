@@ -11,8 +11,8 @@ public class LightReqCMD extends CommandBase {
     Boolean Cube;
     String reqPiece;
     
-    double coneLight = 0;
-    double cubeLight = -0.57;
+    double coneLight = 0.65;
+    double cubeLight = 0.91;
 
     public LightReqCMD(int Angle) {
         if (Angle == 90) {
@@ -39,7 +39,7 @@ public class LightReqCMD extends CommandBase {
             mLighting.setLights(cubeLight);
             reqPiece = "Cube";
         } else {
-            mLighting.setLights(0);
+            mLighting.killLights();
             reqPiece = "None";
         }
     }

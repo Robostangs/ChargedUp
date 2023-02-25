@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.SwerveModuleConstants;
-import frc.robot.subsystems.Aesthetics.Music;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -43,8 +42,6 @@ public class SwerveModule {
         configDriveMotor();
 
         lastAngle = getState().angle;
-
-        Music.insertInstrument(mAngleMotor, mDriveMotor);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
@@ -118,5 +115,13 @@ public class SwerveModule {
             Conversions.falconToMeters(mDriveMotor.getSelectedSensorPosition(), Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio), 
             getAngle()
         );
+    }
+
+    public double TalonDriveTemperature() {
+        return mDriveMotor.getTemperature();
+    }
+
+    public double TalonAngleTemperature() {
+        return mAngleMotor.getTemperature();
     }
 }

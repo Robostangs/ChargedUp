@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AestheticsCMD.LightCMD;
-
+import frc.robot.Constants.Arm;
+import frc.robot.commands.AestheticsCMD.MusicCMD;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.subsystems.Arm.ArmPosition;
 
@@ -23,14 +27,14 @@ public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
-  public static final PowerDistribution mPowerDistributionPanel = new PowerDistribution();
   private RobotContainer m_robotContainer;
-//  private PITTest m_PitTest = new PITTest();
-  final Command RobostangsLight = new LightCMD(0.62);
-  final Command BlueLight = new LightCMD(0.87);
-  /** Delete this later */
-  final Command initCommand = new SetArmPosition(ArmPosition.kHighPosition, true);
+  private Command music;
+  private PITTest pitTest;
 
+  // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
+  
+  final Command startPOS = new SetArmPosition(ArmPosition.kStowPosition, true);
+  /** Destroy after use */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -70,6 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -89,23 +94,31 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    startPOS.schedule();
+    System.out.println("Music ran");
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Vision.getInstance().getDrivetrainDistance();
+  }
 
   @Override
   public void testInit() {
-    // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    //m_robotContainer = new RobotContainer();
-    System.out.println("SetArmPosition");
+    
+    if (RobotContainer.musicTrue) {
+      music = m_robotContainer.musicCommand();
+    } else {
+      pitTest = new PITTest();
+    }
+
+    // Cancels all running commands at the start of test mode.
   }
-  
+
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {
-    //    m_PitTest.schedule();
-  }
+  public void testPeriodic() {}
 }

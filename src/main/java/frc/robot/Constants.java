@@ -34,6 +34,8 @@ public final class Constants {
           public static final double kLinFuncConstant = 0.562;
     
           public static final double kNoSpeed = 0;
+
+          public static final double kJoyStickDeadZone = 0.05;
         }
 
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -100,6 +102,7 @@ public final class Constants {
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+        public static final double testSpeed = 0.2;
         /** Radians per Second */
         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
 
@@ -158,10 +161,10 @@ public final class Constants {
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxSpeedMetersPerSecond = 5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 10;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 2 * Math.PI;
     
         public static final double kPXController = 1;
         public static final double kPYController = 1;
@@ -195,7 +198,7 @@ public final class Constants {
 
     public static final double shoulderMotorP = 5.1;
     public static final double shoulderMotorI = 0;
-    public static final double shoulderMotorD = 0.5;
+    public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0;
     public static final double shoulderMotorIZone = 0;
 
@@ -226,14 +229,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = -89.54; // Degrees
-    public static final double shoulderAngleSensor = 360 - 216.65; // Degrees
+    public static final double shoulderAngleActual = -48; // Degrees
+    public static final double shoulderAngleSensor = 180.8; // Degrees
     public static final double shoulderAngleReverseSoftStop = 25; // Degrees
     public static final double shoulderAngleForwardSoftStop = 120; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = ( 88 + 13.3); // Degrees
-    public static final double elbowAngleSensor = 360-147.568; // Degrees
+    public static final double elbowAngleActualDifference = ( 90 - 37 + 11); // Degrees
+    public static final double elbowAngleSensor = 113.3; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -244,14 +247,17 @@ public final class Constants {
     public static final double lockThreshold = 50; // CANCoder sensor units
     public static final double noReduceThreshold = 150; // CANCoder Sensor units
 
-    public static final double cruiseVelocity = 30; // Degrees per second
-    public static final double accelerationFactor = 22; // Degrees per second squared
+    public static final double cruiseVelocity = 100; // Degrees per second
+    public static final double accelerationFactor = 70; // Degrees per second squared
 
     public static final int smoothingFactor = 2; // Arbitrary 1-8
+  
+    public static final int blinkenPWM_ID = 0;
   }
 
   public static class Hand {
-    public static final int mHandSolenoid = 3;
+    public static final int mHandSolenoidFwd = 7;
+    public static final int mHandSolenoidRev = 6;
 
     public static final double handMass = 2.1;
   }

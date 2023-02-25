@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
-public class balance extends CommandBase {
+public class Balance extends CommandBase {
     private static final Swerve mDrivetrain = Swerve.getInstance();
     private static final PIDController balancePID = new PIDController(Constants.Swerve.balancePID.kP, Constants.Swerve.balancePID.kI, Constants.Swerve.balancePID.kD);
 
-    public balance() {
+    public Balance() {
         addRequirements(mDrivetrain);
         setName("Balance");
     }

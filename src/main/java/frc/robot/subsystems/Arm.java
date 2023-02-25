@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
+import frc.robot.subsystems.Aesthetics.Music;
 
 public class Arm extends SubsystemBase{
     private static Arm mInstance;
@@ -33,7 +34,7 @@ public class Arm extends SubsystemBase{
     private CANCoder mElbowCanCoder;
     private CANCoder mShoulderCanCoder;
 
-    private Compressor mCompressor;
+    public Compressor mCompressor;
 
     private Utils.Vector2D mCurrentSetpoint;
     private Utils.Vector2D handPos;
@@ -128,6 +129,8 @@ public class Arm extends SubsystemBase{
 
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
+
+        Music.insertInstrument(mElbowMotor, mShoulderMotor);
 
         // SmartDashboard.putNumber("Set Point X", 1.0);
         // SmartDashboard.putNumber("Set Point Y", 1.0);
@@ -349,7 +352,23 @@ public class Arm extends SubsystemBase{
         mShoulderOffset += o;
     }
 
-    // public void setLight(double input) {
-    //     mBlinken.set(input);
-    // }
+    public Double getCanCoder(String string) {
+        if (string == "shoulder") {
+            return mShoulderCanCoder.getAbsolutePosition();
+        } else if (string == "elbow") {
+            return mElbowCanCoder.getAbsolutePosition();
+        } else {
+            return null;
+        }
+    }
+
+    public Double getTemperature(String string) {
+        if (string == "shoulder") {
+            return mShoulderMotor.getTemperature();
+        } else if (string == "elbow") {
+            return mElbowMotor.getTemperature();
+        } else {
+            return null;
+        }
+    }
 } 
