@@ -75,7 +75,7 @@ public class RobotContainer {
             )
         );
         /** Can Delete later, is a fine adjust alternative */
-        s_Arm.setDefaultCommand(
+        s_Arm.setDefaultCommand( //TODO: Delete this later
             new temp_ChangeSetPoint(
                 () -> -mManipController.getLeftTriggerAxis(),
                 () -> -mManipController.getRightTriggerAxis()
