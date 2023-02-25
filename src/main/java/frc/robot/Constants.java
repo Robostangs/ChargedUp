@@ -218,22 +218,23 @@ public final class Constants {
     public static final double maxIntegeralAccumulator = 100000000;
     public static final double elbowMotorCompensationFactor = 1.5;
 
-    public static final double upperarmLength = 0.9398; // Meters
-    public static final double forearmLength = 0.95; // Meters
+    public static final double upperarmLength = 1.033; // Meters
+    public static final double LimelightCenterToShoulderPivot = 0.13;//Meters
+    public static final double forearmLength = 0.96; // Meters
 
     public static final double upperarmMass = 0.44639; // Kilograms
     public static final double forearmMass = 0.293; // Kilograms
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = -48; // Degrees
-    public static final double shoulderAngleSensor = 180.8; // Degrees
+    public static final double shoulderAngleActual = 73.9; // Degrees
+    public static final double shoulderAngleSensor = 158.906 ; // Degrees
     public static final double shoulderAngleReverseSoftStop = 25; // Degrees
     public static final double shoulderAngleForwardSoftStop = 120; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = ( 90 - 37 + 11); // Degrees
-    public static final double elbowAngleSensor = 113.3; // Degrees
+    public static final double elbowAngleActualDifference = ( -73.9 -74.9); // Degrees
+    public static final double elbowAngleSensor = 201.797 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -241,13 +242,16 @@ public final class Constants {
     public static final int elbowBrakeSolenoid = 1;
     public static final int shoulderBrakeSolenoid = 2;
 
-    public static final double lockThreshold = 50; // CANCoder sensor units
-    public static final double noReduceThreshold = 150; // CANCoder Sensor units
+    public static final double elbowLockThreshold = 1 * 4096 / 360; // CANCoder sensor units
+    public static final double shoulderLockThreshold = 2 * 4096 / 360; // CANCoder sensor units
+    public static final double noReduceThreshold = 10 * 4096 / 360; // CANCoder Sensor units
 
     public static final double cruiseVelocity = 100; // Degrees per second
     public static final double accelerationFactor = 70; // Degrees per second squared
 
     public static final int smoothingFactor = 2; // Arbitrary 1-8
+
+    public static final double ManualAdjustMPS = 0.1; //meters per second
   }
 
   public static class Hand {
@@ -255,5 +259,7 @@ public final class Constants {
     public static final int mHandSolenoidRev = 6;
 
     public static final double handMass = 2.1;
+
+    public static final Utils.Vector2D maxFrameExtension = new Utils.Vector2D((48+15-5) / 39.37, (78-5)/39.37);
   }
 }

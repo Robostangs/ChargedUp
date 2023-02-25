@@ -73,12 +73,15 @@ public class Vision {
         }
     }
 
-    public double getDrivetrainDistance() {
+    public double getTargetHandX() {
         double theta1 = Arm.getInstance().getShoulderAngle();
         double ty = mObjectTY.get();
-        double value = ((Constants.Arm.upperarmLength) * Math.sin((theta1 - 90 + ty))) / (Math.sin(270 - (2*theta1) -ty));
-        // System.out.println(value);
-        return value;
+        double value = (Constants.Arm.upperarmLength-Constants.Arm.LimelightCenterToShoulderPivot)
+                       * Math.sin(Math.toRadians(90 + ty))
+                       / Math.sin(Math.toRadians(90 - ty - theta1))
+                       +0.07/Math.cos(Math.toRadians(90-theta1));//offset for limelight distance from arm centrline
+        // System.out.println(ty + "," + value + "," + theta1);
+        return value + 0.05;
     }
 
     public double getDrivetrainAngle() {

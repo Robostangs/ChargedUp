@@ -20,12 +20,18 @@ public class Flatten extends CommandBase {
     }
 
     public Flatten(double angle) {
+        if(angle < 0.8) {
+            end(false);
+        }
         mAngle = angle;
         addRequirements(mDrivetrain);
         setName("Straighten Against Value");
+        System.out.println("Im here part 3");
     }
 
     @Override
+    
+
     public void execute() {
         //Path Stuff with the Mangle
         new rotation(mDrivetrain, mAngle);

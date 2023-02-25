@@ -513,4 +513,33 @@ public class Utils {
         }
         return Constants.Swerve.CustomDeadzone.kNoSpeed;
     }
+
+    public static class LockHysteresis {
+        private double mEngageError, mDisengageError;
+        private boolean mLastState = false;
+
+        public LockHysteresis(double engageError, double disengageError){
+            mEngageError = engageError;
+            mDisengageError = disengageError;
+        }
+
+        public boolean calculate(double currentError){
+            currentError = Math.abs(currentError);
+            if(mLastState == true) {
+                if(currentError > mDisengageError) {
+                    mLastState = false;
+                }
+            }else{
+                if(currentError < mEngageError) {
+                    mLastState = true;
+                }
+            }
+
+            return mLastState;
+        }
+
+        public void reset() {
+            mLastState = false;
+        }
+    }
 }

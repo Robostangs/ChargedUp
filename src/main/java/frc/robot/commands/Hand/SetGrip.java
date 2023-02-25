@@ -14,6 +14,12 @@ public class SetGrip extends CommandBase{
 
     @Override
     public void execute() {
-        mHand.setHolding(!mHand.getHolding());
+        mHand.setGripping(true);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        mHand.setGripping(false);
+        super.end(interrupted);
     }
 }
