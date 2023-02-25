@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.rotation;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
-import frc.robot.commands.AestheticsCMD.MusicCMD;
-import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Arm.temp_ChangeSetPoint;
@@ -109,10 +107,5 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         return new rotation(s_Swerve, 30);
-    }
-
-    public Command musicCommand() {
-        final Command musicCMD = new MusicCMD();
-        return musicCMD;
     }
 }

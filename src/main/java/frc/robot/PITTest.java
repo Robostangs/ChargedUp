@@ -4,7 +4,6 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -12,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Swerve;
+import frc.robot.commands.AestheticsCMD.MusicCMD;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.TeleopSwerve;
@@ -102,11 +102,11 @@ public class PITTest {
         builder.addDoubleProperty("Drivetrain Back Right Drive Current", () -> pdp.getCurrent(Constants.Swerve.Mod3.driveMotorID), null);
         builder.addDoubleProperty("Drivetrain Back Right Angle Current", () -> pdp.getCurrent(Constants.Swerve.Mod3.angleMotorID), null);
         
-        builder.addDoubleProperty("Arm Shoulder Motor", () -> pdp.getCurrent(Constants.Arm.shoulderMotorID), null);
-        builder.addDoubleProperty("Arm Elbow Motor", () -> pdp.getCurrent(Constants.Arm.elbowMotorID), null);
+        builder.addDoubleProperty("Arm Shoulder Motor Current", () -> pdp.getCurrent(Constants.Arm.shoulderMotorID), null);
+        builder.addDoubleProperty("Arm Elbow Motor Current", () -> pdp.getCurrent(Constants.Arm.elbowMotorID), null);
         
-        builder.addDoubleProperty("Arm Shoulder Motor Encoder", () -> mArm.getCanCoder("shoulder"), null);
-        builder.addDoubleProperty("Arm Elbow Motor Encoder", () -> mArm.getCanCoder("elbow"), null);
+        builder.addDoubleProperty("Arm Shoulder Motor Can Coder", () -> mArm.getCanCoder("shoulder"), null);
+        builder.addDoubleProperty("Arm Elbow Motor Can Coder", () -> mArm.getCanCoder("elbow"), null);
         
         builder.addDoubleProperty("Arm Shoulder Motor Temperature", () -> mArm.getTemperature("shoulder"), null);
         builder.addDoubleProperty("Arm Elbow Motor Temperature", () -> mArm.getTemperature("elbow"), null);
@@ -140,5 +140,10 @@ public class PITTest {
         currCommand = x;
         SmartDashboard.putString("PIT Test Status", currCommand.getName());
         return x;
+    }
+
+    public Command musicCommand() {
+        final Command musicCMD = new MusicCMD();
+        return musicCMD;
     }
 }
