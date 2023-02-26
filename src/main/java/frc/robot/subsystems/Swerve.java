@@ -146,14 +146,17 @@ public class Swerve extends SubsystemBase {
             v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
             v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
             current.set(getPose().getX(), getPose().getY()); 
+            Rotation2d leftRotation = mVision.getRotation(LimelightState.leftLimelight);
+            Rotation2d rightRotation = mVision.getRotation(LimelightState.rightLimelight);
 
             if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
                 Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
-                updateWithLimelight(meanV);
+                Rotation2d meanRotation = new Rotation2d((leftRotation.getRadians() + rightRotation.getRadians()) / 2);
+                updateWithLimelight(meanV, meanRotation);
             } else if(Utils.withinRange(v1, current)) { 
-                updateWithLimelight(v1);
+                updateWithLimelight(v1, leftRotation);
             } else if(Utils.withinRange(v2, current)) {
-                updateWithLimelight(v2);
+                updateWithLimelight(v2, rightRotation);
             } else {
                 updateOdometry();
             }
@@ -163,7 +166,7 @@ public class Swerve extends SubsystemBase {
             current.set(getPose().getX(), getPose().getY());
             
             if(Utils.withinRange(v1, current)) {
-                updateWithLimelight(v1);
+                updateWithLimelight(v1, mVision.getRotation(LimelightState.leftLimelight));
             } else {
                 updateOdometry();
             }
@@ -172,7 +175,7 @@ public class Swerve extends SubsystemBase {
             current.set(getPose().getX(), getPose().getY());
 
             if(Utils.withinRange(v2, current)) {
-                updateWithLimelight(v2);
+                updateWithLimelight(v2, mVision.getRotation(LimelightState.rightLimelight));
             } else {
                 updateOdometry();
             }
@@ -185,8 +188,13 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions()); 
     }
 
+<<<<<<< HEAD
     public void updateWithLimelight(Vector2D target) {
         swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getYaw()));
+=======
+    public void updateWithLimelight(Vector2D target, Rotation2d robotRotation) {
+        swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getPose().getRotation()));
+>>>>>>> 7fd9285aca1d901d5e8a5b01785aada7f4bfd9c8
     }
 
     @Override
