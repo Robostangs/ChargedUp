@@ -188,13 +188,8 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions()); 
     }
 
-<<<<<<< HEAD
-    public void updateWithLimelight(Vector2D target) {
-        swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getYaw()));
-=======
     public void updateWithLimelight(Vector2D target, Rotation2d robotRotation) {
         swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getPose().getRotation()));
->>>>>>> 7fd9285aca1d901d5e8a5b01785aada7f4bfd9c8
     }
 
     @Override
