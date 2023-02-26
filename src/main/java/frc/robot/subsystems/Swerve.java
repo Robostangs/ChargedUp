@@ -7,7 +7,7 @@ import frc.robot.CustomWpilib.CustomSwerveDriveOdometry;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightState;
 import frc.robot.Constants;
-
+import frc.robot.RobotContainer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,15 +31,18 @@ public class Swerve extends SubsystemBase {
     private Field2d mField = new Field2d();
     private Pigeon2 mGyro;
     private Vision mVision = Vision.getInstance();
+    private boolean isReferenced = false;
     private Utils.Vector2D v1 = new Vector2D(0, 0), v2 = new Vector2D(0, 0), current = new Vector2D(0, 0);
     int waiter = 0;
-    // The Swerve class should not hold the vision systems, this is a great way to end up in dependecy hell
-    // Use double suppliers or something instead and keep vision in robot container...
+    // The Swerve class should not hold the vision systems, this is a great way to
+    // end up in dependecy hell
+    // Use double suppliers or something instead and keep vision in robot
+    // container...
     public static Swerve mInstance;
 
     public static Swerve getInstance() {
 
-        if(mInstance == null) {
+        if (mInstance == null) {
             mInstance = new Swerve();
         }
         return mInstance;
@@ -50,50 +54,50 @@ public class Swerve extends SubsystemBase {
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(1, Constants.Swerve.Mod0.constants),
-            new SwerveModule(0, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+                new SwerveModule(1, Constants.Swerve.Mod0.constants),
+                new SwerveModule(0, Constants.Swerve.Mod1.constants),
+                new SwerveModule(2, Constants.Swerve.Mod2.constants),
+                new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-        /* By pausing init for a second before setting module offsets, we avoid a bug with inverting motors.
+        /*
+         * By pausing init for a second before setting module offsets, we avoid a bug
+         * with inverting motors.
          * See https://github.com/Team364/BaseFalconSwerve/issues/8 for more info.
          */
         Timer.delay(1.0);
         resetModulesToAbsolute();
 
-        swerveOdometry = new CustomSwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
+        swerveOdometry = new CustomSwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(),
+                getModulePositions());
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
-        SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation, 
-                                    getYaw()
-                                )
-                                : new ChassisSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation)
-                                );
+                        translation.getX(),
+                        translation.getY(),
+                        rotation,
+                        getYaw())
+                        : new ChassisSpeeds(
+                                translation.getX(),
+                                translation.getY(),
+                                rotation));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
-        for(SwerveModule mod : mSwerveMods){
+        for (SwerveModule mod : mSwerveMods) {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }    
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
-        
-        for(SwerveModule mod : mSwerveMods){
+
+        for (SwerveModule mod : mSwerveMods) {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
         }
-    }    
+    }
 
     public Pose2d getPose() {
         return swerveOdometry.getPoseMeters();
@@ -103,27 +107,27 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
-    public SwerveModuleState[] getModuleStates(){
+    public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
-        for(SwerveModule mod : mSwerveMods){
+        for (SwerveModule mod : mSwerveMods) {
             states[mod.moduleNumber] = mod.getState();
         }
         return states;
     }
 
-    public SwerveModulePosition[] getModulePositions(){
+    public SwerveModulePosition[] getModulePositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
-        for(SwerveModule mod : mSwerveMods){
+        for (SwerveModule mod : mSwerveMods) {
             positions[mod.moduleNumber] = mod.getPosition();
         }
         return positions;
     }
 
-    public void zeroGyro(){
+    public void zeroGyro() {
         mGyro.setYaw(0);
     }
 
-    public double getGyroAngle(){
+    public double getGyroAngle() {
         return (Math.abs(mGyro.getYaw()) % 360);
     }
 
@@ -132,73 +136,105 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - mGyro.getYaw()) : Rotation2d.fromDegrees(mGyro.getYaw());
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - mGyro.getYaw())
+                : Rotation2d.fromDegrees(mGyro.getYaw());
     }
 
-    public void resetModulesToAbsolute(){
-        for(SwerveModule mod : mSwerveMods){
+    public void resetModulesToAbsolute() {
+        for (SwerveModule mod : mSwerveMods) {
             mod.resetToAbsolute();
         }
     }
 
     public void update() {
-        if(mVision.targetVisible(LimelightState.leftLimelight) && mVision.targetVisible(LimelightState.rightLimelight)) {
-            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
-            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
-            current.set(getPose().getX(), getPose().getY()); 
-            Rotation2d leftRotation = mVision.getRotation(LimelightState.leftLimelight);
-            Rotation2d rightRotation = mVision.getRotation(LimelightState.rightLimelight);
+        // updateOdometry();
+        // if(mVision.targetVisible(LimelightState.leftLimelight) &&
+        // mVision.targetVisible(LimelightState.rightLimelight)) {
+        // v1.set(mVision.getPosition(LimelightState.leftLimelight).x,
+        // mVision.getPosition(LimelightState.leftLimelight).y);
+        // v2.set(mVision.getPosition(LimelightState.rightLimelight).x,
+        // mVision.getPosition(LimelightState.rightLimelight).y);
+        // current.set(getPose().getX(), getPose().getY());
+        // Rotation2d leftRotation = mVision.getRotation(LimelightState.leftLimelight);
+        // Rotation2d rightRotation =
+        // mVision.getRotation(LimelightState.rightLimelight);
+        // // System.out.println("YO DAWGGGGGG IM SETTING THAT ODOMETRERRERER DAWG WITH
+        // DEM BOTH CAMS");
+        // if((Utils.withinRange(v1, current) && Utils.withinRange(v2, current))
+        // ||!isReferenced) {
+        // Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
+        // Rotation2d meanRotation = new Rotation2d((leftRotation.getRadians() +
+        // rightRotation.getRadians()) / 2);
+        // updateWithLimelight(meanV, meanRotation);
+        // isReferenced = true;
+        // } else if(Utils.withinRange(v1, current)) {
+        // updateWithLimelight(v1, leftRotation);
+        // } else if(Utils.withinRange(v2, current)) {
+        // updateWithLimelight(v2, rightRotation);
+        // } else {
+        // updateOdometry();
+        // }
 
-            if(Utils.withinRange(v1, current) && Utils.withinRange(v2, current)) {
-                Vector2D meanV = new Vector2D((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
-                Rotation2d meanRotation = new Rotation2d((leftRotation.getRadians() + rightRotation.getRadians()) / 2);
-                updateWithLimelight(meanV, meanRotation);
-            } else if(Utils.withinRange(v1, current)) { 
-                updateWithLimelight(v1, leftRotation);
-            } else if(Utils.withinRange(v2, current)) {
-                updateWithLimelight(v2, rightRotation);
-            } else {
-                updateOdometry();
-            }
-
-        } else if(mVision.targetVisible(LimelightState.leftLimelight)) {
-            v1.set(mVision.getPosition(LimelightState.leftLimelight).x, mVision.getPosition(LimelightState.leftLimelight).y);
+        if (mVision.targetVisible(LimelightState.leftLimelight)) {
+            v1.set(mVision.getPosition(LimelightState.leftLimelight).x,
+                    mVision.getPosition(LimelightState.leftLimelight).y);
             current.set(getPose().getX(), getPose().getY());
-            
-            if(Utils.withinRange(v1, current)) {
+            // LEFT CAMS");
+
+            if (Utils.withinRange(v1, current) || !isReferenced) {
+                System.out.println("LEFT LL ODO RESET");
                 updateWithLimelight(v1, mVision.getRotation(LimelightState.leftLimelight));
+                isReferenced = true;
             } else {
                 updateOdometry();
             }
-        } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
-            v2.set(mVision.getPosition(LimelightState.rightLimelight).x, mVision.getPosition(LimelightState.rightLimelight).y);
-            current.set(getPose().getX(), getPose().getY());
+            // } else if(mVision.targetVisible(LimelightState.rightLimelight)) {
+            // v2.set(mVision.getPosition(LimelightState.rightLimelight).x,
+            // mVision.getPosition(LimelightState.rightLimelight).y);
+            // current.set(getPose().getX(), getPose().getY());
+            // // System.out.println("YO DAWGGGGGG IM SETTING THAT ODOMETRERRERER DAWG WITH
+            // DEM RIGHT CAMS");
 
-            if(Utils.withinRange(v2, current)) {
-                updateWithLimelight(v2, mVision.getRotation(LimelightState.rightLimelight));
-            } else {
-                updateOdometry();
-            }
+            // if(Utils.withinRange(v2, current) || !isReferenced) {
+            // updateWithLimelight(v2, mVision.getRotation(LimelightState.rightLimelight));
+            // isReferenced = true;
+            // } else {
+            // updateOdometry();
+            // }
         } else {
             updateOdometry();
-         }
+        }
     }
 
     public void updateOdometry() {
-        swerveOdometry.update(getYaw(), getModulePositions()); 
+        swerveOdometry.update(getYaw(), getModulePositions());
     }
-
+    public double expfilt(double old, double newval){
+        double alpha=0.01;
+        return alpha*newval+(1-alpha)*old;
+    }
     public void updateWithLimelight(Vector2D target, Rotation2d robotRotation) {
-        swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getPose().getRotation()));
+        Pose2d oldpose=swerveOdometry.getPoseMeters();
+        double oldRotation=oldpose.getRotation().getDegrees();
+        double newRotation=robotRotation.getDegrees();
+        if(Math.abs(newRotation-oldRotation) % 360 >180){
+            System.out.println(oldRotation+":"+newRotation);
+        }
+        System.out.println(newRotation-oldRotation);
+        Pose2d newpose=new Pose2d(expfilt(oldpose.getX(),target.x),expfilt(oldpose.getY(), target.y),Rotation2d.fromDegrees(expfilt(oldpose.getRotation().getDegrees(), robotRotation.getDegrees())));
+        swerveOdometry.setPoseMeters(newpose);
+        mGyro.setYaw(newpose.getRotation().getDegrees());
+
+        //swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, robotRotation));
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         update();
-        for(SwerveModule mod : mSwerveMods){
+        for (SwerveModule mod : mSwerveMods) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
         SmartDashboard.putNumber("Physical Location X", swerveOdometry.getPoseMeters().getTranslation().getX());

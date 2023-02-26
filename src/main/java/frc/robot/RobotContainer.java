@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autos.exampleAuto;
 import frc.robot.autos.rotation;
+import frc.robot.autos.Translate;
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
@@ -19,6 +20,7 @@ import frc.robot.commands.Hand.SetLightColor;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
+import frc.robot.commands.Swerve.StraightenManager;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.ArmPosition;
@@ -38,6 +40,7 @@ public class RobotContainer {
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
+    private final Vision s_Vision = Vision.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -81,12 +84,14 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new ToggleHolding());
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
     
+        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
         new SetLightColor(56).schedule();
     }
 
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new IntakingManager();
+        // return new translate(s_Swerve, s_Vision.);
+        return null;
     }
 
 }

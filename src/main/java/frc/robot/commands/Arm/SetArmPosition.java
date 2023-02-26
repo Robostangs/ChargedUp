@@ -61,10 +61,10 @@ public class SetArmPosition extends InstantCommand {
                     
                 case kHighPosition:
                     if(mHolding) {
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.432)).andThen(
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.432)).withTimeout(1).andThen(
                         new ChangeSetPoint(new Utils.Vector2D(1.464, 1.432))).schedule();
                     } else {
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.04)).andThen(
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.04)).withTimeout(1).andThen(
                         new ChangeSetPoint(new Utils.Vector2D(1.531, 1.04))).schedule();;
                     }
                     break;

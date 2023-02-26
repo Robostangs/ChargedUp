@@ -14,6 +14,7 @@ public class Vision {
    
     private final NetworkTable mLeftLimelight = NetworkTableInstance.getDefault().getTable("limelight-left");
     private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    private DoubleArraySubscriber mRelativeLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     // private DoubleArraySubscriber mLeftTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
     private final NetworkTable mRightLimelight = NetworkTableInstance.getDefault().getTable("limelight-right");
@@ -136,7 +137,7 @@ public class Vision {
 
     public Rotation2d rotFromAT(DoubleArraySubscriber sub) {
         double[] positions = sub.get();
-        return new Rotation2d(positions[5]);
+        return Rotation2d.fromDegrees(positions[5]);
     }
 
     // public Utils.Vector3D forTarget(DoubleArraySubscriber sub) {
