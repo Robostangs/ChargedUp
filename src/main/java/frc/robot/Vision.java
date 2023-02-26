@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -65,6 +66,16 @@ public class Vision {
         }
     }
 
+    public Rotation2d getRotation(LimelightState Limelight) {
+        if(Limelight.compareTo(LimelightState.leftLimelight) == 0) {
+            return rotFromAT(mLeftPosition);
+        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 0) {
+            return rotFromAT(mRightPosition);
+        } else {
+            return new Rotation2d();
+        }
+    }
+
     public void switchPipelinesDrivetrain() {
         if(mDriverLimelight.getEntry("getpipe").getInteger(100) == 1) {
             mDriverLimelight.getEntry("pipeline").setValue("0");
@@ -121,6 +132,11 @@ public class Vision {
     public Utils.Vector3D fromAT(DoubleArraySubscriber sub) {
         double[] positions = sub.get();
         return new Utils.Vector3D(positions[0], positions[1], positions[2]);
+    }
+
+    public Rotation2d rotFromAT(DoubleArraySubscriber sub) {
+        double[] positions = sub.get();
+        return new Rotation2d(positions[5]);
     }
 
     // public Utils.Vector3D forTarget(DoubleArraySubscriber sub) {
