@@ -15,6 +15,7 @@ import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.SetHolding;
+import frc.robot.commands.Hand.SetLightColor;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
@@ -79,6 +80,8 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new ToggleHolding());
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
+    
+        new SetLightColor(56).schedule();
     }
 
     public Command getAutonomousCommand() {

@@ -186,7 +186,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void updateWithLimelight(Vector2D target) {
-        swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getPose().getRotation()));
+        swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, getYaw()));
     }
 
     @Override
