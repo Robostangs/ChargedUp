@@ -12,11 +12,11 @@ public class Vision {
     private double value;
    
     private final NetworkTable mLeftLimelight = NetworkTableInstance.getDefault().getTable("limelight-left");
-    private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     // private DoubleArraySubscriber mLeftTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
     private final NetworkTable mRightLimelight = NetworkTableInstance.getDefault().getTable("limelight-right");
-    private DoubleArraySubscriber mRightPosition = mRightLimelight.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    private DoubleArraySubscriber mRightPosition = mRightLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     // private DoubleArraySubscriber mRightTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
     private final NetworkTable mDriverLimelight = NetworkTableInstance.getDefault().getTable("limelight-driver");
@@ -39,13 +39,13 @@ public class Vision {
 
     public boolean targetVisible(LimelightState limelight) {
         if(limelight.compareTo(LimelightState.leftLimelight) == 0) {
-            if(mLeftLimelight.getEntry("ta").getDouble(100) != 0) {
+            if(mLeftLimelight.getEntry("ta").getDouble(0) != 0) {
                 return true;
             } else {
                 return false;
             }
         } else if(limelight.compareTo(LimelightState.rightLimelight) == 0) {
-            if(mRightLimelight.getEntry("ta").getDouble(100) != 0) {
+            if(mRightLimelight.getEntry("ta").getDouble(0) != 0) {
                 return true;
             } else {
                 return false;
