@@ -31,8 +31,8 @@ public class SetArmPosition extends InstantCommand {
 
             switch(mDesiredState) {
                 case kStowPosition:
-                new ChangeSetPoint(new Utils.Vector2D(0.65, 0.3986)).withTimeout(1).andThen(
-                        new ChangeSetPoint(new Utils.Vector2D(0.484, 0.3986))).schedule();
+                new ChangeSetPoint(new Utils.Vector2D(0.65, 0.45)).withTimeout(1).andThen(
+                        new ChangeSetPoint(new Utils.Vector2D(0.7, 0.34))).schedule();
                     break;
 
                 case kIntakePosition:
@@ -41,7 +41,7 @@ public class SetArmPosition extends InstantCommand {
                     break;
 
                 case kLoadingZonePosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0.62, 0.951)).schedule();
+                    new ChangeSetPoint(new Utils.Vector2D(0.78, 0.99)).schedule();
                     break;
 
                     
