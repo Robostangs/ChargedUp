@@ -81,11 +81,11 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new ToggleHolding());
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new ToggleHolding());
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
-    
-        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
         new SetLightColor(56).schedule();
+
+        // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
     }
 
     public Command getAutonomousCommand() {

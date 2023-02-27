@@ -213,16 +213,37 @@ public class Swerve extends SubsystemBase {
         double alpha=0.01;
         return alpha*newval+(1-alpha)*old;
     }
+
+    public double smartExpFilt(double old, double newval) {
+        if(old < -90 && newval > 90) {
+            newval -= 360;
+        } else if(old > 90 && newval < -90) {
+            newval += 360;
+        }
+        //System.out.println(expfilt(old,newval));
+        SmartDashboard.putNumber("llAngleFixed", newval);
+        SmartDashboard.putNumber("currentAngle", old);
+        SmartDashboard.putNumber("filteredValue", expfilt(old,newval));
+
+
+        return expfilt(old, newval);
+        
+    }
     public void updateWithLimelight(Vector2D target, Rotation2d robotRotation) {
+        swerveOdometry.update(getYaw(), getModulePositions());
         Pose2d oldpose=swerveOdometry.getPoseMeters();
         double oldRotation=oldpose.getRotation().getDegrees();
         double newRotation=robotRotation.getDegrees();
-        if(Math.abs(newRotation-oldRotation) % 360 >180){
-            System.out.println(oldRotation+":"+newRotation);
-        }
-        System.out.println(newRotation-oldRotation);
-        Pose2d newpose=new Pose2d(expfilt(oldpose.getX(),target.x),expfilt(oldpose.getY(), target.y),Rotation2d.fromDegrees(expfilt(oldpose.getRotation().getDegrees(), robotRotation.getDegrees())));
-        swerveOdometry.setPoseMeters(newpose);
+
+        // if(Math.abs(newRotation-oldRotation) % 360 >180){
+        //     System.out.println(oldRotation+":"+newRotation);
+        // }
+        // System.out.println(newRotation-oldRotation);
+
+        Pose2d newpose=new Pose2d(expfilt(oldpose.getX(),target.x),expfilt(oldpose.getY(), target.y),Rotation2d.fromDegrees(smartExpFilt(oldRotation, robotRotation.getDegrees())));
+        Pose2d newposenorot=new Pose2d(expfilt(oldpose.getX(),target.x),expfilt(oldpose.getY(), target.y),oldpose.getRotation());
+
+        swerveOdometry.setPoseMeters(newposenorot);
         mGyro.setYaw(newpose.getRotation().getDegrees());
 
         //swerveOdometry.setPoseMeters(new Pose2d(target.x, target.y, robotRotation));

@@ -159,8 +159,8 @@ public class Arm extends SubsystemBase {
         if(targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
         }
-        if(targetPos.y < -0.15) {
-            targetPos.y = -0.15;
+        if(targetPos.y < -0.12) {
+            targetPos.y = -0.12;
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)

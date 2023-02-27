@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Utils;
 import frc.robot.Vision;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hand;
 public class SetArmPosition extends InstantCommand {
 
     private static Arm mArm = Arm.getInstance();
@@ -30,12 +31,13 @@ public class SetArmPosition extends InstantCommand {
 
             switch(mDesiredState) {
                 case kStowPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0.484, 0.3986)).schedule();
+                new ChangeSetPoint(new Utils.Vector2D(0.65, 0.3986)).withTimeout(1).andThen(
+                        new ChangeSetPoint(new Utils.Vector2D(0.484, 0.3986))).schedule();
                     break;
 
                 case kIntakePosition:
                     // new IntakingManager().schedule();
-                    new ChangeSetPoint(new Utils.Vector2D(0.65, -0.4)).schedule();;
+                    new ChangeSetPoint(new Utils.Vector2D(0.65, -0.3)).schedule();;
                     break;
 
                 case kLoadingZonePosition:
@@ -48,7 +50,7 @@ public class SetArmPosition extends InstantCommand {
                     break;
 
                 case kMediumPosition:
-                    if(mHolding) {
+                    if(Hand.getInstance().getHolding()) {
                         new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127)).schedule();
                         System.out.println(mHolding);
                         System.out.println("Cone");
@@ -60,7 +62,7 @@ public class SetArmPosition extends InstantCommand {
                     break;
                     
                 case kHighPosition:
-                    if(mHolding) {
+                    if(Hand.getInstance().getHolding()) {
                         new ChangeSetPoint(new Utils.Vector2D(0.6, 1.432)).withTimeout(1).andThen(
                         new ChangeSetPoint(new Utils.Vector2D(1.464, 1.432))).schedule();
                     } else {
