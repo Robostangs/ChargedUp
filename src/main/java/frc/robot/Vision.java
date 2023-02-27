@@ -1,10 +1,15 @@
 package frc.robot;
 
+import java.util.Optional;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Utils.Vector3D;
 import frc.robot.subsystems.Arm;
 
 public class Vision {
@@ -25,6 +30,8 @@ public class Vision {
     private DoubleSubscriber mObjectTY = mDriverLimelight.getDoubleTopic("ty").subscribe(value);
     private DoubleSubscriber mObjectTX = mDriverLimelight.getDoubleTopic("tx").subscribe(value);
 
+    private double lastLeftMeasurementTimestamp;
+    private double lastRightMeasurementTimestamp;
 
     public enum LimelightState {
         leftLimelight,
@@ -144,4 +151,56 @@ public class Vision {
     //     double[] positions = sub.get();
     //     return new Utils.Vector3D(positions[0], positions[1], positions[2]);
     // }
+
+    public Optional<LimelightMeasurement> getNewLeftMeasurement() {
+        double[] positions = mLeftPosition.get();
+        if (!targetVisible(LimelightState.leftLimelight)) {
+            return Optional.empty();
+        }
+        double timestamp = delayToTime(positions[6]);
+        if ((timestamp - lastRightMeasurementTimestamp) < Constants.Swerve.Odometry.MIN_TIME_BETWEEN_LL_UPDATES_MS) {
+            return Optional.empty();
+        }
+        lastLeftMeasurementTimestamp = timestamp;
+
+        Vector3D position = fromAT(mLeftPosition);
+        Rotation2d rotation = rotFromAT(mLeftPosition);
+
+        return Optional.of(
+            new LimelightMeasurement(new Pose2d(position.x, position.y, rotation),
+            timestamp));
+    }
+
+    public Optional<LimelightMeasurement> getNewRightMeasurement() {
+        double[] positions = mRightPosition.get();
+        if (!targetVisible(LimelightState.rightLimelight)) {
+            return Optional.empty();
+        }
+        double timestamp = delayToTime(positions[6]);
+        if ((timestamp - lastRightMeasurementTimestamp) < Constants.Swerve.Odometry.MIN_TIME_BETWEEN_LL_UPDATES_MS) {
+            return Optional.empty();
+        }
+        lastRightMeasurementTimestamp = timestamp;
+
+        Vector3D position = fromAT(mRightPosition);
+        Rotation2d rotation = rotFromAT(mRightPosition);
+
+        return Optional.of(
+            new LimelightMeasurement(new Pose2d(position.x, position.y, rotation),
+            timestamp));
+    }
+
+    private static double delayToTime(double delay) {
+        return (Timer.getFPGATimestamp() - (delay / 1000));
+    }
+
+    public class LimelightMeasurement {
+        public final Pose2d mPose;
+        public final double mTime;
+
+        public LimelightMeasurement(Pose2d pose, double time) {
+            mPose = pose;
+            mTime = time;
+        }
+    }
 }

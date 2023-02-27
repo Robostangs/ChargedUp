@@ -2,9 +2,13 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
@@ -156,6 +160,23 @@ public final class Constants {
             public static final double kP = 0.02;
             public static final double kI = 0.00002;
             public static final double kD = 0.003;
+        }
+
+        public static final class Odometry {
+          // TODO: ADJUST THESE STANDARD DEVIATIONS
+          public static final Matrix<N3, N1> STATE_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
+          public static final Matrix<N3, N1> VISION_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
+          static {
+            STATE_STANDARD_DEVS.set(0, 0, 0.2); // State x position
+            STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
+            STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
+
+            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
+            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
+            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
+          }
+
+          public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
         }
     }
 
