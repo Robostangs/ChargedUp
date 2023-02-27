@@ -4,24 +4,17 @@ package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autos.exampleAuto;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Vision.LimelightMeasurement;
-import frc.robot.autos.Rotation;
-import frc.robot.autos.Translate;
 import frc.robot.commands.Arm.FineAdjust;
-import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetGrip;
-import frc.robot.commands.Hand.SetHolding;
 import frc.robot.commands.Hand.SetLightColor;
-import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.commands.Swerve.StraightenManager;
@@ -39,7 +32,9 @@ public class RobotContainer {
     /* Controllers */
     private final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
-  
+    private final CommandXboxController mCommandDriver = new CommandXboxController(0);
+    private final CommandXboxController mCommandManip = new CommandXboxController(1);
+
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
@@ -67,9 +62,9 @@ public class RobotContainer {
             )
         );
 
-        new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
-        new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
-        new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        mCommandDriver.y().whileTrue(new Flatten(0.3));
+        mCommandDriver.x().whileTrue(new balance());
+        mCommandDriver.back().toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         s_Arm.setDefaultCommand(
             new FineAdjust(
@@ -79,26 +74,26 @@ public class RobotContainer {
         );
 
         // Upon looking at the documentation whenPressed DOES do something different and it is what we want
-        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
-        new JoystickButton(mManipController, XboxController.Button.kY.value).whenPressed(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new ToggleHolding());
-        new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
+        mCommandManip.leftBumper().whileTrue(new SetGrip()); 
+        mCommandManip.y().onTrue(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
+        mCommandManip.b().onTrue(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
+        mCommandManip.a().onTrue(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
+        mCommandManip.x().onTrue(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
+        mCommandManip.leftStick().onTrue(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
+        mCommandManip.rightBumper().onTrue(new ToggleHolding());
+        mCommandManip.rightStick().onTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
 
-        new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
+        mCommandDriver.rightBumper().onTrue(new InstantCommand(() -> {
             Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
             if (leftMeasurement.isPresent()) {
                 s_Swerve.resetOdometry(leftMeasurement.get().mPose);
             }
-        });
+        }));
 
-        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
+        mCommandDriver.leftBumper().onTrue(new StraightenManager(s_Hand.getHolding()));
         new SetLightColor(56).schedule();
 
-        // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
+        // mCommandDriver.leftBumper().onTrue(new StraightenManager(s_Hand.getHolding()));
     }
 
     public Command getAutonomousCommand() {
