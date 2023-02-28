@@ -157,7 +157,7 @@ public final class Constants {
         }
 
         public static final class balancePID {
-            public static final double kP = 0.02;
+            public static final double kP = 0.015;
             public static final double kI = 0.00002;
             public static final double kD = 0.003;
         }
@@ -216,7 +216,7 @@ public final class Constants {
     public static final double shoulderMotorIZone = 0;
     */
 
-    public static final double shoulderMotorP = 5.1;
+    public static final double shoulderMotorP = 5.3;
     public static final double shoulderMotorI = 0;
     public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0;
@@ -233,9 +233,9 @@ public final class Constants {
     public static final double elbowMotorCompensationFactor = 1.5;
     */
 
-    public static final double elbowMotorP = 4.8;
-    public static final double elbowMotorI = 0.0;
-    public static final double elbowMotorD = 0.16;
+    public static final double elbowMotorP = 5.6;
+    public static final double elbowMotorI = 0.0005;
+    public static final double elbowMotorD = 0.17975;
     public static final double elbowMotorF = 1;
     public static final double elbowMotorIZone = 100;
     public static final double maxIntegeralAccumulator = 100000000;
@@ -270,7 +270,7 @@ public final class Constants {
     public static final double noReduceThreshold = 10 * 4096 / 360; // CANCoder Sensor units
 
     public static final double cruiseVelocity = 100; // Degrees per second
-    public static final double accelerationFactor = 70; // Degrees per second squared
+    public static final double accelerationFactor = 100; // Degrees per second squared
 
     public static final int smoothingFactor = 2; // Arbitrary 1-8
 

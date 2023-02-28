@@ -159,8 +159,8 @@ public class Arm extends SubsystemBase {
         if(targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
         }
-        if(targetPos.y < -0.12) {
-            targetPos.y = -0.12;
+        if(targetPos.y < -0.152) {
+            targetPos.y = -0.152;
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)
@@ -274,7 +274,7 @@ public class Arm extends SubsystemBase {
                 mShoulderHysteresis.reset();
             }
             if (Math.abs(elbowError) < Constants.Arm.noReduceThreshold) {
-                elbowPeakOutputs.y = 0.1;
+                elbowPeakOutputs.y = 0.12   ;
             }
             if (Math.abs(elbowError) < Constants.Arm.noReduceThreshold
                     && mElbowDebouncer.calculate(mElbowHysteresis.calculate(Math.abs(elbowError)))) {

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector2D;
+import frc.robot.autos.Rotation;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.subsystems.Arm;
@@ -34,7 +35,10 @@ public class IntakingManager extends SequentialCommandGroup {
         addCommands(
             // new SetGrip(),
             // new Flatten(mTX).andThen(() -> System.out.println("here part 2")),
-            new ChangeSetPoint(new Vector2D(mTargetHandX, 0))
+            // new (new Vector2D(mTargetHandX, -0.4))
+            // new InstantCommand(() -> System.out.println(mTX))
+            new InstantCommand(() -> System.out.println(mTX))
+            // new Rotation(mDrivetrain.getGyroAngle() + 30)
             // new SetGrip(),
             // new SetArmPosition(ArmPosition.kStowPosition, true)
         );

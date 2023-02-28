@@ -35,6 +35,6 @@ public class Flatten extends InstantCommand {
 
     public void execute() {
         //Path Stuff with the Mangle
-        new Rotation(mDrivetrain, mAngle);
+        new Rotation(mAngle);
     }
 }

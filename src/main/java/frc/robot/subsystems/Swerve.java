@@ -126,6 +126,10 @@ public class Swerve extends SubsystemBase {
         mGyro.setYaw(0);
     }
 
+    public void setGyro(double angle) {
+        mGyro.setYaw(angle);
+    }
+
     public double getGyroAngle() {
         return (Math.abs(mGyro.getYaw()) % 360);
     }

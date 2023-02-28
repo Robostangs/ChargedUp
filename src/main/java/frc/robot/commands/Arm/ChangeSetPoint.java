@@ -37,8 +37,7 @@ public class ChangeSetPoint extends CommandBase {
     @Override
     public boolean isFinished() {
         if (mArm.getElbowLocked() && mArm.getShoulderLocked() && hasRun) {
-            return true
-            ;
+            return true;
         }
         return false;
     }
