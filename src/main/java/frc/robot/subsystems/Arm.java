@@ -371,29 +371,6 @@ public class Arm extends SubsystemBase{
             return null;
         }
     }
-<<<<<<< Updated upstream
-} 
-=======
-
-    public Double getCanCoder(String joint) {
-        if (joint == "shoulder") {
-            return mShoulderCanCoder.getAbsolutePosition();
-        } else if (joint == "elbow") {
-            return mElbowCanCoder.getAbsolutePosition();
-        } else {
-            return null;
-        }
-    }
-
-    public Double getTemperature(String joint) {
-        if (joint == "shoulder") {
-            return mShoulderMotor.getTemperature();
-        } else if (joint == "elbow") {
-            return mElbowMotor.getTemperature();
-        } else {
-            return null;
-        }
-    }
 
     public void setPower(double shoulder, double elbow) {
         mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
@@ -405,4 +382,3 @@ public class Arm extends SubsystemBase{
         mElbowMotor.set(ControlMode.MusicTone, hertz);
     }
 }
->>>>>>> Stashed changes

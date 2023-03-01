@@ -124,12 +124,9 @@ public class SwerveModule {
     public double TalonAngleTemperature() {
         return mAngleMotor.getTemperature();
     }
-<<<<<<< Updated upstream
-=======
 
     public void warningSound(double hertz) {
         mDriveMotor.set(ControlMode.MusicTone, hertz);
         mAngleMotor.set(ControlMode.MusicTone, hertz);
     }
->>>>>>> Stashed changes
 }
