@@ -17,14 +17,16 @@ public class TeleopSwerve extends CommandBase {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
+    private BooleanSupplier mSlowDown;
 
-    public TeleopSwerve(DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+    public TeleopSwerve(DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier slowDown) {
         addRequirements(s_Swerve);
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
+        mSlowDown = slowDown;
     }
 
     @Override
@@ -33,6 +35,12 @@ public class TeleopSwerve extends CommandBase {
         double translationVal = Utils.customDeadzone(translationSup.getAsDouble());
         double strafeVal = Utils.customDeadzone(strafeSup.getAsDouble());
         double rotationVal = Utils.customDeadzone(rotationSup.getAsDouble());
+
+        // if(mSlowDown.getAsBoolean()) {
+        //     translationVal *= 0.1;
+        //     strafeVal *= 0.1;
+        //     rotationVal *= 0.1;
+        // }
 
         /* Drive */
         s_Swerve.drive(

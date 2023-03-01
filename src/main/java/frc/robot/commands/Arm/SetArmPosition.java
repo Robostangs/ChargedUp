@@ -2,74 +2,68 @@
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Utils;
 import frc.robot.Vision;
 import frc.robot.subsystems.Arm;
-public class SetArmPosition extends CommandBase{
+import frc.robot.subsystems.Hand;
+
+public class SetArmPosition extends SequentialCommandGroup {
 
     private static Arm mArm = Arm.getInstance();
     private double distance = 0;
     private Arm.ArmPosition mDesiredState = null;
     private boolean mHolding = true;
-    
     public SetArmPosition(Arm.ArmPosition state, boolean holding) {
         addRequirements(mArm);
         mDesiredState = state;
         mHolding = holding;
+
+        switch (mDesiredState) {
+            case kStowPosition:
+                addCommands(
+                        new ChangeSetPoint(new Utils.Vector2D(0.65, 0.45)),
+                        new WaitCommand(0.8),
+                        new ChangeSetPoint(new Utils.Vector2D(0.7, 0.34)));
+                break;
+
+            case kIntakePosition:
+                // new IntakingManager().schedule();
+                addCommands(
+                        new ChangeSetPoint(new Utils.Vector2D(0.65, -0.3)));
+                break;
+
+            case kLoadingZonePosition:
+                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.78, 0.99)));
+                break;
+
+            case kLowPosition:
+                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.7, 0.158)));
+                break;
+
+            case kMediumPosition:
+                if (Hand.getInstance().getHolding()) {
+                    addCommands(new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127)));
+                } else {
+                    addCommands(new ChangeSetPoint(new Utils.Vector2D(1.035, 0.752)));
+                }
+                break;
+
+            case kHighPosition:
+                if (Hand.getInstance().getHolding()) {
+                    addCommands(
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.40)),
+                        new WaitCommand(0.8),
+                        new ChangeSetPoint(new Utils.Vector2D(1.465, 1.40)));
+                } else {
+                    addCommands(
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.04)),
+                        new WaitCommand(0.8),
+                        new ChangeSetPoint(new Utils.Vector2D(1.531, 1.04)));
+                }
+                break;
+        }
     }
-
-    @Override
-    public void initialize() { 
-        distance = Vision.getInstance().getDrivetrainDistance();
-    }
-
-    @Override
-    public void execute() {
-        System.out.println(mDesiredState);
-
-            switch(mDesiredState) {
-                case kStowPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0.2, 0.45)).schedule();
-                    break;
-                case kIntakePosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0.7, -0.07)).schedule();
-                    break;
-                case kLoadingZonePosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0, 0)).schedule();
-                    break;
-                case kLowPosition:
-                    new ChangeSetPoint(new Utils.Vector2D(0.87, 0.16)).schedule();
-                    break;
-                case kMediumPosition:
-                    if(mHolding) {
-                        new ChangeSetPoint(new Utils.Vector2D(1.1, 0.9)).schedule();
-                        System.out.println(mHolding);
-                        System.out.println("Cone");
-                    } else {
-                        new ChangeSetPoint(new Utils.Vector2D(1.15, 1.0)).schedule();
-                        System.out.println(mHolding);
-                        System.out.println("Cube");
-                    }
-                    break;
-                case kHighPosition:
-                    if(mHolding) {
-                        new ChangeSetPoint(new Utils.Vector2D(1.45, 1.2)).schedule();
-                    } else {
-                        new ChangeSetPoint(new Utils.Vector2D(1.5, 1.0)).schedule();
-                    }
-                    break;
-                // case kMediumPositionCone:
-                //     new ChangeSetPoint(new Utils.Vector2D(1.1, 0.9)).schedule();
-                //     break;
-                // case kHighPositionCone:
-                //     new ChangeSetPoint(new Utils.Vector2D(1.45, 1.2)).schedule();
-                //     break;
-                // case kMediumPositionCube:
-                //     new ChangeSetPoint(new Utils.Vector2D(1.15, 1.0)).schedule();
-                //     break;
-                // case kHighPositionCube:
-                //     new ChangeSetPoint(new Utils.Vector2D(1.5, 1.0)).schedule();
-                //     break;
-            }
-    }   
 }

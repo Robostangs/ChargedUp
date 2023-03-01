@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import frc.robot.Constants;
+import frc.robot.Utils;
 import frc.robot.subsystems.Swerve;
 
 import java.util.List;
@@ -9,33 +10,38 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class translate extends SequentialCommandGroup {
-    public translate(Swerve s_Swerve, double distance){
+    public translate(Swerve s_Swerve, Utils.Vector2D position){
+        addRequirements(s_Swerve);
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared*0.5)
                 .setKinematics(Constants.Swerve.swerveKinematics);
 
         // An example trajectory to follow.  All units in meters.
-       
+
         new Rotation2d();
         Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
-                new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+                new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(s_Swerve.getGyroAngle())),
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(0, 0), new Translation2d(0, distance)),
+                List.of(
+                        // new Translation2d(1, 0),
+                        // new Translation2d(1, 1),
+                        // new Translation2d(0, 1)
+                        ),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(0, distance, Rotation2d.fromDegrees(0)),
+                new Pose2d(position.x, position.y, Rotation2d.fromDegrees((position.y >= Constants.fieldLength/2) ? 0 : 180)),
                 config);
 
 
@@ -49,16 +55,16 @@ public class translate extends SequentialCommandGroup {
                 exampleTrajectory,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPXController, 1, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 1, 0),
                 thetaController,
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
-            swerveControllerCommand
+            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())).andThen(new InstantCommand(() -> System.out.println("I reset"))),
+            swerveControllerCommand.deadlineWith(new RunCommand(() -> System.out.println(s_Swerve.getPose().getX() + ", " + s_Swerve.getPose().getY())))
         );
     }
 }

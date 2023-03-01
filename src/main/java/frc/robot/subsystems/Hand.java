@@ -9,7 +9,7 @@ public class Hand extends SubsystemBase {
     private static Hand mInstance;
     private DoubleSolenoid mSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 6,7);
     public boolean holdingCone = true;
-    public boolean gripping = true;
+    public boolean gripping = false;
 
     public static Hand getInstance() {
         if(mInstance == null) {
@@ -26,7 +26,7 @@ public class Hand extends SubsystemBase {
         }
     }
 
-    public void setGripping(Boolean g) {
+    public void setGripping(boolean g) {
         gripping = g;
     }
 
