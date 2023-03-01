@@ -13,7 +13,7 @@ import frc.robot.Constants;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector3D;
 import frc.robot.Vision.LimelightState;
-import frc.robot.autos.Translate;
+import frc.robot.autos.translate;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Utils;
 
@@ -84,7 +84,7 @@ public class GetToPosition extends CommandBase {
                 }
             }
         }
-        new Translate(mDrivetrain, setPosition).schedule();
+        new translate(mDrivetrain, setPosition).schedule();
     }
 
 }

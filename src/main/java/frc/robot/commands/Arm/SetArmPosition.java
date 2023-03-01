@@ -16,7 +16,6 @@ public class SetArmPosition extends SequentialCommandGroup {
     private double distance = 0;
     private Arm.ArmPosition mDesiredState = null;
     private boolean mHolding = true;
-
     public SetArmPosition(Arm.ArmPosition state, boolean holding) {
         addRequirements(mArm);
         mDesiredState = state;

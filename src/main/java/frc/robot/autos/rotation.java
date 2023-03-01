@@ -6,10 +6,9 @@ import frc.robot.subsystems.Swerve;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class Rotation extends InstantCommand {
+public class rotation extends InstantCommand {
     Swerve mSwerve;
     Vision mVision = Vision.getInstance();
     boolean isReversed = false;
@@ -19,7 +18,7 @@ public class Rotation extends InstantCommand {
     double startAngle = 0;
     double endAngle = 0;
 
-    public Rotation(double rotation) {
+    public rotation(double rotation) {
         endAngle = rotation;
         mSwerve = Swerve.getInstance();
         addRequirements(Swerve.getInstance());

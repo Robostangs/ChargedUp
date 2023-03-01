@@ -116,4 +116,17 @@ public class SwerveModule {
             getAngle()
         );
     }
+
+    public double TalonDriveTemperature() {
+        return mDriveMotor.getTemperature();
+    }
+
+    public double TalonAngleTemperature() {
+        return mAngleMotor.getTemperature();
+    }
+
+    public void warningSound(double hertz) {
+        mDriveMotor.set(ControlMode.MusicTone, hertz);
+        mAngleMotor.set(ControlMode.MusicTone, hertz);
+    }
 }

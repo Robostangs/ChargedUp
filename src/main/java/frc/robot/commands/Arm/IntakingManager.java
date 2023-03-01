@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector2D;
-import frc.robot.autos.Rotation;
+import frc.robot.autos.rotation;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.subsystems.Arm;

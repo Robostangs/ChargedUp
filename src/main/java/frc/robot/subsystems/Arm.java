@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase {
     private CANCoder mShoulderCanCoder;
     // private int shoulderTimer;
 
-    private Compressor mCompressor;
+    public Compressor mCompressor;
 
     private Utils.Vector2D mCurrentSetpoint;
     private Utils.Vector2D mLastMotorAngles=new Utils.Vector2D(0,0);
@@ -44,6 +44,8 @@ public class Arm extends SubsystemBase {
 
     private int mShoulderLockoutCounter;
     private int mElbowLockoutCounter;
+    
+    // public Spark mBlinken = new Spark(0);
 
     // public Spark mBlinken = new Spark(0);
     Debouncer mElbowDebouncer = new Debouncer(0.3, DebounceType.kRising);
@@ -409,6 +411,35 @@ public class Arm extends SubsystemBase {
         mCurrentSetpoint.add(xOffset,0);
     }
 
+    public Double getCanCoder(String joint) {
+        if (joint == "shoulder") {
+            return mShoulderCanCoder.getAbsolutePosition();
+        } else if (joint == "elbow") {
+            return mElbowCanCoder.getAbsolutePosition();
+        } else {
+            return null;
+        }
+    }
+
+    public Double getTemperature(String joint) {
+        if (joint == "shoulder") {
+            return mShoulderMotor.getTemperature();
+        } else if (joint == "elbow") {
+            return mElbowMotor.getTemperature();
+        } else {
+            return null;
+        }
+    }
+
+    public void setPower(double shoulder, double elbow) {
+        mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
+        mElbowMotor.set(ControlMode.PercentOutput, elbow);
+    }
+
+    public void setSound(double hertz) {
+        mShoulderMotor.set(ControlMode.MusicTone, hertz);
+        mElbowMotor.set(ControlMode.MusicTone, hertz);
+    }
     public boolean getElbowLocked() {
         return !mElbowBrakeSolenoid.get();
     }

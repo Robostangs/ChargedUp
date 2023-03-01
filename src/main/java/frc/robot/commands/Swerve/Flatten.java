@@ -2,11 +2,10 @@
 package frc.robot.commands.Swerve;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Vision;
-import frc.robot.autos.Rotation;
+import frc.robot.autos.rotation;
 import frc.robot.subsystems.Swerve;
 
 public class Flatten extends InstantCommand {
@@ -35,6 +34,6 @@ public class Flatten extends InstantCommand {
 
     public void execute() {
         //Path Stuff with the Mangle
-        new Rotation(mAngle);
+        new rotation(mAngle);
     }
 }

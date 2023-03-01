@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -17,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Arm;
+import frc.robot.Test.PITTest2;
 import frc.robot.subsystems.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,7 +34,8 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private PowerDistribution mPowerDistribution;
+  private PITTest2 pitTest;
+  public static PowerDistribution mPowerDistribution;
   public static SendableChooser<String> chooser;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
@@ -123,10 +129,22 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    CommandScheduler.getInstance().enable();
+    CommandScheduler.getInstance().clearComposedCommands();
+    pitTest = new PITTest2();
+    
+    pitTest.schedule();
+    // exec = pitTest.run();
+    // exec = new Runnable() {
+    //   public void run() {pitTest.exec();}
+    // };
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    // exec.run();
+    SmartDashboard.putString("PIT Test Status", pitTest.updateBoard());
+    System.out.println(pitTest.updateBoard());
+  }
 }

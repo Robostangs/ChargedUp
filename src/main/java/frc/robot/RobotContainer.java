@@ -16,16 +16,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.exampleAuto;
 import frc.robot.Vision.LimelightMeasurement;
-import frc.robot.autos.Rotation;
-import frc.robot.autos.Translate;
+import frc.robot.autos.rotation;
+import frc.robot.autos.translate;
 import frc.robot.autos.autoFromPath;
+import frc.robot.commands.AestheticsCMD.LightCMD;
+import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.SetHolding;
-import frc.robot.commands.Hand.SetLightColor;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
@@ -42,7 +43,7 @@ import frc.robot.subsystems.Arm.ArmPosition;
  */
 public class RobotContainer {
     /* Controllers */
-    private final XboxController mDriverController = new XboxController(0);
+    public final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
   
     /* Subsystems */
@@ -83,6 +84,13 @@ public class RobotContainer {
                 () -> Utils.customDeadzone(-mManipController.getLeftY())
             )
         );
+        
+        // new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new SetArmPosition(Arm.ArmPosition.kHighPositionCone));
+        // new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
+        // new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kHighPositionCube));
+        // new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCube));
+        // new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
+        // new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
 
         // Upon looking at the documentation whenPressed DOES do something different and it is what we want
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
@@ -106,10 +114,10 @@ public class RobotContainer {
             }
         });
 
-        new POVButton(mManipController, 270).whenPressed(new SetLightColor(0.67));
-        new POVButton(mManipController, 90).whenPressed(new SetLightColor(0.91));
+        new JoystickButton(mDriverController, XboxController.Button.kA.value).whenPressed(new rotation(-s_Vision.getDrivetrainAngle()));
+        new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
+        new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
 
-        new JoystickButton(mDriverController, XboxController.Button.kA.value).whenPressed(new Rotation(-s_Vision.getDrivetrainAngle()));
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
@@ -124,5 +132,4 @@ public class RobotContainer {
         // TODO
         return new autoFromPath();
     }
-
 }

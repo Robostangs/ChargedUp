@@ -40,6 +40,8 @@ public final class Constants {
           public static final double kLinFuncConstant = 0.562;
     
           public static final double kNoSpeed = 0;
+
+          public static final double kJoyStickDeadZone = 0.05;
         }
 
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -106,6 +108,7 @@ public final class Constants {
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+        public static final double testSpeed = 0.2;
         /** Radians per Second */
         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
 
@@ -270,13 +273,17 @@ public final class Constants {
     public static final double noReduceThreshold = 10 * 4096 / 360; // CANCoder Sensor units
 
     public static final double cruiseVelocity = 100; // Degrees per second
+
+    
     public static final double accelerationFactor = 100; // Degrees per second squared
-
+    
     public static final int smoothingFactor = 2; // Arbitrary 1-8
-
+    
     public static final double ManualAdjustMPS = 0.1; //meters per second
-  
+    
     public static final double allowableError = 10;
+    
+    public static int blinkenPWM_ID = 0;
   }
 
   public static class Hand {
