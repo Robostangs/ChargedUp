@@ -19,14 +19,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Hand;
 import frc.robot.commands.AestheticsCMD.LightCMD;
-import frc.robot.commands.AestheticsCMD.MusicCMD;
-import frc.robot.commands.AestheticsCMD.WarningBeep;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Aesthetics.Music;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
 
@@ -133,12 +130,6 @@ public class PITTest2 extends SequentialCommandGroup {
             SmartDashboard.putString("Tested Commands", testedCommands.toString());
             return commandList[currCommand].getName();
         }
-    }
-
-    public Command musicCommand() {
-        final Command musicCMD = new MusicCMD();
-        new LightCMD(-0.81).schedule(); //Forrest Green Pallette
-        return musicCMD;
     }
 
     public static boolean didRun() {

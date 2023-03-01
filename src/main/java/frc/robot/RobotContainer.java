@@ -38,7 +38,6 @@ public class RobotContainer {
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
-    public static boolean musicTrue = false;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -76,13 +75,6 @@ public class RobotContainer {
             new FineAdjust(
                 () -> mManipController.getLeftY(),
                 () -> mManipController.getRightY()
-            )
-        );
-        /** Can Delete later, is a fine adjust alternative */
-        s_Arm.setDefaultCommand( //TODO: Delete this later
-            new temp_ChangeSetPoint(
-                () -> -mManipController.getLeftTriggerAxis(),
-                () -> -mManipController.getRightTriggerAxis()
             )
         );
         
