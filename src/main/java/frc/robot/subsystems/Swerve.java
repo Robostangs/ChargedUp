@@ -158,6 +158,10 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getYaw(), getModulePositions());
     }
 
+    public void updateOdometryManual(double x, double y, double angle) {
+        swerveOdometry.resetPosition(Rotation2d.fromDegrees(angle), getModulePositions(), new Pose2d(x, y, Rotation2d.fromDegrees(angle)));
+    }
+
     private void updateWithLimelight() {
         Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
         if (!leftMeasurement.isEmpty()) {

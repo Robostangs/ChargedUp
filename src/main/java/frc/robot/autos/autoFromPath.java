@@ -13,14 +13,19 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.balance;
@@ -36,8 +41,10 @@ public class autoFromPath extends SequentialCommandGroup {
         Swerve s_Swerve = Swerve.getInstance();
         Arm s_Arm = Arm.getInstance();
         Hand s_Hand = Hand.getInstance();
-        addRequirements(s_Swerve, s_Arm, s_Hand
-        );
+        addRequirements(s_Swerve, s_Arm, s_Hand);
+        String path = "paths/" + Robot.chooser.getSelected();
+        DataLogManager.log(path);
+        
         TrajectoryConfig config = new TrajectoryConfig(
                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -47,12 +54,15 @@ public class autoFromPath extends SequentialCommandGroup {
 
 
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("paths/BalanceSpotFarNearLink.wpilib.json");
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(path);
             Trajectory exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
             var thetaController = new ProfiledPIDController(
                     Constants.AutoConstants.kPThetaController, 0, 0,
                     Constants.AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+            s_Swerve.setGyro(180);
+            s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 180);
 
             SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                     exampleTrajectory,
@@ -66,10 +76,11 @@ public class autoFromPath extends SequentialCommandGroup {
 
             addCommands(
                     new SetArmPosition(ArmPosition.kHighPosition, Hand.getInstance().getHolding()),
-                    new WaitCommand(0.75),
                     new SetGrip().withTimeout(0.7),
-                    new SetArmPosition(ArmPosition.kStowPosition, Hand.getInstance().getHolding()),
-                    new WaitCommand(0.5),
+                    new ParallelRaceGroup(
+                        new SetArmPosition(ArmPosition.kStowPosition, Hand.getInstance().getHolding()),
+                        new WaitCommand(0.3)
+                    ),
                     new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
                     swerveControllerCommand,
                     new balance()

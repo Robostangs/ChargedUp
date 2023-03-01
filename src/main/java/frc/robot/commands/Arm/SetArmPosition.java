@@ -25,9 +25,9 @@ public class SetArmPosition extends SequentialCommandGroup {
         switch (mDesiredState) {
             case kStowPosition:
                 addCommands(
-                        new ChangeSetPoint(new Utils.Vector2D(0.65, 0.45)),
-                        new WaitCommand(0.8),
-                        new ChangeSetPoint(new Utils.Vector2D(0.7, 0.34)));
+                        new ChangeSetPoint(new Utils.Vector2D(0.59, 0.45)),
+                        new WaitCommand(0.3),
+                        new ChangeSetPoint(new Utils.Vector2D(0.59, 0.34)));
                 break;
 
             case kIntakePosition:
@@ -37,7 +37,7 @@ public class SetArmPosition extends SequentialCommandGroup {
                 break;
 
             case kLoadingZonePosition:
-                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.78, 0.99)));
+                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.83, 0.99)));
                 break;
 
             case kLowPosition:
@@ -56,13 +56,13 @@ public class SetArmPosition extends SequentialCommandGroup {
                 if (Hand.getInstance().getHolding()) {
                     addCommands(
                         new ChangeSetPoint(new Utils.Vector2D(0.6, 1.40)),
-                        new WaitCommand(0.8),
-                        new ChangeSetPoint(new Utils.Vector2D(1.465, 1.40)));
+                        new WaitCommand(0.3),
+                        new ChangeSetPoint(new Utils.Vector2D(1.485, 1.40)));
                 } else {
                     addCommands(
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.04)),
-                        new WaitCommand(0.8),
-                        new ChangeSetPoint(new Utils.Vector2D(1.531, 1.04)));
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 0.97)),
+                        new WaitCommand(0.3),
+                        new ChangeSetPoint(new Utils.Vector2D(1.531, 0.97)));
                 }
                 break;
         }

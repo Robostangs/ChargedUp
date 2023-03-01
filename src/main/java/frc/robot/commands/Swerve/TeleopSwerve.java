@@ -36,11 +36,11 @@ public class TeleopSwerve extends CommandBase {
         double strafeVal = Utils.customDeadzone(strafeSup.getAsDouble());
         double rotationVal = Utils.customDeadzone(rotationSup.getAsDouble());
 
-        // if(mSlowDown.getAsBoolean()) {
-        //     translationVal *= 0.1;
-        //     strafeVal *= 0.1;
-        //     rotationVal *= 0.1;
-        // }
+        if(mSlowDown.getAsBoolean()) {
+            translationVal *= 0.1;
+            strafeVal *= 0.1;
+            rotationVal *= 0.1;
+        }
 
         /* Drive */
         s_Swerve.drive(

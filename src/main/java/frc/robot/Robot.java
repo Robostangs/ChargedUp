@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
@@ -27,6 +29,8 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private PowerDistribution mPowerDistribution;
+  public static SendableChooser<String> chooser;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
   /**
@@ -39,6 +43,20 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    // mPowerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kRev);
+
+    chooser = new SendableChooser<String>();
+    chooser.setDefaultOption("Nothing", "Nothing");
+    chooser.addOption("BalanceSpotFarNearLink", "BalanceSpotFarNearLink.wpilib.json");
+    chooser.addOption("BalanceSpotNearNearLink", "BalanceSpotNearNearLink.wpilib.json");
+    chooser.addOption("CenterBalance", "CenterBalance.wpilib.json");
+    chooser.addOption("LeaveSpotFarNearLink", "LeaveSpotFarNearLink.wpilib.json");
+    chooser.addOption("LeaveSpotNearNearLink", "LeaveSpotNearNearLink.wpilib.json");
+    SmartDashboard.putData("jefy",chooser);
+
+
+
+    
 
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});

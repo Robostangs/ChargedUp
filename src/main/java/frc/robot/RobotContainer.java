@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.exampleAuto;
 import frc.robot.Vision.LimelightMeasurement;
 import frc.robot.autos.Rotation;
@@ -105,11 +106,14 @@ public class RobotContainer {
             }
         });
 
+        new POVButton(mManipController, 270).whenPressed(new SetLightColor(0.67));
+        new POVButton(mManipController, 90).whenPressed(new SetLightColor(0.91));
+
         new JoystickButton(mDriverController, XboxController.Button.kA.value).whenPressed(new Rotation(-s_Vision.getDrivetrainAngle()));
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
-        new SetLightColor(56).schedule();
+        // new SetLightColor(56).schedule();
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
     }
