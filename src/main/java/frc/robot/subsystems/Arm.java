@@ -70,8 +70,8 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Shoulder");
-        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "Elbow");
+        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder");
+        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow");
 
         mShoulderMotor.configVoltageCompSaturation(10);
         mShoulderMotor.enableVoltageCompensation(true);
@@ -286,7 +286,7 @@ public class Arm extends SubsystemBase {
             }
 
             if (Math.abs(shoulderError) < Constants.Arm.noReduceThreshold) {
-                shoulderPeakOutputs.y = 0.07;
+                shoulderPeakOutputs.y = 0.1;
             }
             if ((Math.abs(shoulderError) < Constants.Arm.noReduceThreshold
                     && mShoulderDebouncer.calculate(mShoulderHysteresis.calculate(Math.abs(shoulderError)))

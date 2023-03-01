@@ -216,7 +216,7 @@ public final class Constants {
     public static final double shoulderMotorIZone = 0;
     */
 
-    public static final double shoulderMotorP = 5.3;
+    public static final double shoulderMotorP = 5.1;
     public static final double shoulderMotorI = 0;
     public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0;

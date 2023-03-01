@@ -37,7 +37,7 @@ public class SetArmPosition extends SequentialCommandGroup {
                 break;
 
             case kLoadingZonePosition:
-                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.83, 0.99)));
+                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.83, 0.995)));
                 break;
 
             case kLowPosition:
@@ -55,9 +55,9 @@ public class SetArmPosition extends SequentialCommandGroup {
             case kHighPosition:
                 if (Hand.getInstance().getHolding()) {
                     addCommands(
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.40)),
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.44)),
                         new WaitCommand(0.3),
-                        new ChangeSetPoint(new Utils.Vector2D(1.485, 1.40)));
+                        new ChangeSetPoint(new Utils.Vector2D(1.485, 1.44)));
                 } else {
                     addCommands(
                         new ChangeSetPoint(new Utils.Vector2D(0.6, 0.97)),

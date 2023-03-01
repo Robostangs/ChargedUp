@@ -28,17 +28,17 @@ public class SwerveModule {
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;
-            
+
         /* Angle Encoder Config */
         angleEncoder = new CANCoder(moduleConstants.cancoderID);
         configAngleEncoder();
 
         /* Angle Motor Config */
-        mAngleMotor = new LoggyWPI_TalonFX(moduleConstants.angleMotorID, "Turn Motor " + moduleNumber);
+        mAngleMotor = new LoggyWPI_TalonFX(moduleConstants.angleMotorID, "/Turn Motor " + moduleNumber);
         configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new LoggyWPI_TalonFX(moduleConstants.driveMotorID, "Drive Motor " + moduleNumber);
+        mDriveMotor = new LoggyWPI_TalonFX(moduleConstants.driveMotorID, "/Drive Motor " + moduleNumber);
         configDriveMotor();
 
         lastAngle = getState().angle;
