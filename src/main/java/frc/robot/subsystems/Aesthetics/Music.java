@@ -4,6 +4,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+<<<<<<< Updated upstream
+=======
+import frc.robot.SwerveModule;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Swerve;
+>>>>>>> Stashed changes
 
 import java.io.File;
 
@@ -12,8 +18,15 @@ import com.ctre.phoenix.music.Orchestra;
 
 public class Music extends SubsystemBase {
     private static Music mMusic;
+<<<<<<< Updated upstream
     private static Orchestra mOrchestra;
     private static Orchestra nOrchestra;
+=======
+    private static Arm mArm;
+    private static Swerve mSwerve;
+    private static Orchestra mOrchestra = new Orchestra();
+    private static Orchestra nOrchestra = new Orchestra();
+>>>>>>> Stashed changes
     
     private static String Song;
     private static int instrumentNum;
@@ -26,6 +39,10 @@ public class Music extends SubsystemBase {
     private final Command crossfade;
     
     public static final String[] playlist = {
+<<<<<<< Updated upstream
+=======
+        "MoveIt_MoveIt.chrp",
+>>>>>>> Stashed changes
         "TwinkleStar.chrp",
         "HotCrossBuns.chrp"
     };
@@ -37,8 +54,14 @@ public class Music extends SubsystemBase {
 
     
     public Music() {
+<<<<<<< Updated upstream
         mOrchestra = new Orchestra();
         nOrchestra = new Orchestra();
+=======
+        mArm = Arm.getInstance();
+        mSwerve = Swerve.getInstance();
+
+>>>>>>> Stashed changes
         crossfade = new WaitCommand(1);
         
         instrumentNum = 0;
@@ -79,8 +102,13 @@ public class Music extends SubsystemBase {
     
     public void loadSong(String filename) {
         Song = filename;
+<<<<<<< Updated upstream
         mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
         nOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
+=======
+        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Music" + File.separator + filename);
+        nOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Music" + File.separator + filename);
+>>>>>>> Stashed changes
     }
 
     public static String playlistOrder() {
@@ -121,4 +149,14 @@ public class Music extends SubsystemBase {
     }
 */
 
+<<<<<<< Updated upstream
 }
+=======
+    public void warningSound(double hertz) {
+        mArm.setSound(hertz);
+        for (SwerveModule mod : mSwerve.mSwerveMods) {
+            mod.warningSound(hertz);
+        }
+    }
+}
+>>>>>>> Stashed changes

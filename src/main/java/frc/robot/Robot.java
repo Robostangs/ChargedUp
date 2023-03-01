@@ -5,6 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+<<<<<<< Updated upstream
+=======
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+>>>>>>> Stashed changes
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Arm.SetArmPosition;
@@ -21,10 +26,16 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+<<<<<<< Updated upstream
   private PITTest pitTest;
 
   private boolean musicTrue = false;
 
+=======
+  private PITTest pitTest = new PITTest();
+  static PowerDistribution pdh = new PowerDistribution();
+  private Runnable exec;
+>>>>>>> Stashed changes
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
   
   final Command startPOS = new SetArmPosition(ArmPosition.kStowPosition, true);
@@ -39,7 +50,16 @@ public class Robot extends TimedRobot {
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+<<<<<<< Updated upstream
     m_robotContainer = new RobotContainer();
+=======
+
+    // m_robotContainer = new RobotContainer();
+
+    CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
+    CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
+    CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
+>>>>>>> Stashed changes
   }
 
   /**
@@ -101,6 +121,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+<<<<<<< Updated upstream
     CommandScheduler.getInstance().cancelAll();
     
     if (musicTrue) {
@@ -110,9 +131,24 @@ public class Robot extends TimedRobot {
     }
 
     // Cancels all running commands at the start of test mode.
+=======
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().enable();
+    CommandScheduler.getInstance().clearComposedCommands();
+    
+    pitTest.schedule();
+    // exec = pitTest.run();
+    exec = new Runnable() {
+      public void run() {pitTest.exec();}
+    };
+>>>>>>> Stashed changes
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    exec.run();
+    SmartDashboard.putString("PIT Test Status", pitTest.updateBoard());
+    System.out.println(pitTest.updateBoard());
+  }
 }

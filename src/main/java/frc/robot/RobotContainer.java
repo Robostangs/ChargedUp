@@ -1,4 +1,7 @@
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -6,13 +9,28 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+<<<<<<< Updated upstream
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.rotation;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
+=======
+import frc.robot.autos.exampleAuto;
+import frc.robot.Vision.LimelightMeasurement;
+import frc.robot.autos.Rotation;
+import frc.robot.autos.Translate;
+import frc.robot.autos.autoFromPath;
+import frc.robot.commands.AestheticsCMD.LightCMD;
+>>>>>>> Stashed changes
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.SetArmPosition;
+<<<<<<< Updated upstream
 import frc.robot.commands.Arm.temp_ChangeSetPoint;
 import frc.robot.commands.Autos.Balance;
+=======
+import frc.robot.commands.Autos.balance;
+import frc.robot.commands.Hand.SetGrip;
+import frc.robot.commands.Hand.SetHolding;
+>>>>>>> Stashed changes
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
@@ -28,7 +46,7 @@ import frc.robot.subsystems.Arm.ArmPosition;
  */
 public class RobotContainer {
     /* Controllers */
-    private final XboxController mDriverController = new XboxController(0);
+    final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
   
     /* Subsystems */
@@ -60,7 +78,12 @@ public class RobotContainer {
                 (mDriverController.getRightX() < -Constants.Swerve.CustomDeadzone.kJoyStickDeadZone || mDriverController.getRightX() > Constants.Swerve.CustomDeadzone.kJoyStickDeadZone) ?
                     () -> -mDriverController.getRightX() :
                     () -> 0, 
+<<<<<<< Updated upstream
                 () ->  mDriverController.getAButton()
+=======
+                () -> mDriverController.getAButton(),
+                () -> mDriverController.getLeftBumper()
+>>>>>>> Stashed changes
             )
         );
 
@@ -89,19 +112,43 @@ public class RobotContainer {
         // new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
         // new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
 
+<<<<<<< Updated upstream
         new JoystickButton(mManipController, XboxController.Button.kStart.value).whileTrue(new ToggleHolding());
         new JoystickButton(mManipController, XboxController.Button.kY.value).whileTrue(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kB.value).whileTrue(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kA.value).whileTrue(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kX.value).whileTrue(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
+=======
+        // Upon looking at the documentation whenPressed DOES do something different and it is what we want
+        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
+        new JoystickButton(mManipController, XboxController.Button.kY.value).whileTrue(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kB.value).whileTrue(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kA.value).whileTrue(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kX.value).whileTrue(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whileTrue(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new ToggleHolding());
+        new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whileTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
+        // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whileTrue(new exampleAuto(s_Swerve))
+        ;
+>>>>>>> Stashed changes
 
         new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
 
+<<<<<<< Updated upstream
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new ToggleGrip());
 
         new POVButton(mManipController, 270).whileTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).whileTrue(new LightReqCMD(180));
         new POVButton(mManipController, 90).whileTrue(new LightReqCMD(90));
+=======
+        new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Rotation(-s_Vision.getDrivetrainAngle()));
+        // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
+
+        // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
+        new LightCMD(0.56).schedule();
+
+        // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
+>>>>>>> Stashed changes
     }
 
     public Command getAutonomousCommand() {
