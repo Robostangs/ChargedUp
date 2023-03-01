@@ -41,6 +41,7 @@ import frc.robot.subsystems.Aesthetics.Lighting;
 public class PITTest2 extends CommandBase {
     XboxController xDrive = new RobotContainer().mDriverController;
     double testSpeed = frc.robot.Constants.Swerve.testSpeed;
+    PowerDistribution pdp = Robot.mPowerDistribution;
 
     BooleanSupplier noBoolean = () -> false;
     DoubleSupplier noSpeed = () -> 0;
@@ -64,7 +65,6 @@ public class PITTest2 extends CommandBase {
 
     SendableChooser<Command> chooser = new SendableChooser<Command>();
     ArrayList<Command> testedCommands = new ArrayList<Command>();
-
     int currCommand = 0;
     Command lastRun = null;
     Command init = new WaitCommand(1);
@@ -104,7 +104,6 @@ public class PITTest2 extends CommandBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        PowerDistribution pdp = Robot.pdh;
         builder.addDoubleProperty("Battery Voltage", () -> RobotController.getBatteryVoltage(), null);
 
         //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right

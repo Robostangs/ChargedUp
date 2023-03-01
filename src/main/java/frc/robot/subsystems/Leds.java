@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Leds extends SubsystemBase {
 
     private static Leds mInstance;
-    private Spark mBlinkin;
+    private Spark mBlinkin = new Spark(0);
 
     public static Leds getInstance() {
         if(mInstance == null) {
@@ -15,7 +15,7 @@ public class Leds extends SubsystemBase {
         return mInstance;
     }
 
-    public void setColor(int color) {
+    public void setColor(double color) {
         mBlinkin.set(color);
     }
 }

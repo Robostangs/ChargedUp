@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Leds;
 
 public class SetLightColor extends InstantCommand {
-    int mColor;
-    public SetLightColor(int color) {
+    double mColor;
+    public SetLightColor(double color) {
         color = mColor;
         addRequirements(Leds.getInstance());
     }

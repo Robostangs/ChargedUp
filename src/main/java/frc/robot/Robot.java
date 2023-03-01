@@ -13,11 +13,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Solenoid;
-import frc.robot.commands.Arm.SetArmPosition;
-import frc.robot.subsystems.Arm.ArmPosition;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Arm;
-import frc.robot.Test.PITTest;
 import frc.robot.Test.PITTest2;
 import frc.robot.subsystems.Swerve;
 /**
@@ -31,9 +34,10 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private PITTest2 pitTest = new PITTest2();
-  public static PowerDistribution pdh = new PowerDistribution();
-  private Runnable exec;
+  private PITTest2 pitTest;
+  public static PowerDistribution mPowerDistribution;
+  public static SendableChooser<String> chooser;
+  // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -45,6 +49,20 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    // mPowerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kRev);
+
+    chooser = new SendableChooser<String>();
+    chooser.setDefaultOption("Nothing", "Nothing");
+    chooser.addOption("BalanceSpotFarNearLink", "BalanceSpotFarNearLink.wpilib.json");
+    chooser.addOption("BalanceSpotNearNearLink", "BalanceSpotNearNearLink.wpilib.json");
+    chooser.addOption("CenterBalance", "CenterBalance.wpilib.json");
+    chooser.addOption("LeaveSpotFarNearLink", "LeaveSpotFarNearLink.wpilib.json");
+    chooser.addOption("LeaveSpotNearNearLink", "LeaveSpotNearNearLink.wpilib.json");
+    SmartDashboard.putData("jefy",chooser);
+
+
+
+    
 
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
@@ -113,6 +131,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().enable();
     CommandScheduler.getInstance().clearComposedCommands();
+    pitTest = new PITTest2();
     
     pitTest.schedule();
     // exec = pitTest.run();
