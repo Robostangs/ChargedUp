@@ -1,8 +1,9 @@
-
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Utils;
@@ -50,30 +51,29 @@ public class SetArmPosition extends SequentialCommandGroup {
                 break;
 
             case kMediumPosition:
-                if (mHand.getHolding()) {
-                    addCommands(new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127)));
-                } else {
-                    addCommands(new ChangeSetPoint(new Utils.Vector2D(1.035, 0.602)));
-                }
+                addCommands(new ConditionalCommand(
+                    new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127)),
+                    new ChangeSetPoint(new Utils.Vector2D(1.035, 0.602)),
+                    () -> mHand.getHolding()));
                 break;
 
             case kHighPosition:
-                if (mHand.holdingCone) {
-                    System.out.println(mHand.holdingCone);
-                    addCommands(
-                        new InstantCommand(() -> System.out.println("cone")),
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.48)),
-                        new WaitCommand(0.5),
-                        new ChangeSetPoint(new Utils.Vector2D(1.485, 1.48)));
-                } else {
-                    System.out.println(mHand.holdingCone);
-                    addCommands(
-                        new InstantCommand(() -> System.out.println("cube")),
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 0.88)),
-                        new WaitCommand(0.5),
-                        new ChangeSetPoint(new Utils.Vector2D(1.531, 0.88)));
-                }
+                addCommands(new InstantCommand(() -> System.out.println(mHand.holdingCone))
+                    .andThen(new ConditionalCommand(
+                        new SequentialCommandGroup(
+                            new PrintCommand("cone"),
+                            new ChangeSetPoint(new Utils.Vector2D(0.6, 1.48)),
+                            new WaitCommand(0.5),
+                            new ChangeSetPoint(new Utils.Vector2D(1.485, 1.48))),
+                        new SequentialCommandGroup(
+                            new PrintCommand("cube"),
+                            new ChangeSetPoint(new Utils.Vector2D(0.6, 0.88)),
+                            new WaitCommand(0.5),
+                            new ChangeSetPoint(new Utils.Vector2D(1.531, 0.88))),
+                        () -> mHand.holdingCone
+                    )));
                 break;
         }
     }
 }
+
