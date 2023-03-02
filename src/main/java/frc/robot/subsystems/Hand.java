@@ -30,10 +30,6 @@ public class Hand extends SubsystemBase {
         gripping = g;
     }
 
-    public void setHandHolding(boolean s) {
-        holdingCone = s;
-    }
-
     public boolean getGripping() {
         return mSolenoid.get() == DoubleSolenoid.Value.kForward;
     }

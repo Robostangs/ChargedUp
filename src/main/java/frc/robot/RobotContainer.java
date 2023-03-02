@@ -22,7 +22,7 @@ import frc.robot.autos.autoFromPath;
 import frc.robot.commands.AestheticsCMD.LightCMD;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.FineAdjust;
-import frc.robot.commands.Arm.IntakingManager;
+// import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetGrip;
@@ -97,9 +97,9 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kY.value).whenPressed(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(ArmPosition.kIntakePositionGeneral, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new ToggleHolding());
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetHolding());
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new exampleAuto(s_Swerve))
         ;
@@ -117,6 +117,7 @@ public class RobotContainer {
         new JoystickButton(mDriverController, XboxController.Button.kA.value).whenPressed(new rotation(-s_Vision.getDrivetrainAngle()));
         new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
+        new POVButton(mManipController, 180).whenPressed(new SetArmPosition(ArmPosition.kIntakePositionUp, s_Hand.getHolding()));
 
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 

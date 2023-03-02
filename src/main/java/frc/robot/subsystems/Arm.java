@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -57,7 +58,8 @@ public class Arm extends SubsystemBase {
 
     public enum ArmPosition {
         kStowPosition,
-        kIntakePosition,
+        kIntakePositionGeneral,
+        kIntakePositionUp,
         kLoadingZonePosition,
         kLowPosition,
         kMediumPosition,
@@ -161,8 +163,8 @@ public class Arm extends SubsystemBase {
         if(targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
         }
-        if(targetPos.y < -0.1) {
-            targetPos.y = -0.1;
+        if(targetPos.y < -0.13) {
+            targetPos.y = -0.13;
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)

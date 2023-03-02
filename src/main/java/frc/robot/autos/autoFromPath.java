@@ -61,9 +61,13 @@ public class autoFromPath extends SequentialCommandGroup {
                     Constants.AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-            s_Swerve.setGyro(180);
-            s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 180);
-
+            if(SmartDashboard.getBoolean("isRed", false)) {
+                s_Swerve.setGyro(0);
+                s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 0);
+            } else {
+                s_Swerve.setGyro(180);
+                s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), Constants.fieldLength - exampleTrajectory.getInitialPose().getY(), 180);
+            }    
             SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                     exampleTrajectory,
                     s_Swerve::getPose,

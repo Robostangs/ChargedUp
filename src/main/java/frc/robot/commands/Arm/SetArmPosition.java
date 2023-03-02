@@ -13,6 +13,7 @@ import frc.robot.subsystems.Hand;
 public class SetArmPosition extends SequentialCommandGroup {
 
     private static Arm mArm = Arm.getInstance();
+    private Hand mHand = Hand.getInstance();
     private double distance = 0;
     private Arm.ArmPosition mDesiredState = null;
     private boolean mHolding = true;
@@ -25,14 +26,19 @@ public class SetArmPosition extends SequentialCommandGroup {
             case kStowPosition:
                 addCommands(
                         new ChangeSetPoint(new Utils.Vector2D(0.59, 0.45)),
-                        new WaitCommand(0.3),
+                        new WaitCommand(0.5),
                         new ChangeSetPoint(new Utils.Vector2D(0.59, 0.34)));
                 break;
 
-            case kIntakePosition:
+            case kIntakePositionGeneral:
                 // new IntakingManager().schedule();
                 addCommands(
-                        new ChangeSetPoint(new Utils.Vector2D(0.65, -0.3)));
+                    new ChangeSetPoint(new Utils.Vector2D(0.65, -0.3)));
+                break;
+
+            case kIntakePositionUp:
+                addCommands(
+                    new ChangeSetPoint(new Utils.Vector2D(0.65, -0.1)));
                 break;
 
             case kLoadingZonePosition:
@@ -44,24 +50,28 @@ public class SetArmPosition extends SequentialCommandGroup {
                 break;
 
             case kMediumPosition:
-                if (Hand.getInstance().getHolding()) {
+                if (mHand.getHolding()) {
                     addCommands(new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127)));
                 } else {
-                    addCommands(new ChangeSetPoint(new Utils.Vector2D(1.035, 0.752)));
+                    addCommands(new ChangeSetPoint(new Utils.Vector2D(1.035, 0.602)));
                 }
                 break;
 
             case kHighPosition:
-                if (Hand.getInstance().getHolding()) {
+                if (mHand.holdingCone) {
+                    System.out.println(mHand.holdingCone);
                     addCommands(
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.44)),
-                        new WaitCommand(0.3),
-                        new ChangeSetPoint(new Utils.Vector2D(1.485, 1.44)));
+                        new InstantCommand(() -> System.out.println("cone")),
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 1.48)),
+                        new WaitCommand(0.5),
+                        new ChangeSetPoint(new Utils.Vector2D(1.485, 1.48)));
                 } else {
+                    System.out.println(mHand.holdingCone);
                     addCommands(
-                        new ChangeSetPoint(new Utils.Vector2D(0.6, 0.97)),
-                        new WaitCommand(0.3),
-                        new ChangeSetPoint(new Utils.Vector2D(1.531, 0.97)));
+                        new InstantCommand(() -> System.out.println("cube")),
+                        new ChangeSetPoint(new Utils.Vector2D(0.6, 0.88)),
+                        new WaitCommand(0.5),
+                        new ChangeSetPoint(new Utils.Vector2D(1.531, 0.88)));
                 }
                 break;
         }
