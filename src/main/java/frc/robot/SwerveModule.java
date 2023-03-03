@@ -34,11 +34,11 @@ public class SwerveModule {
         configAngleEncoder();
 
         /* Angle Motor Config */
-        mAngleMotor = new LoggyWPI_TalonFX(moduleConstants.angleMotorID, "/Turn Motor " + moduleNumber);
+        mAngleMotor = new LoggyWPI_TalonFX(moduleConstants.angleMotorID, "/Turn Motor/ " + moduleNumber);
         configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new LoggyWPI_TalonFX(moduleConstants.driveMotorID, "/Drive Motor " + moduleNumber);
+        mDriveMotor = new LoggyWPI_TalonFX(moduleConstants.driveMotorID, "/Drive Motor/ " + moduleNumber);
         configDriveMotor();
 
         lastAngle = getState().angle;

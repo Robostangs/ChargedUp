@@ -52,8 +52,16 @@ public class SetArmPosition extends SequentialCommandGroup {
 
             case kMediumPosition:
                 addCommands(new ConditionalCommand(
-                    new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127)),
-                    new ChangeSetPoint(new Utils.Vector2D(1.035, 0.602)),
+                    new SequentialCommandGroup(
+                        new ChangeSetPoint(new Utils.Vector2D(0.59, 1.127)),
+                        new WaitCommand(0.3),
+                        new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127))
+                    ),
+                    new SequentialCommandGroup(
+                        new ChangeSetPoint(new Utils.Vector2D(0.59, 0.752)),
+                        new WaitCommand(0.3),
+                        new ChangeSetPoint(new Utils.Vector2D(1.035, 0.752))
+                    ),
                     () -> mHand.getHolding()));
                 break;
 
@@ -67,9 +75,9 @@ public class SetArmPosition extends SequentialCommandGroup {
                             new ChangeSetPoint(new Utils.Vector2D(1.485, 1.48))),
                         new SequentialCommandGroup(
                             new PrintCommand("cube"),
-                            new ChangeSetPoint(new Utils.Vector2D(0.6, 0.88)),
+                            new ChangeSetPoint(new Utils.Vector2D(0.6, 1.13)),
                             new WaitCommand(0.5),
-                            new ChangeSetPoint(new Utils.Vector2D(1.531, 0.88))),
+                            new ChangeSetPoint(new Utils.Vector2D(1.531, 1.13))),
                         () -> mHand.holdingCone
                     )));
                 break;

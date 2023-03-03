@@ -8,6 +8,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -61,13 +63,13 @@ public class autoFromPath extends SequentialCommandGroup {
                     Constants.AutoConstants.kThetaControllerConstraints);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-            if(SmartDashboard.getBoolean("isRed", false)) {
-                s_Swerve.setGyro(0);
-                s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 0);
-            } else {
-                s_Swerve.setGyro(180);
-                s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), Constants.fieldLength - exampleTrajectory.getInitialPose().getY(), 180);
-            }    
+            // if(SmartDashboard.getBoolean("isRed", false)) {
+            //     s_Swerve.setGyro(0);
+            //     s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 0);
+            // } else {
+            //     s_Swerve.setGyro(180);
+            //     s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 0);
+            // }    
             SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                     exampleTrajectory,
                     s_Swerve::getPose,
@@ -78,14 +80,14 @@ public class autoFromPath extends SequentialCommandGroup {
                     s_Swerve::setModuleStates,
                     s_Swerve);
 
-            addCommands(
+                    addCommands(
                     new SetArmPosition(ArmPosition.kHighPosition, Hand.getInstance().getHolding()),
                     new SetGrip().withTimeout(0.7),
                     new ParallelRaceGroup(
                         new SetArmPosition(ArmPosition.kStowPosition, Hand.getInstance().getHolding()),
                         new WaitCommand(0.3)
                     ),
-                    new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
+                    // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
                     swerveControllerCommand,
                     new balance()
             );

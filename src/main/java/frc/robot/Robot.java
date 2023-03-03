@@ -51,12 +51,20 @@ public class Robot extends TimedRobot {
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");
-    chooser.addOption("BalanceSpotFarNearLink", "BalanceSpotFarNearLink.wpilib.json");
-    chooser.addOption("BalanceSpotNearNearLink", "BalanceSpotNearNearLink.wpilib.json");
-    chooser.addOption("CenterBalance", "CenterBalance.wpilib.json");
-    chooser.addOption("LeaveSpotFarNearLink", "LeaveSpotFarNearLink.wpilib.json");
-    chooser.addOption("LeaveSpotNearNearLink", "LeaveSpotNearNearLink.wpilib.json");
-    chooser.addOption("CenterStay", "CenterStay.wpilib.json");
+    chooser.addOption("BlueBalanceLeft", "BlueBalanceLeft.wpilib.json");
+    chooser.addOption("BlueBalanceRight", "BlueBalanceRight.wpilib.json");
+    chooser.addOption("BlueCenterBalance", "BlueCenterBalance.wpilib.json");
+    chooser.addOption("BlueCenterStay", "BlueCenterStay.wpilib.json");
+    chooser.addOption("BlueLeaveLeft", "BlueLeaveLeft.wpilib.json");
+    chooser.addOption("BlueLeaveRight", "BlueLeaveRight.wpilib.json");
+
+    chooser.addOption("RedBalanceLeft", "RedBalanceLeft.wpilib.json");
+    chooser.addOption("RedBalanceRight", "RedBalanceRight.wpilib.json");
+    chooser.addOption("RedCenterBalance", "RedCenterBalance.wpilib.json");
+    chooser.addOption("RedCenterStay", "RedCenterStay.wpilib.json");
+    chooser.addOption("RedLeaveLeft", "RedLeaveLeft.wpilib.json");
+    chooser.addOption("RedLeaveRight", "RedLeaveRight.wpilib.json");
+
     SmartDashboard.putData("jefy",chooser);
     SmartDashboard.putBoolean("isRed", false);
 
