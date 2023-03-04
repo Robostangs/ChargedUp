@@ -160,9 +160,9 @@ public final class Constants {
         }
 
         public static final class balancePID {
-            public static final double kP = 0.015;
+            public static final double kP = 0.012;
             public static final double kI = 0.00002;
-            public static final double kD = 0.003;
+            public static final double kD = 0.001;
         }
 
         public static final class Odometry {
@@ -283,7 +283,7 @@ public final class Constants {
     
     public static final double allowableError = 10;
     
-    public static int blinkenPWM_ID = 0;
+    public static final int blinkenPWM_ID = 0;
   }
 
   public static class Hand {

@@ -57,6 +57,8 @@ public class Robot extends TimedRobot {
     chooser.addOption("BlueCenterStay", "BlueCenterStay.wpilib.json");
     chooser.addOption("BlueLeaveLeft", "BlueLeaveLeft.wpilib.json");
     chooser.addOption("BlueLeaveRight", "BlueLeaveRight.wpilib.json");
+    chooser.addOption("BlueCenterLeftStraight", "BlueCenterLeftStraight.wpilib.json");    
+    chooser.addOption("BlueCenterRightStraight", "BlueCenterRightStraight.wpilib.json");    
 
     chooser.addOption("RedBalanceLeft", "RedBalanceLeft.wpilib.json");
     chooser.addOption("RedBalanceRight", "RedBalanceRight.wpilib.json");
@@ -64,6 +66,8 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedCenterStay", "RedCenterStay.wpilib.json");
     chooser.addOption("RedLeaveLeft", "RedLeaveLeft.wpilib.json");
     chooser.addOption("RedLeaveRight", "RedLeaveRight.wpilib.json");
+    chooser.addOption("RedCenterLeftStraight", "RedCenterLeftStraight.wpilib.json");    
+    chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json");   
 
     SmartDashboard.putData("jefy",chooser);
     SmartDashboard.putBoolean("isRed", false);

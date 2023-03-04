@@ -27,7 +27,7 @@ public class SetArmPosition extends SequentialCommandGroup {
             case kStowPosition:
                 addCommands(
                         new ChangeSetPoint(new Utils.Vector2D(0.59, 0.45)),
-                        new WaitCommand(0.5),
+                        new WaitCommand(0.2),
                         new ChangeSetPoint(new Utils.Vector2D(0.59, 0.34)));
                 break;
 
@@ -43,7 +43,7 @@ public class SetArmPosition extends SequentialCommandGroup {
                 break;
 
             case kLoadingZonePosition:
-                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.83, 0.995)));
+                addCommands(new ChangeSetPoint(new Utils.Vector2D(0.7896, 0.995)));
                 break;
 
             case kLowPosition:
@@ -53,13 +53,13 @@ public class SetArmPosition extends SequentialCommandGroup {
             case kMediumPosition:
                 addCommands(new ConditionalCommand(
                     new SequentialCommandGroup(
-                        new ChangeSetPoint(new Utils.Vector2D(0.59, 1.127)),
-                        new WaitCommand(0.3),
-                        new ChangeSetPoint(new Utils.Vector2D(1.032, 1.127))
+                        new ChangeSetPoint(new Utils.Vector2D(0.59, 1.17)),
+                        new WaitCommand(0.2),
+                        new ChangeSetPoint(new Utils.Vector2D(1.032, 1.107))
                     ),
                     new SequentialCommandGroup(
                         new ChangeSetPoint(new Utils.Vector2D(0.59, 0.752)),
-                        new WaitCommand(0.3),
+                        new WaitCommand(0.2),
                         new ChangeSetPoint(new Utils.Vector2D(1.035, 0.752))
                     ),
                     () -> mHand.getHolding()));
@@ -70,13 +70,13 @@ public class SetArmPosition extends SequentialCommandGroup {
                     .andThen(new ConditionalCommand(
                         new SequentialCommandGroup(
                             new PrintCommand("cone"),
-                            new ChangeSetPoint(new Utils.Vector2D(0.6, 1.48)),
-                            new WaitCommand(0.5),
-                            new ChangeSetPoint(new Utils.Vector2D(1.485, 1.48))),
+                            new ChangeSetPoint(new Utils.Vector2D(0.6, 1.56)),
+                            new WaitCommand(0.3),
+                            new ChangeSetPoint(new Utils.Vector2D(1.545, 1.56))),
                         new SequentialCommandGroup(
                             new PrintCommand("cube"),
                             new ChangeSetPoint(new Utils.Vector2D(0.6, 1.13)),
-                            new WaitCommand(0.5),
+                            new WaitCommand(0.3),
                             new ChangeSetPoint(new Utils.Vector2D(1.531, 1.13))),
                         () -> mHand.holdingCone
                     )));

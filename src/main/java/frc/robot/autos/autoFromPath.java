@@ -65,7 +65,7 @@ public class autoFromPath extends SequentialCommandGroup {
 
             // if(SmartDashboard.getBoolean("isRed", false)) {
             //     s_Swerve.setGyro(0);
-            //     s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 0);
+            s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), exampleTrajectory.getInitialPose().getRotation().getDegrees());
             // } else {
             //     s_Swerve.setGyro(180);
             //     s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(), exampleTrajectory.getInitialPose().getY(), 0);
