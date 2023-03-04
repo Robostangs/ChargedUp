@@ -9,7 +9,6 @@ public class SetGrip extends CommandBase{
     
     public SetGrip() {
         addRequirements(mHand);
-        System.out.println("hi");
     }
 
     @Override

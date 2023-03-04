@@ -270,7 +270,7 @@ public final class Constants {
 
     public static final double elbowLockThreshold = 1 * 4096 / 360; // CANCoder sensor units
     public static final double shoulderLockThreshold = 2 * 4096 / 360; // CANCoder sensor units
-    public static final double noReduceThreshold = 10 * 4096 / 360; // CANCoder Sensor units
+    public static final double noReduceThreshold = 12 * 4096 / 360; // CANCoder Sensor units
 
     public static final double cruiseVelocity = 100; // Degrees per second
 

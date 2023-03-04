@@ -9,7 +9,6 @@ public class ToggleGrip extends CommandBase{
     
     public ToggleGrip() {
         addRequirements(mHand);
-        System.out.println("hi");
     }
 
     @Override

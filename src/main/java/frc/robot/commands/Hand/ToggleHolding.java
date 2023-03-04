@@ -14,8 +14,6 @@ public class ToggleHolding extends InstantCommand{
 
     @Override
     public void initialize() {
-        System.out.println("hi");
-
         mHand.setHolding(!mHand.getHolding());
     }
 }

@@ -385,6 +385,10 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
             SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
             mLastMotorAngles=motorAngles.clone();
+
+            SmartDashboard.putBoolean("ElbowLock", getElbowLocked());
+            SmartDashboard.putBoolean("ShoulderLock", getShoulderLocked());
+            SmartDashboard.putData(Arm.getInstance());
             // shoulderTimer++;
         }
     }

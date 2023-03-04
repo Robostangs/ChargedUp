@@ -10,7 +10,6 @@ public class SetHolding extends InstantCommand{
     
     public SetHolding() {
         addRequirements(mHand);
-        System.out.println("hi");
     }
 
     @Override
