@@ -5,6 +5,7 @@ import frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -33,7 +34,7 @@ public class rotation extends InstantCommand {
         }
 
         offset = mSwerve.getGyroAngle();
-        System.out.println("pause");
+        DataLogManager.log("pause");
     }
 
     @Override
