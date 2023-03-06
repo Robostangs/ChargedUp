@@ -181,23 +181,6 @@ public final class Constants {
 
           public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
         }
-
-        public static final class Odometry {
-          // TODO: ADJUST THESE STANDARD DEVIATIONS
-          public static final Matrix<N3, N1> STATE_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
-          public static final Matrix<N3, N1> VISION_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
-          static {
-            STATE_STANDARD_DEVS.set(0, 0, 0.2); // State x position
-            STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
-            STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
-
-            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
-            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
-            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
-          }
-
-          public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
-        }
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot

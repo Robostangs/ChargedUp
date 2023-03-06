@@ -17,11 +17,6 @@ public class SetGrip extends CommandBase{
     }
 
     @Override
-    public void initialize() {
-        System.out.println("5");
-    }
-
-    @Override
     public void execute() {
         mHand.setGripping(true);
     }

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Arm;
+import frc.robot.Test.PITTest2;
 import frc.robot.subsystems.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
+  public static PITTest2 pitTest;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
   /**
@@ -139,7 +141,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+    pitTest = new PITTest2();
+  }
 
   /** This function is called periodically during test mode. */
   @Override

@@ -58,7 +58,7 @@ public class PITTest2 extends CommandBase {
         /* Arm Testing */
         toggleGrip = new ToggleGrip(),
         /* Hand Testing */
-        setIntakePOS = new SetArmPosition(ArmPosition.kIntakePosition, false),
+        setIntakePOS = new SetArmPosition(ArmPosition.kIntakePositionGeneral, false),
         setStowPOS = new SetArmPosition(ArmPosition.kStowPosition, true),
         rawPower = new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
     };
