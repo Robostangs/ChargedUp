@@ -1,25 +1,19 @@
 package frc.robot.commands.Hand;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Hand;
 
-public class SetHolding extends CommandBase{
+public class SetHolding extends InstantCommand{
 
     private Hand mHand = Hand.getInstance();
     
     public SetHolding() {
         addRequirements(mHand);
-        System.out.println("hi");
     }
 
     @Override
-    public void execute() {
-        mHand.setHandHolding(true);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        mHand.setHandHolding(false);
-        super.end(interrupted);
+    public void initialize() {
+        mHand.setHolding(!mHand.getHolding());
     }
 }

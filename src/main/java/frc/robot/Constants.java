@@ -160,9 +160,26 @@ public final class Constants {
         }
 
         public static final class balancePID {
-            public static final double kP = 0.015;
+            public static final double kP = 0.012;
             public static final double kI = 0.00002;
-            public static final double kD = 0.003;
+            public static final double kD = 0.001;
+        }
+
+        public static final class Odometry {
+          // TODO: ADJUST THESE STANDARD DEVIATIONS
+          public static final Matrix<N3, N1> STATE_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
+          public static final Matrix<N3, N1> VISION_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
+          static {
+            STATE_STANDARD_DEVS.set(0, 0, 0.2); // State x position
+            STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
+            STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
+
+            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
+            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
+            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
+          }
+
+          public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
         }
 
         public static final class Odometry {
@@ -270,7 +287,7 @@ public final class Constants {
 
     public static final double elbowLockThreshold = 1 * 4096 / 360; // CANCoder sensor units
     public static final double shoulderLockThreshold = 2 * 4096 / 360; // CANCoder sensor units
-    public static final double noReduceThreshold = 10 * 4096 / 360; // CANCoder Sensor units
+    public static final double noReduceThreshold = 12 * 4096 / 360; // CANCoder Sensor units
 
     public static final double cruiseVelocity = 100; // Degrees per second
 
@@ -283,7 +300,7 @@ public final class Constants {
     
     public static final double allowableError = 10;
     
-    public static int blinkenPWM_ID = 0;
+    public static final int blinkenPWM_ID = 0;
   }
 
   public static class Hand {

@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -57,7 +58,8 @@ public class Arm extends SubsystemBase {
 
     public enum ArmPosition {
         kStowPosition,
-        kIntakePosition,
+        kIntakePositionGeneral,
+        kIntakePositionUp,
         kLoadingZonePosition,
         kLowPosition,
         kMediumPosition,
@@ -72,8 +74,8 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "Shoulder");
-        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "Elbow");
+        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder/");
+        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow/");
 
         mShoulderMotor.configVoltageCompSaturation(10);
         mShoulderMotor.enableVoltageCompensation(true);
@@ -161,8 +163,8 @@ public class Arm extends SubsystemBase {
         if(targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
         }
-        if(targetPos.y < -0.1) {
-            targetPos.y = -0.1;
+        if(targetPos.y < -0.13) {
+            targetPos.y = -0.13;
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)
@@ -288,7 +290,7 @@ public class Arm extends SubsystemBase {
             }
 
             if (Math.abs(shoulderError) < Constants.Arm.noReduceThreshold) {
-                shoulderPeakOutputs.y = 0.07;
+                shoulderPeakOutputs.y = 0.1;
             }
             if ((Math.abs(shoulderError) < Constants.Arm.noReduceThreshold
                     && mShoulderDebouncer.calculate(mShoulderHysteresis.calculate(Math.abs(shoulderError)))
@@ -383,6 +385,10 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
             SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
             mLastMotorAngles=motorAngles.clone();
+
+            SmartDashboard.putBoolean("ElbowLock", getElbowLocked());
+            SmartDashboard.putBoolean("ShoulderLock", getShoulderLocked());
+            SmartDashboard.putData(Arm.getInstance());
             // shoulderTimer++;
         }
     }

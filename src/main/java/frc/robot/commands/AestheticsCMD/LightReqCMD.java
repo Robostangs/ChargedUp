@@ -15,10 +15,10 @@ public class LightReqCMD extends InstantCommand {
     double cubeLight = 0.91;
 
     public LightReqCMD(int Angle) {
-        if (Angle == 90) {
+        if (Angle == 270) {
             Cone = true;
             Cube = false;
-        } if (Angle == 270) {
+        } if (Angle == 90) {
             Cone = false;
             Cube = true;
         } if (Angle == 180) {

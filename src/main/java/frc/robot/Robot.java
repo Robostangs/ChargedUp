@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Arm;
-import frc.robot.Test.PITTest2;
 import frc.robot.subsystems.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,8 +33,7 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private PITTest2 pitTest;
-  public static PowerDistribution mPowerDistribution;
+  public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
@@ -49,16 +47,30 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    // mPowerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kRev);
+    mPowerDistribution.setSwitchableChannel(true);
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");
-    chooser.addOption("BalanceSpotFarNearLink", "BalanceSpotFarNearLink.wpilib.json");
-    chooser.addOption("BalanceSpotNearNearLink", "BalanceSpotNearNearLink.wpilib.json");
-    chooser.addOption("CenterBalance", "CenterBalance.wpilib.json");
-    chooser.addOption("LeaveSpotFarNearLink", "LeaveSpotFarNearLink.wpilib.json");
-    chooser.addOption("LeaveSpotNearNearLink", "LeaveSpotNearNearLink.wpilib.json");
+    chooser.addOption("BlueBalanceLeft", "BlueBalanceLeft.wpilib.json");
+    chooser.addOption("BlueBalanceRight", "BlueBalanceRight.wpilib.json");
+    chooser.addOption("BlueCenterBalance", "BlueCenterBalance.wpilib.json");
+    chooser.addOption("BlueCenterStay", "BlueCenterStay.wpilib.json");
+    chooser.addOption("BlueLeaveLeft", "BlueLeaveLeft.wpilib.json");
+    chooser.addOption("BlueLeaveRight", "BlueLeaveRight.wpilib.json");
+    chooser.addOption("BlueCenterLeftStraight", "BlueCenterLeftStraight.wpilib.json");    
+    chooser.addOption("BlueCenterRightStraight", "BlueCenterRightStraight.wpilib.json");    
+
+    chooser.addOption("RedBalanceLeft", "RedBalanceLeft.wpilib.json");
+    chooser.addOption("RedBalanceRight", "RedBalanceRight.wpilib.json");
+    chooser.addOption("RedCenterBalance", "RedCenterBalance.wpilib.json");
+    chooser.addOption("RedCenterStay", "RedCenterStay.wpilib.json");
+    chooser.addOption("RedLeaveLeft", "RedLeaveLeft.wpilib.json");
+    chooser.addOption("RedLeaveRight", "RedLeaveRight.wpilib.json");
+    chooser.addOption("RedCenterLeftStraight", "RedCenterLeftStraight.wpilib.json");    
+    chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json");   
+
     SmartDashboard.putData("jefy",chooser);
+    SmartDashboard.putBoolean("isRed", false);
 
 
 
@@ -127,18 +139,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().enable();
-    CommandScheduler.getInstance().clearComposedCommands();
-    pitTest = new PITTest2();
-    
-    pitTest.schedule();
-    // exec = pitTest.run();
-    // exec = new Runnable() {
-    //   public void run() {pitTest.exec();}
-    // };
-  }
+  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override
