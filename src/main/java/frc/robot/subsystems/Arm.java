@@ -4,7 +4,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.fasterxml.jackson.databind.util.ArrayBuilders.ShortBuilder;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -12,7 +11,12 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
@@ -45,10 +49,12 @@ public class Arm extends SubsystemBase {
 
     private int mShoulderLockoutCounter;
     private int mElbowLockoutCounter;
-    
-    // public Spark mBlinken = new Spark(0);
 
-    // public Spark mBlinken = new Spark(0);
+    private Mechanism2d mMechanism = new Mechanism2d(3, 3);
+    private MechanismRoot2d mMechanismRoot;
+    private MechanismLigament2d mMechanismShoulder;
+    private MechanismLigament2d mMechanismElbow;
+    
     Debouncer mElbowDebouncer = new Debouncer(0.3, DebounceType.kRising);
     Debouncer mShoulderDebouncer = new Debouncer(0.3, DebounceType.kRising);
 
@@ -140,8 +146,9 @@ public class Arm extends SubsystemBase {
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
 
-        // SmartDashboard.putNumber("Set Point X", 1.0);
-        // SmartDashboard.putNumber("Set Point Y", 1.0);
+        mMechanismRoot = mMechanism.getRoot("ArmRoot", 1.5, 0);
+        mMechanismShoulder = mMechanismRoot.append(new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kPurple)));
+        mMechanismElbow = mMechanismShoulder.append(new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kPurple)));
     }
 
     @Override
@@ -176,15 +183,6 @@ public class Arm extends SubsystemBase {
         return new Utils.Vector2D(Math.toDegrees(q2), Math.toDegrees(q1));
     }
 
-    /*
-     * private Utils.Vector2D calculateElbowPosition(Utils.Vector2D angles) {
-     * Utils.Vector2D position = new Utils.Vector2D();
-     * position.setX(Constants.Arm.upperarmLength * Math.cos(angles.x));
-     * position.setY(Constants.Arm.upperarmLength * Math.sin(angles.x));
-     * return position;
-     * }
-     */
-
     public Utils.Vector2D calculateHandPosition(Utils.Vector2D jointAngles) {
         Utils.Vector2D position = new Utils.Vector2D();
         position.setY((Constants.Arm.upperarmLength * Math.sin(Math.toRadians(jointAngles.y)))
@@ -193,60 +191,6 @@ public class Arm extends SubsystemBase {
                 + (Constants.Arm.forearmLength * Math.cos(Math.toRadians(jointAngles.x + jointAngles.y))));
         return position;
     }
-
-    /*
-     * private double calculateShoulderTorque(Utils.Vector2D elbowPosition,
-     * Utils.Vector2D handPosition) {
-     * double mass = Constants.Arm.elbowMass + Constants.Hand.handMass +
-     * Constants.Arm.forearmMass + Constants.Arm.upperarmMass;
-     * 
-     * Utils.Vector2D forearmCenterOfMass = new Utils.Vector2D(elbowPosition.getX()
-     * / 2, elbowPosition.getY() / 2);
-     * Utils.Vector2D upperarmCenterOfMass = new
-     * Utils.Vector2D((elbowPosition.getX() + handPosition.getX()) / 2,
-     * (elbowPosition.getY() + handPosition.getAngle()) / 2 );
-     * double armCenterOfMassX = (elbowPosition.getX() * Constants.Arm.elbowMass +
-     * handPosition.getX() * Constants.Hand.handMass +
-     * forearmCenterOfMass.getX() * Constants.Arm.forearmMass +
-     * upperarmCenterOfMass.getX() * Constants.Arm.upperarmMass) /
-     * mass;
-     * 
-     * double armCenterOfMassY = (elbowPosition.getY() * Constants.Arm.elbowMass +
-     * handPosition.getY() * Constants.Hand.handMass +
-     * forearmCenterOfMass.getY() * Constants.Arm.forearmMass +
-     * upperarmCenterOfMass.getY() * Constants.Arm.upperarmMass) /
-     * mass;
-     * 
-     * double distance = Math.sqrt(Math.pow(armCenterOfMassX, 2) +
-     * Math.pow(armCenterOfMassY, 2));
-     * double angle = Math.atan(armCenterOfMassY / armCenterOfMassX);
-     * double torqueOfGravity = (mass * 9.81) * distance * Math.cos(angle);
-     * 
-     * return torqueOfGravity;
-     * }
-     * 
-     * private double calculateElbowTorque(Utils.Vector2D elbowPosition,
-     * Utils.Vector2D handPosition) {
-     * double mass = Constants.Arm.elbowMass + Constants.Hand.handMass;
-     * 
-     * Utils.Vector2D forearmCenterOfMass = new Utils.Vector2D(elbowPosition.getX()
-     * / 2, elbowPosition.getY() / 2);
-     * double armCenterOfMassX = (handPosition.getX() * Constants.Hand.handMass +
-     * forearmCenterOfMass.getX() * Constants.Arm.forearmMass) /
-     * mass;
-     * 
-     * double armCenterOfMassY = (handPosition.getY() * Constants.Hand.handMass +
-     * forearmCenterOfMass.getY() * Constants.Arm.forearmMass) /
-     * mass;
-     * 
-     * double distance = Math.sqrt(Math.pow(armCenterOfMassX, 2) +
-     * Math.pow(armCenterOfMassY, 2));
-     * double angle = Math.atan(armCenterOfMassY / armCenterOfMassX);
-     * double torqueOfGravity = (mass * 9.81) * distance * Math.cos(angle);
-     * 
-     * return torqueOfGravity;
-     * }
-     */
 
     @Override
     public void periodic() {
@@ -301,40 +245,6 @@ public class Arm extends SubsystemBase {
                 mShoulderBrakeSolenoid.set(true);
                 mShoulderMotor.set(ControlMode.MotionMagic, motorAngles.y * 4096 / 360);
             }
-            // if (Math.abs(elbowError) < Constants.Arm.noReduceThreshold) {
-            // elbowPeakOutputs.y = 0.1;
-            // if (mElbowMotor.getIntegralAccumulator() > 10) {
-            // mElbowMotor.setIntegralAccumulator(0);
-            // }
-
-            // if
-            // (mElbowDebouncer.calculate(mElbowHysteresis.calculate(Math.abs(elbowError))))
-            // {
-            // mElbowMotor.set(ControlMode.PercentOutput, 0);
-            // mElbowBrakeSolenoid.set(false);
-            // } else {
-            // // elbowPeakOutputs.y = 1;
-            // mElbowBrakeSolenoid.set(true);
-            // mElbowMotor.set(ControlMode.MotionMagic, motorAngles.x * 4096 / 360);
-            // }
-            // }
-
-            // if (Math.abs(shoulderError) < Constants.Arm.noReduceThreshold) {
-            //     shoulderPeakOutputs.y = 0.05;
-
-            //     if (mShoulderMotor.getIntegralAccumulator() > 1000) {
-            //         mShoulderMotor.setIntegralAccumulator(0);
-            //     }
-
-            //     if (mShoulderDebouncer.calculate(mShoulderHysteresis.calculate(Math.abs(shoulderError)))) {
-            //         mShoulderMotor.set(ControlMode.PercentOutput, 0);
-            //         mShoulderBrakeSolenoid.set(false);
-            //     } else {
-            //         // shoulderPeakOutputs.y = 1;
-            //         mShoulderBrakeSolenoid.set(true);
-            //         mShoulderMotor.set(ControlMode.MotionMagic, motorAngles.y * 4096 / 360);
-            //     }
-            // }
 
             if (shoulderAngle > Constants.Arm.shoulderAngleForwardSoftStop) {
                 shoulderPeakOutputs.x = 0.00;
@@ -358,42 +268,32 @@ public class Arm extends SubsystemBase {
             mElbowMotor.configPeakOutputForward(elbowPeakOutputs.x);
             mElbowMotor.configPeakOutputReverse(-elbowPeakOutputs.y);
 
-            // if(!mShoulderHysteresis.calculate(Math.abs(shoulderError))) {
-            // mShoulderBrakeSolenoid.set(true);
-            // } else {
-            // mShoulderBrakeSolenoid.set(false);
-            // }
-            // // mElbowDebouncer.calculate(Math.abs(mElbowMotor.getMotorOutputPercent()) >=
-            // 0.01) || !mElbowHysteresis.calculate(Math.abs(elbowError))
-            // if(!mElbowHysteresis.calculate(Math.abs(elbowError))) {
-            // mElbowBrakeSolenoid.set(true);
-            // } else {
-            // mElbowBrakeSolenoid.set(false);
-            // }
-            SmartDashboard.putNumber("Elbow Error", elbowError);
-            SmartDashboard.putNumber("Shoulder Error", shoulderError);
+            // SmartDashboard.putNumber("Elbow Error", elbowError);
+            // SmartDashboard.putNumber("Shoulder Error", shoulderError);
 
-            SmartDashboard.putNumber("Elbow Angle", elbowAngle);
-            SmartDashboard.putNumber("Shoulder Angle", shoulderAngle);
-            SmartDashboard.putNumber("Target Elbow Angle", motorAngles.x);
-            SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
+            // SmartDashboard.putNumber("Elbow Angle", elbowAngle);
+            // SmartDashboard.putNumber("Shoulder Angle", shoulderAngle);
+            // SmartDashboard.putNumber("Target Elbow Angle", motorAngles.x);
+            // SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
 
             handPos = calculateHandPosition(new Utils.Vector2D(elbowAngle,shoulderAngle));
-            SmartDashboard.putNumber("Hand X", handPos.x);
-            SmartDashboard.putNumber("Hand Y", handPos.y);
+            // SmartDashboard.putNumber("Hand X", handPos.x);
+            // SmartDashboard.putNumber("Hand Y", handPos.y);
 
-            SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
-            SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
-            mLastMotorAngles=motorAngles.clone();
+            // SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
+            // SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
+            mLastMotorAngles = motorAngles.clone();
 
-            SmartDashboard.putBoolean("ElbowLock", getElbowLocked());
-            SmartDashboard.putBoolean("ShoulderLock", getShoulderLocked());
-            SmartDashboard.putData(Arm.getInstance());
-            // shoulderTimer++;
+            // SmartDashboard.putBoolean("ElbowLock", getElbowLocked());
+            // SmartDashboard.putBoolean("ShoulderLock", getShoulderLocked());
+            // SmartDashboard.putData(Arm.getInstance());
+
+            mMechanismElbow.setAngle(elbowAngle);
+            mMechanismShoulder.setAngle(shoulderAngle);
+
+            SmartDashboard.putData("ArmMechanism", mMechanism);
         }
     }
-    // System.out.println("Angle: " + jointAngles.y + " Predicted percent output: "+
-    // (elbowMotorPercent) + " Actual Output: " + mElbowStickPower.getAsDouble());
 
     public double getShoulderAngle() {
         return shoulderAngle;
