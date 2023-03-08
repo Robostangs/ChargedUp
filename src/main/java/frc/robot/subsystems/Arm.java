@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -22,6 +21,7 @@ import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.Utils.LockHysteresis;
+import frc.robot.Utils.Vector2D;
 
 public class Arm extends SubsystemBase {
     private static Arm mInstance;
@@ -31,7 +31,6 @@ public class Arm extends SubsystemBase {
 
     private double mYOffset;
     private double mXOffset;
-    private double shoulderAngle = 0;
 
     private Solenoid mShoulderBrakeSolenoid;
     private Solenoid mElbowBrakeSolenoid;
@@ -59,8 +58,7 @@ public class Arm extends SubsystemBase {
     Debouncer mShoulderDebouncer = new Debouncer(0.3, DebounceType.kRising);
 
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 8);
-    LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold,
-            Constants.Arm.shoulderLockThreshold * 5);
+    LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 5);
 
     public enum ArmPosition {
         kStowPosition,
@@ -114,13 +112,13 @@ public class Arm extends SubsystemBase {
         mElbowCanCoder = new CANCoder(Constants.Arm.elbowCanCoderID);
 
         mElbowBrakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.elbowBrakeSolenoid);
-        mElbowBrakeSolenoid.set(false);
+        mElbowBrakeSolenoid.set(true);
         mShoulderBrakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.shoulderBrakeSolenoid);
-        mShoulderBrakeSolenoid.set(false);
+        mShoulderBrakeSolenoid.set(true);
         mExtraSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.extraSolenoid);
         mExtraSolenoid.set(false);
 
-        mCurrentSetpoint = new Utils.Vector2D(0.4, 0.1);
+        // mCurrentSetpoint = new Utils.Vector2D(0.4, 0.1);
 
         double correctedShoulderCanCoderPostion = mShoulderCanCoder.getAbsolutePosition()
                 - (Constants.Arm.shoulderAngleSensor + Constants.Arm.shoulderAngleActual);
@@ -143,16 +141,18 @@ public class Arm extends SubsystemBase {
         mElbowMotor.configMotionAcceleration(((Constants.Arm.accelerationFactor * 4096) / 360) / 10);
         mElbowMotor.configMotionSCurveStrength(Constants.Arm.smoothingFactor);
 
+        mShoulderMotor.setNeutralMode(NeutralMode.Coast);
+        mElbowMotor.setNeutralMode(NeutralMode.Coast);
+
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
+
+        mShoulderMotor.setSelectedSensorPosition((mShoulderCanCoder.getPosition()*109.333 * 4096) / 360);
+        mElbowMotor.setSelectedSensorPosition((mElbowCanCoder.getPosition() *61.134* 4096) / 360);
 
         mMechanismRoot = mMechanism.getRoot("ArmRoot", 1.5, 0);
         mMechanismShoulder = mMechanismRoot.append(new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kPurple)));
         mMechanismElbow = mMechanismShoulder.append(new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kPurple)));
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
     }
 
     // Not needed if we use normal pid for predefined positions
@@ -194,12 +194,13 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360;
-        double elbowAngle = (mElbowMotor.getSelectedSensorPosition() / 4096) * 360;
+        double shoulderAngle = (mShoulderMotor.getSelectedSensorPosition() / 4096) * 360/109.33;
+        double elbowAngle = ((mElbowMotor.getSelectedSensorPosition() / 4096) * 360/61.134);
 
         Utils.Vector2D elbowPeakOutputs = new Utils.Vector2D(1.0, 1.0);
         Utils.Vector2D shoulderPeakOutputs = new Utils.Vector2D(1.0, 1.0);
 
+        /*
         Utils.Vector2D motorAngles = calculateArmAngles(mCurrentSetpoint);
 
         //motorAngles.x += mYOffset;
@@ -245,6 +246,7 @@ public class Arm extends SubsystemBase {
                 mShoulderBrakeSolenoid.set(true);
                 mShoulderMotor.set(ControlMode.MotionMagic, motorAngles.y * 4096 / 360);
             }
+            */
 
             if (shoulderAngle > Constants.Arm.shoulderAngleForwardSoftStop) {
                 shoulderPeakOutputs.x = 0.00;
@@ -282,29 +284,55 @@ public class Arm extends SubsystemBase {
 
             // SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
             // SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
-            mLastMotorAngles = motorAngles.clone();
+            // mLastMotorAngles = motorAngles.clone();
 
             // SmartDashboard.putBoolean("ElbowLock", getElbowLocked());
             // SmartDashboard.putBoolean("ShoulderLock", getShoulderLocked());
             // SmartDashboard.putData(Arm.getInstance());
 
+            SmartDashboard.putNumber("Shoulder Cancoder", mShoulderCanCoder.getPosition());
+            SmartDashboard.putNumber("Shoulder Motor Encoder", ((mShoulderMotor.getSelectedSensorPosition() / 4096) * 360/109.33));
+            SmartDashboard.putNumber("Elbow Cancoder", mElbowCanCoder.getPosition());
+            SmartDashboard.putNumber("Elbow Motor Encoder", -((mElbowMotor.getSelectedSensorPosition() / 4096) * 360/61.134));
+
             mMechanismElbow.setAngle(elbowAngle);
             mMechanismShoulder.setAngle(shoulderAngle);
 
             SmartDashboard.putData("ArmMechanism", mMechanism);
-        }
+        
     }
 
-    public double getShoulderAngle() {
-        return shoulderAngle;
-    }
 
     public double getHandPositionX() {
         return handPos.x;
     }
 
-    public void changeSetpoint(Utils.Vector2D s) {
-        mCurrentSetpoint = s;
+    public void changeSetpoint(Utils.Vector2D currentAngles, Utils.Vector2D setpoint) {
+        Vector2D mCurrentAngle = currentAngles;
+        Vector2D mSetpoint = setpoint;
+
+        if(mSetpoint != null && mCurrentAngle != null) {
+
+            if(Math.abs(mSetpoint.x-mCurrentAngle.x) > 0.2) {
+                mElbowBrakeSolenoid.set(true);
+                mElbowMotor.set(ControlMode.MotionMagic, mSetpoint.x);
+            }
+
+            if(Math.abs(mSetpoint.y-mCurrentAngle.y) > 0.2) {
+                mShoulderBrakeSolenoid.set(true);
+                mShoulderMotor.set(ControlMode.MotionMagic, mSetpoint.y);
+            }
+
+            if(mElbowHysteresis.calculate(mElbowMotor.getClosedLoopError())) {
+                mElbowBrakeSolenoid.set(false);
+            }
+            
+            if(mShoulderHysteresis.calculate(mShoulderMotor.getClosedLoopError())) {
+                mShoulderBrakeSolenoid.set(false);
+            }
+        }
+
+        
         // shoulderTimer = 0;
     }
 
@@ -317,29 +345,12 @@ public class Arm extends SubsystemBase {
         mCurrentSetpoint.add(xOffset,0);
     }
 
-    public Double getCanCoder(String joint) {
-        if (joint == "shoulder") {
-            return mShoulderCanCoder.getAbsolutePosition();
-        } else if (joint == "elbow") {
-            return mElbowCanCoder.getAbsolutePosition();
-        } else {
-            return null;
-        }
+    public double getAbsolutePositionElbow() {
+        return mElbowCanCoder.getPosition();
     }
 
-    public Double getTemperature(String joint) {
-        if (joint == "shoulder") {
-            return mShoulderMotor.getTemperature();
-        } else if (joint == "elbow") {
-            return mElbowMotor.getTemperature();
-        } else {
-            return null;
-        }
-    }
-
-    public void setPower(double shoulder, double elbow) {
-        mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
-        mElbowMotor.set(ControlMode.PercentOutput, elbow);
+    public double getAbsolutePositionShoulder() {
+        return mShoulderCanCoder.getPosition();
     }
 
     public void setSound(double hertz) {

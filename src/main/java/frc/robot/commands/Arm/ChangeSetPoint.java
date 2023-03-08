@@ -22,25 +22,26 @@ public class ChangeSetPoint extends CommandBase {
 
     @Override
     public void initialize() {
-        repeating = 0;
-        hasRun = false;
-        mArm.changeSetpoint(setPoint);
+        // repeating = 0;
+        // hasRun = false;
+        // mArm.changeSetpoint(setPoint);
     }
 
     @Override
     public void execute() {
-        if(repeating >= 20) {
-            hasRun = true;
-        }
-        repeating++;
+        // if(repeating >= 20) {
+        //     hasRun = true;
+        // }
+        // repeating++;
     }
 
     @Override
     public boolean isFinished() {
-        if (mArm.getElbowLocked() && mArm.getShoulderLocked() && hasRun) {
-            System.out.println("changeSetPoint: finished");
-            return true;
-        }
-        return false;
+        // if (mArm.getElbowLocked() && mArm.getShoulderLocked() && hasRun) {
+        //     System.out.println("changeSetPoint: finished");
+        //     return true;
+        // }
+        // return false;
+        return true;
     }
 }

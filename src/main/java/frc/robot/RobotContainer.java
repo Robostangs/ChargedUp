@@ -21,6 +21,7 @@ import frc.robot.autos.translate;
 import frc.robot.autos.autoFromPath;
 import frc.robot.commands.AestheticsCMD.LightCMD;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
+import frc.robot.commands.Arm.DefaultArm;
 import frc.robot.commands.Arm.FineAdjust;
 // import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
@@ -120,6 +121,9 @@ public class RobotContainer {
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).whenPressed(new SetArmPosition(ArmPosition.kIntakePositionUp, s_Hand.getHolding()));
 
+
+        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new DefaultArm(1, 1));
+        
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));

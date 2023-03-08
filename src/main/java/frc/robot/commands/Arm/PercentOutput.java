@@ -22,6 +22,6 @@ public class PercentOutput extends CommandBase {
 
     @Override
     public void execute() {
-        mArm.setPower(shoulder, elbow);
+        // mArm.setPower(shoulder, elbow);
     }
 }
