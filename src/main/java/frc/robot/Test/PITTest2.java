@@ -39,48 +39,46 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Aesthetics.Lighting;
 
 public class PITTest2 extends CommandBase {
-    XboxController xDrive = new RobotContainer().mDriverController;
-    double testSpeed = frc.robot.Constants.Swerve.testSpeed;
+    static XboxController xDrive = new RobotContainer().mDriverController;
+    static double testSpeed = frc.robot.Constants.Swerve.testSpeed;
     PowerDistribution pdp = Robot.mPowerDistribution;
 
     BooleanSupplier noBoolean = () -> false;
     DoubleSupplier noSpeed = () -> 0;
     
-    Command 
-        translationTest, strafeTest, rotationTest,
-        toggleGrip,
-        setIntakePOS, setStowPOS, rawPower;
-    Command[] commandList = {
+    public static String[] cmdList = {
+        "translationTest", "strafeTest", "rotationTest",
+        "toggleGrip",
+        "setIntakePOS", "setStowPOS", "rawPower"
+    };
+    public static Command[] commandList = {
         /* Swerve testing */
-        translationTest = new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
-        strafeTest = new TeleopSwerve(() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
-        rotationTest = new TeleopSwerve(() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
+        new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
+        new TeleopSwerve(() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
+        new TeleopSwerve(() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
         /* Arm Testing */
-        toggleGrip = new ToggleGrip(),
+        new ToggleGrip(),
         /* Hand Testing */
-        setIntakePOS = new SetArmPosition(ArmPosition.kIntakePositionGeneral, false),
-        setStowPOS = new SetArmPosition(ArmPosition.kStowPosition, true),
-        rawPower = new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
+        new SetArmPosition(ArmPosition.kIntakePositionGeneral, false),
+        new SetArmPosition(ArmPosition.kStowPosition, true),
+        new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
     };
 
     SendableChooser<Command> chooser = new SendableChooser<Command>();
-    ArrayList<Command> testedCommands = new ArrayList<Command>();
     int currCommand = 0;
     Command lastRun = null;
     Command init = new WaitCommand(1);
     static boolean ran = false;
 
     public PITTest2() {
-        this.addRequirements(Swerve.getInstance(), Hand.getInstance(), Arm.getInstance(), Lighting.getInstance());
-        setName("PIT Test");
-        Shuffleboard.getTab("Pit Test");
-        Shuffleboard.selectTab("Pit Test");
-        System.out.println("PITTEST");
+        // this.addRequirements(Swerve.getInstance(), Hand.getInstance(), Arm.getInstance(), Lighting.getInstance());
+        // setName("PIT Test");
+        // System.out.println("PITTEST");
 
-        chooser.setDefaultOption("Default (Wait)", init);
-        for (Command cmd : commandList) {
-            chooser.addOption(cmd.getName(), cmd);
-        }
+        // chooser.setDefaultOption("Default (Wait)", init);
+        // for (Command cmd : commandList) {
+        //     chooser.addOption(cmd.getName(), cmd);
+        // }
     }
 
     public void execute() {

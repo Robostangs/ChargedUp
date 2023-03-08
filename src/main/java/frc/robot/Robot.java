@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.networktables.Subscriber;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -15,6 +20,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Arm;
 import frc.robot.Test.PITTest2;
+import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -36,7 +43,12 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
-  public static PITTest2 pitTest;
+
+  // public static PITTest2 pitTest;
+  public static SendableChooser<Command> test;
+  public static int y = 0;
+  public final XboxController xDrive = new XboxController(2);
+  // int cmdNum;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
   /**
@@ -74,13 +86,20 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("jefy",chooser);
     SmartDashboard.putBoolean("isRed", false);
 
-
-
-    
-
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
+
+
+    test = new SendableChooser<Command>();
+    test.setDefaultOption("None", new WaitCommand(kDefaultPeriod));
+    for (int x = 0; x < 3; x++) {
+      PITTest2.commandList[x].setName(PITTest2.cmdList[x]);
+      test.addOption(PITTest2.commandList[x].getName(), PITTest2.commandList[x]);
+      System.out.println("Added Command: " + PITTest2.commandList[x].getName());
+    }
+    SmartDashboard.putData("Test", test);
+    // cmdNum = 0;
   }
 
   /**
@@ -142,14 +161,42 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    pitTest = new PITTest2();
+    CommandScheduler.getInstance().cancelAll();
+    // Shuffleboard.getTab("Pit Test");
+    // Shuffleboard.selectTab("Pit Test");
+
+    System.out.println("PITTEST");
+
+    Swerve.getInstance().setDefaultCommand(
+      new TeleopSwerve(
+          () -> -xDrive.getLeftY(),
+          () -> -xDrive.getLeftX(), 
+          () -> -xDrive.getRightX(), 
+          () -> xDrive.getAButton(),
+          () -> xDrive.getLeftBumper()
+      )
+  );
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    // exec.run();
-    SmartDashboard.putString("PIT Test Status", pitTest.updateBoard());
-    System.out.println(pitTest.updateBoard());
+    Command newCMD = test.getSelected();
+    // Sendable newerCMD = SmartDashboard.getData("Test");
+    // newerCMD
+    // String newCMD2 = SmartDashboard.getData("Test").toString();
+
+    if (y != 1) {
+      // newCMD.schedule();
+      System.out.println("I ran");
+      System.out.println(newCMD.getName());
+      y = 1;
+      // SmartDashboard.putString("PIT Test Status", PITTest2.cmdList[PITTest2.commandList[cmdNum] == test.getSelected()]);
+      // String list = PITTest2.commandList.toString();
+    } else {
+      System.out.println("newCMD is scheduled");
+    }
+    System.out.println("outside of if loop");
+    SmartDashboard.putString("PIT Test Status", newCMD.getName());
   }
 }

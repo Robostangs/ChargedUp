@@ -1,7 +1,67 @@
 {
+  "HALProvider": {
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "window": {
+        "visible": true
+      }
+    }
+  },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Swerve": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Spark[0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [11]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [20]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [21]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [30]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [31]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [40]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [41]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [50]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [51]": "Motor Controller",
+      "/SmartDashboard/PITTest": "Command Chooser",
+      "/SmartDashboard/Test": "Command Chooser",
+      "/SmartDashboard/field": "Field2d",
+      "/SmartDashboard/jefy": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/PITTest": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "retained": {
+      "SmartDashboard": {
+        "PITTest": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "transitory": {
+      "LiveWindow": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "PITTest": {
+          "open": true
+        },
+        "open": true
+      }
     }
   }
 }
