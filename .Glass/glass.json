@@ -1,0 +1,80 @@
+{
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "PITTest": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "Arm": {
+          "climber": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Spark[0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [11]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [20]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [21]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [30]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [31]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [40]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [41]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [50]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [51]": "Motor Controller",
+      "/SmartDashboard/Arm": "Mechanism2d",
+      "/SmartDashboard/Arm/climber/Shoulder/Elbow": "Mechanism2d",
+      "/SmartDashboard/PITTest": "String Chooser",
+      "/SmartDashboard/Test": "String Chooser",
+      "/SmartDashboard/field": "Field2d",
+      "/SmartDashboard/jefy": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/Arm": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/PITTest": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Test": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)"
+  }
+}
