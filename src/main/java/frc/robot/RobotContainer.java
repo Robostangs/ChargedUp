@@ -23,6 +23,7 @@ import frc.robot.commands.AestheticsCMD.LightCMD;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.DefaultArm;
 import frc.robot.commands.Arm.FineAdjust;
+import frc.robot.commands.Arm.PercentOutput;
 // import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Autos.balance;
@@ -79,10 +80,17 @@ public class RobotContainer {
         new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
+        // s_Arm.setDefaultCommand(
+        //     new FineAdjust(
+        //         () -> Utils.customDeadzone(-mManipController.getLeftX()),
+        //         () -> Utils.customDeadzone(-mManipController.getLeftY())
+        //     )
+        // );
+
         s_Arm.setDefaultCommand(
-            new FineAdjust(
-                () -> Utils.customDeadzone(-mManipController.getLeftX()),
-                () -> Utils.customDeadzone(-mManipController.getLeftY())
+            new PercentOutput(
+                () -> Utils.customDeadzone(-mManipController.getLeftY()),
+                () -> Utils.customDeadzone(-mManipController.getRightY())
             )
         );
         

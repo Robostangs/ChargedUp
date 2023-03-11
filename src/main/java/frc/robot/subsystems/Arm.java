@@ -212,10 +212,14 @@ public class Arm extends SubsystemBase {
         elbowPeakOutputs.x = 1.00;
         elbowPeakOutputs.y = 1.00;
 
-        double elbowError = motorAngles.x * 4096 / 360 - mElbowMotor.getSelectedSensorPosition();
-        double shoulderError = motorAngles.y * 4096 / 360 - mShoulderMotor.getSelectedSensorPosition();
+       
 
         if (mCurrentSetpoint != null) {
+            Utils.Vector2D motorAngles = calculateArmAngles(mCurrentSetpoint);
+
+            double elbowError = motorAngles.x * 4096 / 360 - mElbowMotor.getSelectedSensorPosition();
+            double shoulderError = motorAngles.y * 4096 / 360 - mShoulderMotor.getSelectedSensorPosition();
+
             if(motorAngles.x != mLastMotorAngles.x){
                 mElbowHysteresis.reset();
             }
@@ -248,27 +252,8 @@ public class Arm extends SubsystemBase {
             }
             */
 
-            if (shoulderAngle > Constants.Arm.shoulderAngleForwardSoftStop) {
-                shoulderPeakOutputs.x = 0.00;
-                shoulderPeakOutputs.y = 1.00;
-            } else if (shoulderAngle < Constants.Arm.shoulderAngleReverseSoftStop) {
-                shoulderPeakOutputs.x = 1.00;
-                shoulderPeakOutputs.y = 0.00;
-            }
 
-            if (elbowAngle > Constants.Arm.elbowAngleForwardSoftStop) {
-                elbowPeakOutputs.x = 0.00;
-                elbowPeakOutputs.y = 1.00;
-            } else if (elbowAngle < Constants.Arm.elbowAngleReverseSoftStop) {
-                elbowPeakOutputs.x = 1.00;
-                elbowPeakOutputs.y = 0.00;
-            }
-
-            mShoulderMotor.configPeakOutputForward(shoulderPeakOutputs.x);
-            mShoulderMotor.configPeakOutputReverse(-shoulderPeakOutputs.y);
-
-            mElbowMotor.configPeakOutputForward(elbowPeakOutputs.x);
-            mElbowMotor.configPeakOutputReverse(-elbowPeakOutputs.y);
+            
 
             // SmartDashboard.putNumber("Elbow Error", elbowError);
             // SmartDashboard.putNumber("Shoulder Error", shoulderError);
@@ -278,7 +263,6 @@ public class Arm extends SubsystemBase {
             // SmartDashboard.putNumber("Target Elbow Angle", motorAngles.x);
             // SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
 
-            handPos = calculateHandPosition(new Utils.Vector2D(elbowAngle,shoulderAngle));
             // SmartDashboard.putNumber("Hand X", handPos.x);
             // SmartDashboard.putNumber("Hand Y", handPos.y);
 
