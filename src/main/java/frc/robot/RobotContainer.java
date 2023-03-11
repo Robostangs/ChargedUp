@@ -43,11 +43,11 @@ import frc.robot.subsystems.Arm.ArmPosition;
  */
 public class RobotContainer {
     /* Controllers */
-    public final XboxController mDriverController = new XboxController(0);
+    public final static XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
   
     /* Subsystems */
-    private final Swerve s_Swerve = Swerve.getInstance();
+    public final static Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
     private final Vision s_Vision = Vision.getInstance();

@@ -1,34 +1,20 @@
 package frc.robot.Test;
 
-import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.Hand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.Swerve.Mod0;
-import frc.robot.Constants.Swerve.Mod1;
-import frc.robot.Constants.Swerve.Mod2;
-import frc.robot.Constants.Swerve.Mod3;
-import frc.robot.commands.AestheticsCMD.LightCMD;
+import frc.robot.Utils;
+import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
@@ -36,69 +22,42 @@ import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Aesthetics.Lighting;
 
 public class PITTest2 extends CommandBase {
-    static XboxController xDrive = new RobotContainer().mDriverController;
+    static XboxController xDrive = RobotContainer.mDriverController;
     static double testSpeed = frc.robot.Constants.Swerve.testSpeed;
     PowerDistribution pdp = Robot.mPowerDistribution;
-
-    BooleanSupplier noBoolean = () -> false;
-    DoubleSupplier noSpeed = () -> 0;
     
     public static String[] cmdList = {
-        "translationTest", "strafeTest", "rotationTest",
-        "toggleGrip",
-        "setIntakePOS", "setStowPOS", "rawPower"
+        "Translation Test", "Strafe Test", "Rotation Test", "Raw Control",
+        "Toggle Claw",
+        "General Intake Position", "Stow Position", "Fine Adjust"
     };
     public static Command[] commandList = {
         /* Swerve testing */
         new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
         new TeleopSwerve(() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
         new TeleopSwerve(() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
+        new TeleopSwerve(
+            () -> -xDrive.getLeftY(), 
+            () -> -xDrive.getLeftX(), 
+            () -> -xDrive.getRightX(), 
+            () ->  xDrive.getAButton(),
+            () ->  xDrive.getLeftBumper()
+        ),
         /* Arm Testing */
-        new ToggleGrip(),
+        new ToggleGrip().andThen(new WaitCommand(4)),
         /* Hand Testing */
         new SetArmPosition(ArmPosition.kIntakePositionGeneral, false),
         new SetArmPosition(ArmPosition.kStowPosition, true),
-        new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
+        new FineAdjust(
+            () -> Utils.customDeadzone(-xDrive.getLeftX()),
+            () -> Utils.customDeadzone(-xDrive.getLeftY())
+        ),
+        // new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
     };
 
-    SendableChooser<Command> chooser = new SendableChooser<Command>();
-    int currCommand = 0;
-    Command lastRun = null;
-    Command init = new WaitCommand(1);
-    static boolean ran = false;
-
-    public PITTest2() {
-        // this.addRequirements(Swerve.getInstance(), Hand.getInstance(), Arm.getInstance(), Lighting.getInstance());
-        // setName("PIT Test");
-        // System.out.println("PITTEST");
-
-        // chooser.setDefaultOption("Default (Wait)", init);
-        // for (Command cmd : commandList) {
-        //     chooser.addOption(cmd.getName(), cmd);
-        // }
-    }
-
-    public void execute() {
-        if (chooser.getSelected().isFinished()) {
-            if (chooser.getSelected() != lastRun) {
-                init.andThen(chooser.getSelected()).schedule();
-            } else {
-                chooser.getSelected().schedule();
-            }
-            lastRun = chooser.getSelected();
-        }
-    }
-
-    public static boolean didRun() {
-        return ran;
-    }
-
-    public String updateBoard() {
-        return chooser.getSelected().getName();
-    }
+    public PITTest2() {}
 
     @Override
     public void initSendable(SendableBuilder builder) {

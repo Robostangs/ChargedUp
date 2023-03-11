@@ -114,7 +114,7 @@ public class Arm extends SubsystemBase {
         mExtraSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.extraSolenoid);
         mExtraSolenoid.set(false);
 
-        // mCurrentSetpoint = new Utils.Vector2D(0.4, 0.1);
+        mCurrentSetpoint = new Utils.Vector2D(0.4, 0.1);
 
         double correctedShoulderCanCoderPostion = mShoulderCanCoder.getAbsolutePosition()
                 - (Constants.Arm.shoulderAngleSensor + Constants.Arm.shoulderAngleActual);

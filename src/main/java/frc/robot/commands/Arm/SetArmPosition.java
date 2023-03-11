@@ -59,8 +59,7 @@ public class SetArmPosition extends SequentialCommandGroup {
                     ),
                     new SequentialCommandGroup(
                         new ChangeSetPoint(new Utils.Vector2D(0.59, 0.752)).withTimeout(2.5),
-                        new WaitCommand(0.4
-                        ),
+                        new WaitCommand(0.4),
                         new ChangeSetPoint(new Utils.Vector2D(1.035, 0.752))
                     ),
                     () -> mHand.getHolding()));
