@@ -65,7 +65,6 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedCenterLeftStraight", "RedCenterLeftStraight.wpilib.json");    
     chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json");   
 
-    SmartDashboard.putData("jefy",chooser);
     SmartDashboard.putBoolean("isRed", false);
 
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});

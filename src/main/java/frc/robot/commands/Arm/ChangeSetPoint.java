@@ -1,5 +1,6 @@
 package frc.robot.commands.Arm;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
@@ -38,7 +39,7 @@ public class ChangeSetPoint extends CommandBase {
     @Override
     public boolean isFinished() {
         if (mArm.getElbowLocked() && mArm.getShoulderLocked() && hasRun) {
-            System.out.println("changeSetPoint: finished");
+            DataLogManager.log("changeSetPoint: finished");
             return true;
         }
         return false;

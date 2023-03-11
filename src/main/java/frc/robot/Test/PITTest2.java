@@ -15,7 +15,6 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Utils;
 import frc.robot.commands.Arm.FineAdjust;
-import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.TeleopSwerve;

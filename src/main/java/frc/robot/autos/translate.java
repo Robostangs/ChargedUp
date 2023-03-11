@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -64,7 +65,7 @@ public class translate extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())).andThen(new InstantCommand(() -> System.out.println("I reset"))),
-            swerveControllerCommand.deadlineWith(new RunCommand(() -> System.out.println(s_Swerve.getPose().getX() + ", " + s_Swerve.getPose().getY())))
+            swerveControllerCommand.deadlineWith(new RunCommand(() -> DataLogManager.log(s_Swerve.getPose().getX() + ", " + s_Swerve.getPose().getY())))
         );
     }
 }
