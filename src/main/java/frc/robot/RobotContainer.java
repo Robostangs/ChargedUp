@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.exampleAuto;
 import frc.robot.Vision.LimelightMeasurement;
 import frc.robot.autos.rotation;
@@ -85,15 +86,11 @@ public class RobotContainer {
                 () -> Utils.customDeadzone(-mManipController.getLeftY())
             )
         );
-        
-        // new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new SetArmPosition(Arm.ArmPosition.kHighPositionCone));
-        // new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
-        // new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kHighPositionCube));
-        // new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCube));
-        // new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
-        // new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
 
-        // Upon looking at the documentation whenPressed DOES do something different and it is what we want
+        //Seems like a waste of everyones time
+        Trigger clawGripToggle = new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value);
+        clawGripToggle.whileTrue(new SetGrip());
+        
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
         new JoystickButton(mManipController, XboxController.Button.kY.value).whenPressed(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
@@ -102,9 +99,7 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetHolding());
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
-        // new JoystickButton(mManipController, XboxController.Button.kBack.value).whenPressed(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
-        // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new exampleAuto(s_Swerve))
-        ;
+       
 
         new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
             Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();

@@ -253,14 +253,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 73.9; // Degrees
-    public static final double shoulderAngleSensor = 158.906 ; // Degrees
+    public static final double shoulderAngleActual = 53.0; // Degrees
+    public static final double shoulderAngleSensor = 174.990; // Degrees
     public static final double shoulderAngleReverseSoftStop = 25; // Degrees
     public static final double shoulderAngleForwardSoftStop = 120; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = ( -73.9 -74.9); // Degrees
-    public static final double elbowAngleSensor = 201.797 ; // Degrees
+    public static final double elbowAngleActualDifference = ( 53.0 -29.8); // Degrees
+    public static final double elbowAngleSensor = 26.016 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 

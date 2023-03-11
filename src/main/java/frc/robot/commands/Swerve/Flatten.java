@@ -26,7 +26,6 @@ public class Flatten extends InstantCommand {
         mAngle = angle;
         addRequirements(mDrivetrain);
         setName("Straighten Against Value");
-        System.out.println("Im here part 3");
     }
 
     @Override

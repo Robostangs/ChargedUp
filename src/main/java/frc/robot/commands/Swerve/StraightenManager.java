@@ -1,5 +1,6 @@
 package frc.robot.commands.Swerve;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -27,7 +28,7 @@ public class StraightenManager extends SequentialCommandGroup {
 
         addCommands(
             // new Flatten(0),
-            new InstantCommand(()->System.out.println("starting straighten")),
+            new InstantCommand(()-> DataLogManager.log("starting straighten")),
             new GetToPosition(0.2, isCone)
         );
     }

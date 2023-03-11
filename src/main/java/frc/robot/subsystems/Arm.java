@@ -49,11 +49,21 @@ public class Arm extends SubsystemBase {
     private int mShoulderLockoutCounter;
     private int mElbowLockoutCounter;
 
-    private Mechanism2d mMechanism = new Mechanism2d(3, 3);
-    private MechanismRoot2d mMechanismRoot;
-    private MechanismLigament2d mMechanismShoulder;
-    private MechanismLigament2d mMechanismElbow;
+    private Mechanism2d mMechanismActual = new Mechanism2d(3, 3);
+    private MechanismRoot2d mMechanismActualRoot;
+    private MechanismLigament2d mMechanismActualShoulder;
+    private MechanismLigament2d mMechanismActualElbow;
     
+    private Mechanism2d mMechanismTarget = new Mechanism2d(3, 3);
+    private MechanismRoot2d mMechanismTargetRoot;
+    private MechanismLigament2d mMechanismTargetShoulder;
+    private MechanismLigament2d mMechanismTargetElbow;
+
+    private Mechanism2d mMechanismMotor = new Mechanism2d(3, 3);
+    private MechanismRoot2d mMechanismMotorRoot;
+    private MechanismLigament2d mMechanismMotorShoulder;
+    private MechanismLigament2d mMechanismMotorElbow;
+
     Debouncer mElbowDebouncer = new Debouncer(0.3, DebounceType.kRising);
     Debouncer mShoulderDebouncer = new Debouncer(0.3, DebounceType.kRising);
 
@@ -146,13 +156,20 @@ public class Arm extends SubsystemBase {
 
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
-
         mShoulderMotor.setSelectedSensorPosition((mShoulderCanCoder.getPosition()*109.333 * 4096) / 360);
         mElbowMotor.setSelectedSensorPosition((mElbowCanCoder.getPosition() *61.134* 4096) / 360);
+        mMechanismActualRoot = mMechanismActual.getRoot("ArmRoot", 1.5, 0);
+        mMechanismActualShoulder = mMechanismActualRoot.append(new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kPurple)));
+        mMechanismActualElbow = mMechanismActualShoulder.append(new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kPurple)));
+    
+        mMechanismTargetRoot = mMechanismTarget.getRoot("ArmRoot", 1.5, 0);
+        mMechanismTargetShoulder = mMechanismTargetRoot.append(new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kPurple)));
+        mMechanismTargetElbow = mMechanismTargetShoulder.append(new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kPurple)));
 
-        mMechanismRoot = mMechanism.getRoot("ArmRoot", 1.5, 0);
-        mMechanismShoulder = mMechanismRoot.append(new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kPurple)));
-        mMechanismElbow = mMechanismShoulder.append(new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kPurple)));
+        mMechanismMotorRoot = mMechanismMotor.getRoot("ArmRoot", 1.5, 0);
+        mMechanismMotorShoulder = mMechanismMotorRoot.append(new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kPurple)));
+        mMechanismMotorElbow = mMechanismMotorShoulder.append(new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kPurple)));
+
     }
 
     // Not needed if we use normal pid for predefined positions
@@ -170,8 +187,8 @@ public class Arm extends SubsystemBase {
         if(targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
         }
-        if(targetPos.y < -0.13) {
-            targetPos.y = -0.13;
+        if(targetPos.y < -0.15) {
+            targetPos.y = -0.14;
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)
@@ -294,12 +311,20 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putNumber("Shoulder Motor Encoder", ((mShoulderMotor.getSelectedSensorPosition() / 4096) * 360/109.33));
             SmartDashboard.putNumber("Elbow Cancoder", mElbowCanCoder.getPosition());
             SmartDashboard.putNumber("Elbow Motor Encoder", -((mElbowMotor.getSelectedSensorPosition() / 4096) * 360/61.134));
-
-            mMechanismElbow.setAngle(elbowAngle);
-            mMechanismShoulder.setAngle(shoulderAngle);
-
-            SmartDashboard.putData("ArmMechanism", mMechanism);
         
+            mMechanismActualElbow.setAngle(elbowAngle);
+            mMechanismActualShoulder.setAngle(shoulderAngle);
+
+            mMechanismTargetElbow.setAngle(mCurrentSetpoint.x);
+            mMechanismTargetShoulder.setAngle(mCurrentSetpoint.y);
+
+            mMechanismMotorElbow.setAngle(mElbowMotor.getSelectedSensorPosition());
+            mMechanismMotorShoulder.setAngle(mShoulderMotor.getSelectedSensorPosition());
+
+            SmartDashboard.putData("ArmMechanism/Actual", mMechanismActual);
+            SmartDashboard.putData("ArmMechanism/Target", mMechanismTarget);
+            SmartDashboard.putData("ArmMechanism/Motor", mMechanismMotor);
+        }
     }
 
 
