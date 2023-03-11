@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
-import frc.robot.Test.PITTest2;
 import frc.robot.commands.Swerve.TeleopSwerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -30,8 +28,6 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
-
-  // public static PITTest2 pitTest;
   public static SendableChooser<Command> test;
 
   /**
@@ -71,15 +67,14 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
 
-
     test = new SendableChooser<Command>();
     Command stop = new InstantCommand();
     stop.setName("Nothing");
     test.setDefaultOption("None", stop);
-    for (int x = 0; x < PITTest2.cmdList.length; x++) {
-      PITTest2.commandList[x].setName(PITTest2.cmdList[x]);
-      test.addOption(PITTest2.commandList[x].getName(), PITTest2.commandList[x]);
-      System.out.println("Added Command: " + PITTest2.commandList[x].getName());
+    for (int x = 0; x < PITTest.cmdList.length; x++) {
+      PITTest.commandList[x].setName(PITTest.cmdList[x]);
+      test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
+      System.out.println("Added Command: " + PITTest.commandList[x].getName());
     }
     SmartDashboard.putData("Test", test);
   }

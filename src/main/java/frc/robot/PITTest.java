@@ -1,7 +1,4 @@
-package frc.robot.Test;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
+package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -10,10 +7,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
-import frc.robot.Utils;
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
@@ -22,7 +15,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
 
-public class PITTest2 extends CommandBase {
+public class PITTest extends CommandBase {
     static XboxController xDrive = RobotContainer.mDriverController;
     static double testSpeed = frc.robot.Constants.Swerve.testSpeed;
     PowerDistribution pdp = Robot.mPowerDistribution;
@@ -56,7 +49,7 @@ public class PITTest2 extends CommandBase {
         // new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
     };
 
-    public PITTest2() {}
+    public PITTest() {}
 
     @Override
     public void initSendable(SendableBuilder builder) {
