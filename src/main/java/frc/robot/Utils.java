@@ -496,6 +496,18 @@ public class Utils {
         return (Math.PI / 180.0) * x;
     }
 
+    public static double clampDegreeMeasurement(double a) {
+        a = a % 360;
+        if(a > 180) {
+            a = a - 360;
+        }
+        if(a <- 180) {
+            a = a + 360;
+        }
+
+        return a;
+    }
+
     public static boolean withinRange(Vector2D v, Vector2D current) {
         if(v.x >= current.x - Constants.Swerve.kRange && v.x <= current.x + Constants.Swerve.kRange) {
             if(v.y >= current.y - Constants.Swerve.kRange && v.y <= current.y + Constants.Swerve.kRange) {
@@ -530,11 +542,16 @@ public class Utils {
                     mLastState = false;
                 }
             }else{
+
                 if(currentError < mEngageError) {
                     mLastState = true;
                 }
             }
 
+            return mLastState;
+        }
+
+        public boolean get() {
             return mLastState;
         }
 

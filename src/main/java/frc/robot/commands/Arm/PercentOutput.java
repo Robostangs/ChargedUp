@@ -10,6 +10,8 @@ public class PercentOutput extends CommandBase {
     private Arm mArm = Arm.getInstance();
 
     public PercentOutput(DoubleSupplier shoulder, DoubleSupplier elbow) {
+        addRequirements(mArm);
+        setName("PercentOutput");
         this.shoulder = shoulder;
         this.elbow = elbow;
     }
