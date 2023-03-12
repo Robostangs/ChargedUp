@@ -21,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Arm;
+import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Arm.ArmPosition;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -128,6 +130,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     // mArm.setLight(-.57);
+    new SetArmPosition(ArmPosition.kStartPosition).schedule();
   }
 
   /** This function is called periodically during operator control. */

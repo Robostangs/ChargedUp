@@ -81,11 +81,11 @@ public class autoFromPath extends SequentialCommandGroup {
                     s_Swerve);
 
                     addCommands(
-                    new SetArmPosition(ArmPosition.kHighPosition, Hand.getInstance().getHolding()),
+                    new SetArmPosition(ArmPosition.kHighPosition),
                     new WaitCommand(0.2),
                     new SetGrip().withTimeout(0.7),
                     new ParallelRaceGroup(
-                        new SetArmPosition(ArmPosition.kStowPosition, Hand.getInstance().getHolding()),
+                        new SetArmPosition(ArmPosition.kStowPosition),
                         new WaitCommand(0.3)
                     ),
                     // new InstantCommand(() -> s_Swerve.resetOdometry(new )),

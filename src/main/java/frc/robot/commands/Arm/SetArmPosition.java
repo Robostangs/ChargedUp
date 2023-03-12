@@ -70,20 +70,32 @@ public class SetArmPosition extends SequentialCommandGroup {
         private static final Vector2D stowPosition = new Utils.Vector2D(0.59, 0.34);
 /**
          *
-         */
+         */ 
         private static final Vector2D stowTweenPosition = new Utils.Vector2D(0.59, 0.45);
+        /**
+         *
+         */
+        private static final Vector2D startPosition = new Utils.Vector2D(0.5, 0.2);
+/**
+         *
+         */ 
+        private static final Vector2D startTweenPosition = new Utils.Vector2D(0.6, 0.3);
 private static Arm mArm = Arm.getInstance();
     private Hand mHand = Hand.getInstance();
-    private double distance = 0;
     private Arm.ArmPosition mDesiredState = null;
-    private boolean mHolding = true;
 
-    public SetArmPosition(Arm.ArmPosition state, boolean holding) {
+    public SetArmPosition(Arm.ArmPosition state) {
         addRequirements(mArm);
         mDesiredState = state;
-        mHolding = holding;
 
         switch (mDesiredState) {
+            case kStartPosition:
+                addCommands(
+                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                        new ChangeSetPoint(startTweenPosition).withTimeout(0.75),
+                        new ChangeSetPoint(startPosition)
+                );
+                break;
             case kStowPosition:
                 addCommands(
                         new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),

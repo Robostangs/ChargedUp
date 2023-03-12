@@ -30,9 +30,12 @@ public class ChangeSetPoint extends CommandBase {
     @Override
     public void initialize() {
         DataLogManager.log("Setpoint: " + mSetPoint.x + "," + mSetPoint.y);
+        SmartDashboard.putNumber("Hand Target X", mSetPoint.x);
+        SmartDashboard.putNumber("Hand Target Y", mSetPoint.y);
 
 
         mSetPointInAngles = mArm.calculateArmAngles(mSetPoint);
+
         mArm.setElbowPosition(mSetPointInAngles);
         mArm.setShoulderPosition(mSetPointInAngles.y);
 

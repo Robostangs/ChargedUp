@@ -216,8 +216,8 @@ public final class Constants {
     public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0.06;
     public static final double shoulderMotorIZone = 5000;
-    public static final double shoulderCruiseVelocity = 18000; // Degrees per second
-    public static final double shoulderAccelerationFactor = 20000; // Degrees per second squared
+    public static final double shoulderCruiseVelocity = 12000; // Degrees per second
+    public static final double shoulderAccelerationFactor = 15000; // Degrees per second squared
 
     public static final int elbowMotorID = 51;
 

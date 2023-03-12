@@ -8,6 +8,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -64,6 +65,7 @@ public class Arm extends SubsystemBase {
             Constants.Arm.shoulderLockThreshold * 5);
 
     public enum ArmPosition {
+        kStartPosition,
         kStowPosition,
         kIntakePositionGeneral,
         kIntakePositionUp,
@@ -187,16 +189,23 @@ public class Arm extends SubsystemBase {
             double targetAngle = Math.atan2(targetPos.y, targetPos.x);
             targetPos.y = Math.sin(targetAngle) * (Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05);
             targetPos.x = Math.cos(targetAngle) * (Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05);
+            DataLogManager.log("SETPOINT LIMITED BY ARM REACH");
         }
         if (Math.abs(targetPos.x) > Constants.Hand.maxFrameExtension.x) {
             targetPos.x = Math.signum(targetPos.x) * Constants.Hand.maxFrameExtension.x;
+            DataLogManager.log("SETPOINT LIMITED BY X LEGAL LIMIT");
+
         }
 
         if (targetPos.y > Constants.Hand.maxFrameExtension.y) {
             targetPos.y = Constants.Hand.maxFrameExtension.y;
+            DataLogManager.log("SETPOINT LIMITED BY Y LEGAL LIMIT");
+
         }
         if (targetPos.y < Constants.Arm.floorHeight) {
             targetPos.y = Constants.Arm.floorHeight;
+            DataLogManager.log("SETPOINT LIMITED BY FLOOR");
+
         }
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)
