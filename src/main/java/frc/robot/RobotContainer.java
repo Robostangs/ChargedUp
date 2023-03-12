@@ -15,6 +15,7 @@ import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightMeasurement;
 import frc.robot.autos.rotation;
 import frc.robot.autos.autoFromPath;
+import frc.robot.autos.doubleAutoFromPath;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.PercentOutput;
 // import frc.robot.commands.Arm.IntakingManager;
@@ -125,6 +126,6 @@ public class RobotContainer {
         // An ExampleCommand will run in autonomous
         // return new translate(s_Swerve, s_Vision.);
         // TODO
-        return new autoFromPath();
+        return new doubleAutoFromPath();
     }
 }

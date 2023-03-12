@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.Utils.LockHysteresis;
@@ -21,7 +22,7 @@ public class ChangeSetPoint extends CommandBase {
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 8);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 5);
 
-    public ChangeSetPoint(Vector2D setPoint) {
+    private ChangeSetPoint(Vector2D setPoint) {
         mSetPoint = setPoint;
         addRequirements(mArm);
         setName("ChangeSetPoint");
@@ -79,12 +80,17 @@ public class ChangeSetPoint extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if(!interrupted) {
             mArm.setElbowLock(true);
             mArm.setShoulderLock(true);
-        }
+            mArm.setShoulderPower(0);
+            mArm.setElbowPower(0);
     }
 
-
-
+    public static ParallelRaceGroup createWithTimeout(Vector2D setPoint, double timeout) {
+        return new ChangeSetPoint(setPoint).withTimeout(timeout);
+    }
+    
+    public static ParallelRaceGroup createWithTimeout(Vector2D setPoint) {
+        return createWithTimeout(setPoint, 3);
+    }
 }

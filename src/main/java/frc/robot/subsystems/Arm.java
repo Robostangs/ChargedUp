@@ -137,12 +137,12 @@ public class Arm extends SubsystemBase {
         mShoulderCanCoder.setPosition(correctedShoulderCanCoderPostion);
         mElbowCanCoder.setPosition(correctedElbowCanCoderPostion);
 
-        mShoulderMotor.configMotionCruiseVelocity(Constants.Arm.elbowCruiseVelocity);
-        mShoulderMotor.configMotionAcceleration(Constants.Arm.elbowAccelerationFactor);
+        mShoulderMotor.configMotionCruiseVelocity(Constants.Arm.shoulderCruiseVelocity);
+        mShoulderMotor.configMotionAcceleration(Constants.Arm.shoulderAccelerationFactor);
         mShoulderMotor.configMotionSCurveStrength(Constants.Arm.smoothingFactor);
 
-        mElbowMotor.configMotionCruiseVelocity(((Constants.Arm.shoulderCruiseVelocity * 4096) / 360) / 10);
-        mElbowMotor.configMotionAcceleration(((Constants.Arm.shoulderAccelerationFactor * 4096) / 360) / 10);
+        mElbowMotor.configMotionCruiseVelocity(Constants.Arm.elbowCruiseVelocity);
+        mElbowMotor.configMotionAcceleration(Constants.Arm.elbowAccelerationFactor);
         mElbowMotor.configMotionSCurveStrength(Constants.Arm.smoothingFactor);
 
         mShoulderMotor.setNeutralMode(NeutralMode.Brake);
@@ -212,7 +212,7 @@ public class Arm extends SubsystemBase {
                 - Math.pow(Constants.Arm.upperarmLength, 2) - Math.pow(Constants.Arm.forearmLength, 2))
                 / (2 * Constants.Arm.forearmLength * Constants.Arm.upperarmLength));
         double q1 = Math.atan2(targetPos.y, targetPos.x) - Math.atan2(Constants.Arm.forearmLength * Math.sin(q2),
-                Constants.Arm.forearmLength + Constants.Arm.upperarmLength * Math.cos(q2));
+                Constants.Arm.upperarmLength + Constants.Arm.forearmLength * Math.cos(q2));
 
         double correctedElbowAngle = Math.toDegrees(q2);
         double correctedShoulderAngle = Math.toDegrees(q1) ;
@@ -294,22 +294,34 @@ public class Arm extends SubsystemBase {
          * mShoulderMotor.set(ControlMode.MotionMagic, motorAngles.y * 4096 / 360);
          * }
          */
-
+        
         if (shoulderAngleActual > Constants.Arm.shoulderAngleForwardSoftStop) {
             shoulderPeakOutputs.x = 0.00;
             shoulderPeakOutputs.y = 1.00;
+            SmartDashboard.putString("Shoulder Soft Limit", "Forward (Up)");
+
         } else if (shoulderAngleActual < Constants.Arm.shoulderAngleReverseSoftStop) {
             shoulderPeakOutputs.x = 1.00;
             shoulderPeakOutputs.y = 0.00;
+            SmartDashboard.putString("Shoulder Soft Limit", "Reverse (Down)");
+
+        }else{
+            SmartDashboard.putString("Shoulder Soft Limit", "None");
         }
 
         if (elbowAngleActual > Constants.Arm.elbowAngleForwardSoftStop) {
             elbowPeakOutputs.x = 0.00;
             elbowPeakOutputs.y = 1.00;
+            SmartDashboard.putString("Elbow Soft Limit", "Forward (Up)");
+
         } else if (elbowAngleActual < Constants.Arm.elbowAngleReverseSoftStop) {
             elbowPeakOutputs.x = 1.00;
             elbowPeakOutputs.y = 0.00;
+            SmartDashboard.putString("Elbow Soft Limit", "Reverse (Down)");
+        }else{
+            SmartDashboard.putString("Elbow Soft Limit", "None");
         }
+
 
         mShoulderMotor.configPeakOutputForward(shoulderPeakOutputs.x);
         mShoulderMotor.configPeakOutputReverse(-shoulderPeakOutputs.y);
