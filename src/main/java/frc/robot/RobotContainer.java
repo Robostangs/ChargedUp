@@ -4,13 +4,16 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightMeasurement;
 import frc.robot.autos.rotation;
@@ -67,9 +70,10 @@ public class RobotContainer {
             )
         );
 
-        new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
+        // new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
         new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        new JoystickButton(mDriverController, XboxController.Button.kY.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.lockPosition()));
 
         // s_Arm.setDefaultCommand(
         //     new FineAdjust(
@@ -98,18 +102,27 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).onTrue(new SetArmPosition(ArmPosition.kStowPosition));
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).onTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition));
         new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(new SetArmPosition(ArmPosition.kStartPosition));
+        new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value).onTrue(new InstantCommand(() -> s_Arm.resetLash()));
 
-        new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
-            Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
-            Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
-            if (leftMeasurement.isPresent()) {
-                s_Swerve.resetOdometry(leftMeasurement.get().mPose);
-            } else if(rightMeasurement.isPresent()) {
-                s_Swerve.resetOdometry(rightMeasurement.get().mPose);
-            }
-        });
+        Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
 
-        new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
+                
+        new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
+            .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
+            .alongWith(new InstantCommand(() -> DataLogManager.log(String.valueOf(leftTrigger)))));
+       
+            
+        // new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
+        //     Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
+        //     Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
+        //     if (leftMeasurement.isPresent()) {
+        //         s_Swerve.resetOdometry(leftMeasurement.get().mPose);
+        //     } else if(rightMeasurement.isPresent()) {
+        //         s_Swerve.resetOdometry(rightMeasurement.get().mPose);
+        //     }
+        // });
+
+        // new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
         new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));

@@ -162,6 +162,16 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.resetPosition(Rotation2d.fromDegrees(getGyroAngle()), getModulePositions(), new Pose2d(x, y, Rotation2d.fromDegrees(angle)));
     }
 
+    public void lockPosition() {
+        SwerveModuleState[] lockStates = {
+            new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(315)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
+        };
+        setModuleStates(lockStates);
+    }
+
     private void updateWithLimelight() {
         Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
         if (!leftMeasurement.isEmpty()) {

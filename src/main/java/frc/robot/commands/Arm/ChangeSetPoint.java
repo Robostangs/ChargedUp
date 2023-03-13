@@ -1,7 +1,10 @@
 package frc.robot.commands.Arm;
 
+import javax.xml.crypto.Data;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,7 +20,7 @@ public class ChangeSetPoint extends CommandBase {
     private Arm mArm = Arm.getInstance();
     private Vector2D mSetPoint, mSetPointInAngles;
     public static Vector2D mCurrentSetpoint = new Vector2D(0.4, 0.1);
-
+    private final XboxController mManipController = new XboxController(1);
 
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 8);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 5);
@@ -75,15 +78,21 @@ public class ChangeSetPoint extends CommandBase {
         if(mElbowHysteresis.get() && mShoulderHysteresis.get()) {
             return true;
         }
+        if(Math.abs(mManipController.getLeftY()) > 0 || Math.abs(mManipController.getRightY()) > 0) {
+            end(true);
+        }
         return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-            mArm.setElbowLock(true);
-            mArm.setShoulderLock(true);
-            mArm.setShoulderPower(0);
-            mArm.setElbowPower(0);
+        mArm.setElbowLock(true);
+        mArm.setShoulderLock(true);
+        mArm.setShoulderPower(0);
+        mArm.setElbowPower(0);
+        if(interrupted) {
+            DataLogManager.log("Change Set Point interrupted");
+        }
     }
 
     public static ParallelRaceGroup createWithTimeout(Vector2D setPoint, double timeout) {

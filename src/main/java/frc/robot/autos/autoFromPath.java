@@ -85,6 +85,7 @@ public class autoFromPath extends SequentialCommandGroup {
             addCommands(
                     new SetArmPosition(ArmPosition.kHighPosition).withTimeout(5),
                     new WaitCommand(0.2),
+                    new InstantCommand(() -> s_Arm.resetLash()),
                     new SetGrip().withTimeout(0.7),
                     new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3),
                     // new InstantCommand(() -> s_Swerve.resetOdometry(new )),

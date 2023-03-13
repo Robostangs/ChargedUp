@@ -41,7 +41,7 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
          *
          */
-    private static final Vector2D cubeMediumTweenPosition = new Utils.Vector2D(0.592, 0.75);
+    private static final Vector2D cubeMediumTweenPosition = new Utils.Vector2D(0.65, 0.75);
     /**
          *
          */
@@ -49,7 +49,7 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
          *
          */
-    private static final Vector2D coneMediumTweenPosition = new Utils.Vector2D(0.59, 1.17);
+    private static final Vector2D coneMediumTweenPosition = new Utils.Vector2D(0.65, 1.17);
     /**
          *
          */
@@ -77,7 +77,7 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
      *
      */
-    private static final Vector2D startPosition = new Utils.Vector2D(0.28, 0.17);
+    private static final Vector2D startPosition = new Utils.Vector2D(0.32, 0.17);
     /**
          *
          */

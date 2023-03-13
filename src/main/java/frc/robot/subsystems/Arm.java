@@ -150,16 +150,8 @@ public class Arm extends SubsystemBase {
 
         mElbowMotor.setInverted(true);
         mShoulderMotor.setInverted(true);
-        mShoulderMotor.setSelectedSensorPosition(-correctedShoulderCanCoderPostion/Constants.Arm.shoulderDegreesPerMotorTick);
-        mElbowMotor.setSelectedSensorPosition(-(
-                                                    (
-                                                        correctedElbowCanCoderPostion 
-                                                        - (90 - correctedShoulderCanCoderPostion) / Constants.Arm.elbowVirtualFourBarRatio
-                                                    ) 
-                                                    / Constants.Arm.elbowDegreesPerMotorTick
-                                                )
-                                            );
 
+        resetLash(correctedShoulderCanCoderPostion, correctedElbowCanCoderPostion);
 
         mMechanismActualRoot = mMechanismActual.getRoot("ArmRoot", Constants.Hand.maxFrameExtension.x, 0);
         mMechanismActualShoulder = mMechanismActualRoot.append(
@@ -475,5 +467,30 @@ public class Arm extends SubsystemBase {
     }
     public void setShoulderPower(double power) {
         mShoulderMotor.set(ControlMode.PercentOutput,power);
+    }
+//THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
+    public void resetLash(double correctedShoulderCanCoderPostion, double correctedElbowCanCoderPostion) {
+        mShoulderMotor.setSelectedSensorPosition(-correctedShoulderCanCoderPostion/Constants.Arm.shoulderDegreesPerMotorTick);
+        mElbowMotor.setSelectedSensorPosition(-(
+                                                    (
+                                                        correctedElbowCanCoderPostion 
+                                                        - (90 - correctedShoulderCanCoderPostion) / Constants.Arm.elbowVirtualFourBarRatio
+                                                    ) 
+                                                    / Constants.Arm.elbowDegreesPerMotorTick
+                                                )
+                                            );
+    }
+//THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
+
+    public void resetLash() {
+        mShoulderMotor.setSelectedSensorPosition(mShoulderCanCoder.getPosition()/Constants.Arm.shoulderDegreesPerMotorTick);
+        mElbowMotor.setSelectedSensorPosition((
+                                                    (
+                                                        mElbowCanCoder.getPosition() 
+                                                        - (90 - mShoulderCanCoder.getPosition()) / Constants.Arm.elbowVirtualFourBarRatio
+                                                    ) 
+                                                    / Constants.Arm.elbowDegreesPerMotorTick
+                                                )
+                                            );
     }
 }
