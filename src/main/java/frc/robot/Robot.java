@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     mPowerDistribution.setSwitchableChannel(true);
 
-    // SmartDashboard.putData("PDH", mPowerDistribution);
+    SmartDashboard.putData("PDH", mPowerDistribution);
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");

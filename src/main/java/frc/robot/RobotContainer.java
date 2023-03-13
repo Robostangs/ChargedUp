@@ -23,11 +23,11 @@ import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.PercentOutput;
 // import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
-import frc.robot.commands.Autos.balance;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.commands.Swerve.TeleopSwerve;
+import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.ArmPosition;
 
