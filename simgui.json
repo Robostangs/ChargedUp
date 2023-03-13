@@ -1,5 +1,19 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "Talon FX[10]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
+    "PowerDistributions": {
+      "1": {
+        "PowerDistribution[1]": {
+          "open": true
+        }
+      }
+    },
     "RoboRIO": {
       "3.3V Rail": {
         "open": true
@@ -13,11 +27,25 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Swerve": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Spark[0]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
@@ -30,13 +58,36 @@
       "/LiveWindow/Ungrouped/Talon FX [41]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [50]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [51]": "Motor Controller",
+      "/SmartDashboard/ArmMechanism/Actual": "Mechanism2d",
+      "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
+      "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
       "/SmartDashboard/PITTest": "Command Chooser",
-      "/SmartDashboard/Test": "Command Chooser",
+      "/SmartDashboard/Test": "String Chooser",
       "/SmartDashboard/field": "Field2d",
       "/SmartDashboard/jefy": "String Chooser"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/LiveWindow/Ungrouped/Spark[0]": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/PITTest": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Test": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/field": {
         "window": {
           "visible": true
         }
@@ -49,11 +100,23 @@
         "PITTest": {
           "open": true
         },
+        "Test": {
+          "open": true
+        },
         "open": true
       }
     },
     "transitory": {
+      "FMSInfo": {
+        "open": true
+      },
       "LiveWindow": {
+        "open": true
+      },
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
         "open": true
       },
       "SmartDashboard": {
@@ -61,6 +124,29 @@
           "open": true
         },
         "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "height": 338
+        }
+      ],
+      "window": {
+        "visible": false
       }
     }
   }

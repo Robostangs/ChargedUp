@@ -21,10 +21,11 @@ public class PITTest extends CommandBase {
     PowerDistribution pdp = Robot.mPowerDistribution;
     
     public static String[] cmdList = {
-        "Translation Test", "Strafe Test", "Rotation Test", "Raw Control",
+        "Translation Test", "Strafe Test", "Rotation Test", "Drivetrain Control",
         "Toggle Claw",
         "General Intake Position", "Stow Position", "Fine Adjust"
     };
+    
     public static Command[] commandList = {
         /* Swerve testing */
         new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
@@ -49,7 +50,11 @@ public class PITTest extends CommandBase {
         // new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
     };
 
-    public PITTest() {}
+    public PITTest() {
+        for (int x = 0; x < cmdList.length; x++) {
+            commandList[x].setName(cmdList[x]);
+          }
+    }
 
     @Override
     public void initSendable(SendableBuilder builder) {
