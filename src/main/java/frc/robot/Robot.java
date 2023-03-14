@@ -5,13 +5,23 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.Arm.SetArmPosition;
-import frc.robot.subsystems.Arm.ArmPosition;
-
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.LoggyThings.LoggyThingManager;
+import frc.robot.Constants.Arm;
+import frc.robot.subsystems.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -23,13 +33,9 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private PITTest pitTest = new PITTest();
-  static PowerDistribution pdh = new PowerDistribution();
-  private Runnable exec;
+  public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+  public static SendableChooser<String> chooser;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
-  
-  final Command startPOS = new SetArmPosition(ArmPosition.kStowPosition, true);
-  /** Destroy after use */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,8 +46,32 @@ public class Robot extends TimedRobot {
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    m_robotContainer = new RobotContainer();
+    mPowerDistribution.setSwitchableChannel(true);
 
-    // m_robotContainer = new RobotContainer();
+    SmartDashboard.putData("PDH", mPowerDistribution);
+
+    chooser = new SendableChooser<String>();
+    chooser.setDefaultOption("Nothing", "Nothing");
+    chooser.addOption("BlueBalanceLeft", "BlueBalanceLeft.wpilib.json");
+    chooser.addOption("BlueBalanceRight", "BlueBalanceRight.wpilib.json");
+    chooser.addOption("BlueCenterBalance", "BlueCenterBalance.wpilib.json");
+    chooser.addOption("BlueCenterStay", "BlueCenterStay.wpilib.json");
+    chooser.addOption("BlueLeaveLeft", "BlueLeaveLeft.wpilib.json");
+    chooser.addOption("BlueLeaveRight", "BlueLeaveRight.wpilib.json");
+    chooser.addOption("BlueCenterLeftStraight", "BlueCenterLeftStraight.wpilib.json");    
+    chooser.addOption("BlueCenterRightStraight", "BlueCenterRightStraight.wpilib.json");    
+
+    chooser.addOption("RedBalanceLeft", "RedBalanceLeft.wpilib.json");
+    chooser.addOption("RedBalanceRight", "RedBalanceRight.wpilib.json");
+    chooser.addOption("RedCenterBalance", "RedCenterBalance.wpilib.json");
+    chooser.addOption("RedCenterStay", "RedCenterStay.wpilib.json");
+    chooser.addOption("RedLeaveLeft", "RedLeaveLeft.wpilib.json");
+    chooser.addOption("RedLeaveRight", "RedLeaveRight.wpilib.json");
+    chooser.addOption("RedCenterLeftStraight", "RedCenterLeftStraight.wpilib.json");    
+    chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json");   
+
+    SmartDashboard.putBoolean("isRed", false);
 
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
@@ -59,13 +89,15 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-
+    LoggyThingManager.getInstance().periodic();
     CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    // mArm.setLight(0.67);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -94,35 +126,19 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    startPOS.schedule();
-    System.out.println("Music ran");
+    // mArm.setLight(-.57);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    Vision.getInstance().getDrivetrainDistance();
+    Vision.getInstance().getTargetHandX();
   }
 
   @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().enable();
-    CommandScheduler.getInstance().clearComposedCommands();
-    
-    pitTest.schedule();
-    // exec = pitTest.run();
-    exec = new Runnable() {
-      public void run() {pitTest.exec();}
-    };
-  }
+  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {
-    exec.run();
-    SmartDashboard.putString("PIT Test Status", pitTest.updateBoard());
-    System.out.println(pitTest.updateBoard());
-  }
+  public void testPeriodic() {}
 }

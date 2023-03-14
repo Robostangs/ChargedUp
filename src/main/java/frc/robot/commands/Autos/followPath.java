@@ -19,14 +19,14 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
-public class FollowPath extends CommandBase {
+public class followPath extends CommandBase {
 
     Trajectory mTrajectory = new Trajectory();
     Swerve mDrivetrain = Swerve.getInstance();
     String mPath = "";
     Double mSpeed;
     
-    public FollowPath(String pathName, double speed) {
+    public followPath(String pathName, double speed) {
         addRequirements(mDrivetrain);
         setName("Follow Path" + pathName);
         mPath = pathName;

@@ -2,22 +2,28 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
+//0.42545 + 0.254/2
 
 public final class Constants {
     public static final double stickDeadband = 0.1;
+    public static final double fieldLength = 16.54;
 
     public static final class Swerve {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
-        public static final double kRange = 1;
+        public static final double kRange = 20;
 
         public static class CustomDeadzone {
 
@@ -118,7 +124,7 @@ public final class Constants {
             public static final int driveMotorID = 11;
             public static final int angleMotorID = 10;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(10);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.229);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -128,7 +134,7 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(254);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.256);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -138,7 +144,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int canCoderID = 32;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(202.0);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -148,26 +154,43 @@ public final class Constants {
             public static final int driveMotorID = 40;
             public static final int angleMotorID = 41;
             public static final int canCoderID = 42;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(92.0);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(95.086);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         public static final class balancePID {
-            public static final double kP = 0.02;
+            public static final double kP = 0.012;
             public static final double kI = 0.00002;
-            public static final double kD = 0.003;
+            public static final double kD = 0.001;
+        }
+
+        public static final class Odometry {
+          // TODO: ADJUST THESE STANDARD DEVIATIONS
+          public static final Matrix<N3, N1> STATE_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
+          public static final Matrix<N3, N1> VISION_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
+          static {
+            STATE_STANDARD_DEVS.set(0, 0, 0.2); // State x position
+            STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
+            STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
+
+            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
+            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
+            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
+          }
+
+          public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
         }
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 10;
+        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 5;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 2 * Math.PI;
     
-        public static final double kPXController = 1;
-        public static final double kPYController = 1;
+        public static final double kPXController = 10;
+        public static final double kPYController = 10;
         public static final double kPThetaController = 1;
     
         /* Constraint for the motion profilied robot angle controller */
@@ -213,30 +236,31 @@ public final class Constants {
     public static final double elbowMotorCompensationFactor = 1.5;
     */
 
-    public static final double elbowMotorP = 4.8;
-    public static final double elbowMotorI = 0.0;
-    public static final double elbowMotorD = 0.16;
+    public static final double elbowMotorP = 5.6;
+    public static final double elbowMotorI = 0.0005;
+    public static final double elbowMotorD = 0.17975;
     public static final double elbowMotorF = 1;
     public static final double elbowMotorIZone = 100;
     public static final double maxIntegeralAccumulator = 100000000;
     public static final double elbowMotorCompensationFactor = 1.5;
 
-    public static final double upperarmLength = 0.9398; // Meters
-    public static final double forearmLength = 0.95; // Meters
+    public static final double upperarmLength = 1.033; // Meters
+    public static final double LimelightCenterToShoulderPivot = 0.13;//Meters
+    public static final double forearmLength = 0.96; // Meters
 
     public static final double upperarmMass = 0.44639; // Kilograms
     public static final double forearmMass = 0.293; // Kilograms
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = -48; // Degrees
-    public static final double shoulderAngleSensor = 180.8; // Degrees
+    public static final double shoulderAngleActual = 53.0; // Degrees
+    public static final double shoulderAngleSensor = 174.990; // Degrees
     public static final double shoulderAngleReverseSoftStop = 25; // Degrees
     public static final double shoulderAngleForwardSoftStop = 120; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = ( 90 - 37 + 11); // Degrees
-    public static final double elbowAngleSensor = 113.3; // Degrees
+    public static final double elbowAngleActualDifference = ( 53.0 -29.8); // Degrees
+    public static final double elbowAngleSensor = 26.016 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -244,17 +268,22 @@ public final class Constants {
     public static final int elbowBrakeSolenoid = 1;
     public static final int shoulderBrakeSolenoid = 2;
 
-    public static final double lockThreshold = 50; // CANCoder sensor units
-    public static final double noReduceThreshold = 150; // CANCoder Sensor units
+    public static final double elbowLockThreshold = 1 * 4096 / 360; // CANCoder sensor units
+    public static final double shoulderLockThreshold = 2 * 4096 / 360; // CANCoder sensor units
+    public static final double noReduceThreshold = 12 * 4096 / 360; // CANCoder Sensor units
 
     public static final double cruiseVelocity = 100; // Degrees per second
-    public static final double accelerationFactor = 70; // Degrees per second squared
 
+    
+    public static final double accelerationFactor = 100; // Degrees per second squared
+    
     public static final int smoothingFactor = 2; // Arbitrary 1-8
-  
+    
+    public static final double ManualAdjustMPS = 0.1; //meters per second
+    
     public static final double allowableError = 10;
-
-    public static int blinkenPWM_ID = 0;
+    
+    public static final int blinkenPWM_ID = 0;
   }
 
   public static class Hand {
@@ -262,5 +291,7 @@ public final class Constants {
     public static final int mHandSolenoidRev = 6;
 
     public static final double handMass = 2.1;
+
+    public static final Utils.Vector2D maxFrameExtension = new Utils.Vector2D((48+15-5) / 39.37, (78-5)/39.37);
   }
 }

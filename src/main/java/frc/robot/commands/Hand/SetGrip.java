@@ -9,11 +9,16 @@ public class SetGrip extends CommandBase{
     
     public SetGrip() {
         addRequirements(mHand);
-        System.out.println("hi");
     }
 
     @Override
     public void execute() {
-        mHand.setHolding(!mHand.getHolding());
+        mHand.setGripping(true);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        mHand.setGripping(false);
+        super.end(interrupted);
     }
 }

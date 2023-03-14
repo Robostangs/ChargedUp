@@ -17,7 +17,8 @@ public class Lighting extends SubsystemBase {
     }
     
     public Lighting() {
-        blinken = new Spark(Arm.blinkenPWM_ID);
+        blinken = new
+         Spark(Arm.blinkenPWM_ID);
     }
 
 
