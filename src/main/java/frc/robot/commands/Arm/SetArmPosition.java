@@ -75,8 +75,8 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
          *
          */
-    private static final Vector2D highStowTweenPosition = new Utils.Vector2D(0.52, 1.1);
-    private static final Vector2D stowTweenPosition = new Utils.Vector2D(0.52, 0.45);
+    private static final Vector2D highStowTweenPosition = new Utils.Vector2D(0.59, 1.2);    
+    private static final Vector2D stowTweenPosition = new Utils.Vector2D(0.59, 0.45);
     /**
      *
      */
@@ -96,187 +96,97 @@ public class SetArmPosition extends SequentialCommandGroup {
 
         switch (mDesiredState) {
             case kStartPosition:
-                new ConditionalCommand(
-                        new SequentialCommandGroup(
-                                new InstantCommand(
-                                        () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
-                                ChangeSetPoint.createWithTimeout(startTweenPosition),
-                                ChangeSetPoint.createWithTimeout(startPosition),
-                                new InstantCommand(() -> mPreviousPosition = ArmPosition.kStartPosition)),
-                        () -> mPreviousPosition.equals(ArmPosition.kStartPosition));
-                // addCommands(
-                // new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                // mDesiredState.name())),
-                // ChangeSetPoint.createWithTimeout(startTweenPosition),
-                // ChangeSetPoint.createWithTimeout(startPosition),
-                // new InstantCommand(()-> mPreviousPosition = ArmPosition.kStartPosition)
-                // );
-                break;
+                addCommands(
+                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                        ChangeSetPoint.createWithTimeout(startTweenPosition),
+                        ChangeSetPoint.createWithTimeout(startPosition),
+                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kStartPosition)
+                );  
+                    break;
             case kStowPosition:
                 addCommands(
-                        new ConditionalCommand(
-                                new ConditionalCommand(
-                                        new SequentialCommandGroup(
-                                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                                                        mDesiredState.name())),
-                                                ChangeSetPoint.createWithTimeout(highStowTweenPosition),
-                                                ChangeSetPoint.createWithTimeout(stowPosition),
-                                                new InstantCommand(
-                                                        () -> mPreviousPosition = ArmPosition.kStowPosition)),
-                                        new SequentialCommandGroup(
-                                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                                                        mDesiredState.name())),
-                                                ChangeSetPoint.createWithTimeout(stowTweenPosition),
-                                                ChangeSetPoint.createWithTimeout(stowPosition),
-                                                new InstantCommand(
-                                                        () -> mPreviousPosition = ArmPosition.kStowPosition)),
-                                        () -> mPreviousPosition.equals(ArmPosition.kHighPosition)),
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                                () -> !mPreviousPosition.equals(ArmPosition.kStowPosition)));
+                    new ConditionalCommand(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                                ChangeSetPoint.createWithTimeout(highStowTweenPosition),
+                                ChangeSetPoint.createWithTimeout(stowPosition),
+                                new InstantCommand(()-> mPreviousPosition = ArmPosition.kStowPosition)
+                                ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                                ChangeSetPoint.createWithTimeout(stowTweenPosition),
+                                ChangeSetPoint.createWithTimeout(stowPosition),
+                                new InstantCommand(()-> mPreviousPosition = ArmPosition.kStowPosition)),
+                        () -> mPreviousPosition.equals(ArmPosition.kHighPosition)));
                 break;
 
             case kIntakePositionGeneral:
                 // new IntakingManager().schedule();
                 addCommands(
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
-                                        ChangeSetPoint.createWithTimeout(intakeTweenPosition),
-                                        ChangeSetPoint.createWithTimeout(generalIntakePosition),
-                                        new InstantCommand(() -> mPreviousPosition = ArmPosition.kStowPosition)),
-                                () -> mPreviousPosition.equals(ArmPosition.kIntakePositionGeneral)));
-                // new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                // mDesiredState.name())),
-                // ChangeSetPoint.createWithTimeout(intakeTweenPosition),
-                // ChangeSetPoint.createWithTimeout(generalIntakePosition),
-                // new InstantCommand(() -> mPreviousPosition =
-                // ArmPosition.kIntakePositionGeneral));
+                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                        ChangeSetPoint.createWithTimeout(intakeTweenPosition),
+                        ChangeSetPoint.createWithTimeout(generalIntakePosition),
+                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kIntakePositionGeneral));
                 break;
 
             case kIntakePositionUp:
                 addCommands(
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
-                                        ChangeSetPoint.createWithTimeout(intakeTweenPosition),
-                                        ChangeSetPoint.createWithTimeout(upIntakePosition),
-                                        new InstantCommand(() -> mPreviousPosition = ArmPosition.kIntakePositionUp)),
-                                () -> mPreviousPosition.equals(ArmPosition.kIntakePositionUp)));
-                // new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                // mDesiredState.name())),
-                // ChangeSetPoint.createWithTimeout(intakeTweenPosition),
-                // ChangeSetPoint.createWithTimeout(upIntakePosition),
-                // new InstantCommand(() -> mPreviousPosition = ArmPosition.kIntakePositionUp));
-
+                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                        ChangeSetPoint.createWithTimeout(intakeTweenPosition),
+                        ChangeSetPoint.createWithTimeout(upIntakePosition),
+                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kIntakePositionUp));
+                           
                 break;
 
             case kLoadingZonePosition:
                 addCommands(
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
-                                        ChangeSetPoint.createWithTimeout(loadingZonePosition),
-                                        new InstantCommand(() -> mPreviousPosition = ArmPosition.kStowPosition)),
-                                () -> mPreviousPosition.equals(ArmPosition.kLoadingZonePosition))
-                // new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                // mDesiredState.name())),
-                // ChangeSetPoint.createWithTimeout(loadingZonePosition),
-                // new InstantCommand(() -> mPreviousPosition =
-                // ArmPosition.kLoadingZonePosition)
-                );
-
+                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                        ChangeSetPoint.createWithTimeout(loadingZonePosition),
+                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kLoadingZonePosition));
+                           
                 break;
 
             case kLowPosition:
                 addCommands(
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
-                                        ChangeSetPoint.createWithTimeout(lowPosition),
-                                        new InstantCommand(() -> mPreviousPosition = ArmPosition.kLowPosition)),
-                                () -> mPreviousPosition.equals(ArmPosition.kLowPosition))
-                // new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                // mDesiredState.name())),
-                // ChangeSetPoint.createWithTimeout(lowPosition),
-                // new InstantCommand(() -> mPreviousPosition = ArmPosition.kLowPosition)
-                );
-
+                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                        ChangeSetPoint.createWithTimeout(lowPosition),
+                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kLowPosition));
+                           
                 break;
 
             case kMediumPosition:
-                addCommands(
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
-                                new SequentialCommandGroup(
-                                        new ConditionalCommand(
-                                                new SequentialCommandGroup(
-                                                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                                                                mDesiredState.name())),
-                                                        ChangeSetPoint.createWithTimeout(coneMediumTweenPosition),
-                                                        ChangeSetPoint.createWithTimeout(coneMediumPosition),
-                                                        new InstantCommand(
-                                                                () -> mPreviousPosition = ArmPosition.kMediumPosition)),
-                                                new SequentialCommandGroup(
-                                                        new InstantCommand(() -> SmartDashboard.putString("ArmPosition",
-                                                                mDesiredState.name())),
-                                                        ChangeSetPoint.createWithTimeout(cubeMediumTweenPosition),
-                                                        ChangeSetPoint.createWithTimeout(cubeMediumPosition),
-                                                        new InstantCommand(
-                                                                () -> mPreviousPosition = ArmPosition.kMediumPosition)),
-                                                () -> mHand.getHolding())),
-                                () -> mPreviousPosition.equals(ArmPosition.kMediumPosition)));
-
+                addCommands(new ConditionalCommand(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                                ChangeSetPoint.createWithTimeout(coneMediumTweenPosition),
+                                ChangeSetPoint.createWithTimeout(coneMediumPosition),
+                                new InstantCommand(()-> mPreviousPosition = ArmPosition.kMediumPosition)),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                                ChangeSetPoint.createWithTimeout(cubeMediumTweenPosition),
+                                ChangeSetPoint.createWithTimeout(cubeMediumPosition),
+                                new InstantCommand(()-> mPreviousPosition = ArmPosition.kMediumPosition)),
+                        () -> mHand.getHolding()));
+                           
                 break;
 
             case kHighPosition:
-                addCommands(
-                        new ConditionalCommand(
+                addCommands(new InstantCommand(() -> SmartDashboard.putBoolean("HoldingCone", mHand.holdingCone))
+                        .andThen(new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new InstantCommand(
-                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name()))),
+                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                                        ChangeSetPoint.createWithTimeout(coneHighTweenPosition),
+                                        ChangeSetPoint.createWithTimeout(coneHighPosition),
+                                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kHighPosition)),
                                 new SequentialCommandGroup(
-                                        new ConditionalCommand(
-                                                new SequentialCommandGroup(
-                                                        new InstantCommand(
-                                                                () -> SmartDashboard.putString("ArmPosition",
-                                                                        mDesiredState.name())),
-                                                        ChangeSetPoint.createWithTimeout(coneHighTweenPosition),
-                                                        ChangeSetPoint.createWithTimeout(coneHighPosition),
-                                                        new InstantCommand(
-                                                                () -> mPreviousPosition = ArmPosition.kHighPosition)),
-                                                new SequentialCommandGroup(
-                                                        new InstantCommand(
-                                                                () -> SmartDashboard.putString("ArmPosition",
-                                                                        mDesiredState.name())),
-                                                        ChangeSetPoint.createWithTimeout(cubeHighTweenPosition),
-                                                        ChangeSetPoint.createWithTimeout(cubeHighPosition),
-                                                        new InstantCommand(
-                                                                () -> mPreviousPosition = ArmPosition.kHighPosition)),
-                                                () -> mHand.holdingCone)),
-                                () -> mPreviousPosition.equals(ArmPosition.kMediumPosition)));
-
+                                        new InstantCommand(
+                                                () -> SmartDashboard.putString("ArmPosition", mDesiredState.name())),
+                                        ChangeSetPoint.createWithTimeout(cubeHighTweenPosition),
+                                        ChangeSetPoint.createWithTimeout(cubeHighPosition),
+                                        new InstantCommand(()-> mPreviousPosition = ArmPosition.kHighPosition)),
+                                () -> mHand.holdingCone)));
+                                   
                 break;
         }
         addCommands(new InstantCommand(() -> DataLogManager.log("SET ARM POSITION DONE")));

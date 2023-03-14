@@ -108,11 +108,11 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
                     firstController,
                     new InstantCommand(
                             () -> s_Swerve.drive(new Translation2d(0, 0), 0, false, false)),
-                    // new ParallelDeadlineGroup(
+                    new ParallelDeadlineGroup(
                     new SetArmPosition(ArmPosition.kIntakePositionGeneral), // .andThen(new
                                                                             // WaitCommand(0.2)),
-                    // new SetGrip()
-                    // ),
+                    new SetGrip()
+                    ),
                     new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3),
                     swerveControllerCommand,
                     new balance());
