@@ -2,6 +2,8 @@ package frc.robot.commands.Arm;
 
 import javax.xml.crypto.Data;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,6 +23,8 @@ public class ChangeSetPoint extends CommandBase {
     private Vector2D mSetPoint, mSetPointInAngles;
     public static Vector2D mCurrentSetpoint = new Vector2D(0.4, 0.1);
     private final XboxController mManipController = new XboxController(1);
+    private final Debouncer leftButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
+    private final Debouncer rightButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
 
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 8);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 5);
@@ -78,7 +82,11 @@ public class ChangeSetPoint extends CommandBase {
         if(mElbowHysteresis.get() && mShoulderHysteresis.get()) {
             return true;
         }
-        if(Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0 || Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0) {
+        if((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0 || 
+            Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0) && 
+            leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
+            rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
+          ) {
             end(true);
         }
         return false;

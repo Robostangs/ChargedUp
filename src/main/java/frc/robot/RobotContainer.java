@@ -1,29 +1,19 @@
 package frc.robot;
 
-import java.util.Optional;
-
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Utils.Vector2D;
-import frc.robot.Vision.LimelightMeasurement;
-import frc.robot.autos.rotation;
 import frc.robot.autos.autoFromPath;
-import frc.robot.autos.doubleAutoFromPath;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.PercentOutput;
-// import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
-import frc.robot.commands.Swerve.Flatten;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.*;
@@ -138,7 +128,7 @@ public class RobotContainer {
         // An ExampleCommand will run in autonomous
         // return new translate(s_Swerve, s_Vision.);
         // TODO
-        return new doubleAutoFromPath();
+        return new autoFromPath();
     }
 
     //tbd if needed for the override in changeSetPoint    
