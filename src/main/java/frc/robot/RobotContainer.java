@@ -1,5 +1,3 @@
-
-
 package frc.robot;
 
 import java.util.Optional;
@@ -41,6 +39,7 @@ public class RobotContainer {
     /* Controllers */
     public final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
+    private XboxController instance;
   
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
@@ -141,4 +140,12 @@ public class RobotContainer {
         // TODO
         return new doubleAutoFromPath();
     }
+
+    //tbd if needed for the override in changeSetPoint    
+    // public XboxController getManipControllerInstance() {
+    //     if(instance == null) {
+    //         instance = mManipController;
+    //     }
+    //     return instance;
+    // }
 }
