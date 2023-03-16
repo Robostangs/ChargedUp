@@ -8,6 +8,9 @@
         "PITTest": {
           "open": true
         },
+        "Test": {
+          "open": true
+        },
         "open": true
       }
     },
@@ -43,6 +46,7 @@
       "/LiveWindow/Ungrouped/Talon FX [51]": "Motor Controller",
       "/SmartDashboard/Arm": "Mechanism2d",
       "/SmartDashboard/Arm/climber/Shoulder/Elbow": "Mechanism2d",
+      "/SmartDashboard/ArmMechanism": "Mechanism2d",
       "/SmartDashboard/PITTest": "String Chooser",
       "/SmartDashboard/Test": "String Chooser",
       "/SmartDashboard/field": "Field2d",
@@ -50,11 +54,6 @@
     },
     "windows": {
       "/SmartDashboard/Arm": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/PITTest": {
         "window": {
           "visible": true
         }

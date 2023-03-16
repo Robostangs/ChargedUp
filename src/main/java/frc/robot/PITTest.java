@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Arm.FineAdjust;
+import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.TeleopSwerve;
@@ -46,9 +47,9 @@ public class PITTest extends CommandBase {
         /* Arm Testing */
         new ToggleGrip().andThen(new WaitCommand(4)),
         /* Hand Testing */
-        new SetArmPosition(ArmPosition.kIntakePositionGeneral, false),
-        new SetArmPosition(ArmPosition.kStowPosition, true),
-        new FineAdjust(
+        new SetArmPosition(ArmPosition.kIntakePositionGeneral),
+        new SetArmPosition(ArmPosition.kStowPosition),
+        new PercentOutput(
             () -> Utils.customDeadzone(-xDrive.getLeftX()),
             () -> Utils.customDeadzone(-xDrive.getLeftY())
         ),
@@ -125,11 +126,11 @@ public class PITTest extends CommandBase {
         BR5 = () -> Swerve.getInstance().mSwerveMods[3].getCanCoder().getRotations();
         /* Shoulder Metrics */
         Shoulder1 = () -> pdp.getCurrent(Constants.Arm.shoulderMotorID);
-        Shoulder2 = () -> Arm.getInstance().getCanCoder("shoulder");
+        Shoulder2 = () -> Arm.getInstance().getAbsolutePositionShoulder();
         Shoulder3 = () -> Arm.getInstance().getTemperature("shoulder");
         /* Elbow Metrics */
         Elbow1 = () -> pdp.getCurrent(Constants.Arm.elbowMotorID);
-        Elbow2 = () -> Arm.getInstance().getCanCoder("elbow");
+        Elbow2 = () -> Arm.getInstance().getAbsolutePositionElbow();
         Elbow3 = () -> Arm.getInstance().getTemperature("elbow");
     }
 

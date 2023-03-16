@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +21,9 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Swerve.TeleopSwerve;
+import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.Arm.ArmPosition;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -71,6 +73,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedCenterLeftStraight", "RedCenterLeftStraight.wpilib.json");    
     chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json");   
 
+    SmartDashboard.putData("jefy", chooser);
     SmartDashboard.putBoolean("isRed", false);
 
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
@@ -78,11 +81,11 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
 
     testsAdded = false;
-    SmartDashboard.putNumber("TestSpeed", Constants.Swerve.testSpeed);
+    SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     test = new SendableChooser<Command>();
     Command stop = new InstantCommand();
     stop.setName("Nothing");
-    test.setDefaultOption("None", stop);
+    test.setDefaultOption("Disabled", stop);
     for (int x = 0; x < PITTest.cmdList.length; x++) {
       PITTest.commandList[x].setName(PITTest.cmdList[x]);
       test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
@@ -138,6 +141,8 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer = new RobotContainer();
+    new Lighting().killLights();
+    new SetArmPosition(ArmPosition.kStartPosition).schedule();
   }
 
   /** This function is called periodically during operator control. */
@@ -155,15 +160,15 @@ public class Robot extends TimedRobot {
     if (testsAdded == false) {
       testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
 
-      testTab.add("Testing Speed", SmartDashboard.getNumber("TestSpeed", 0))
-      .withWidget(BuiltInWidgets.kAccelerometer).withProperties(Map.of("min", 0, "max", 1));
+      testTab.add("Testing Speed", SmartDashboard.getNumber("Test Speed", 0))
+      .withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 1));
 
       testTab.add("Increase Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;})
-      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("TestSpeed", Constants.Swerve.testSpeed);})))
+      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
       .withWidget(BuiltInWidgets.kCommand);
 
       testTab.add("Decrease Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;})
-      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("TestSpeed", Constants.Swerve.testSpeed);})))
+      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
       .withWidget(BuiltInWidgets.kCommand);
       testsAdded = true;
 
@@ -197,7 +202,7 @@ public class Robot extends TimedRobot {
     } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
       newCMD.schedule();
     }
-    SmartDashboard.putString("pitStat", newCMD.getName());
+    SmartDashboard.putString("Pit Status", newCMD.getName());
   }
 
   @Override
