@@ -1,9 +1,9 @@
-package frc.robot.commands.AestheticsCMD;
+package frc.robot.commands.Lights;
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Aesthetics.Lighting;
+import frc.robot.subsystems.Lighting;
 
 public class LightReqCMD extends InstantCommand {
     private final Lighting mLighting = Lighting.getInstance();

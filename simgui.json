@@ -58,11 +58,12 @@
       "/LiveWindow/Ungrouped/Talon FX [41]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [50]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [51]": "Motor Controller",
+      "/Shuffleboard/PIT Test/Decrease Speed": "Command",
+      "/Shuffleboard/PIT Test/Increase Speed": "Command",
+      "/Shuffleboard/PIT Test/Test Select": "String Chooser",
       "/SmartDashboard/ArmMechanism/Actual": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
-      "/SmartDashboard/PITTest": "Command Chooser",
-      "/SmartDashboard/Test": "String Chooser",
       "/SmartDashboard/field": "Field2d",
       "/SmartDashboard/jefy": "String Chooser"
     },
@@ -77,12 +78,22 @@
           "visible": true
         }
       },
-      "/SmartDashboard/PITTest": {
+      "/Shuffleboard/PIT Test/Decrease Speed": {
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Test": {
+      "/Shuffleboard/PIT Test/Increase Speed": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/PIT Test/Test Select": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/PITTest": {
         "window": {
           "visible": true
         }
@@ -95,7 +106,22 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    },
     "retained": {
+      "Shuffleboard": {
+        "PIT Test": {
+          "Test Select": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "PITTest": {
           "open": true
@@ -107,14 +133,46 @@
       }
     },
     "transitory": {
-      "FMSInfo": {
-        "open": true
-      },
       "LiveWindow": {
-        "open": true
+        ".status": {
+          "open": true
+        },
+        "Lighting": {
+          "open": true
+        }
       },
       "Shuffleboard": {
         ".metadata": {
+          "PIT Test": {
+            "Decrease Speed": {
+              "open": true
+            },
+            "Increase Speed": {
+              "open": true
+            },
+            "PIT Test Status": {
+              "open": true
+            },
+            "SendableChooser[1]": {
+              "open": true
+            },
+            "Test Select": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        ".recording": {
+          "open": true
+        },
+        "PIT Test": {
+          "Decrease Speed": {
+            "open": true
+          },
+          "Test Select": {
+            "open": true
+          },
           "open": true
         },
         "open": true

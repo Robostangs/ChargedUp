@@ -5,11 +5,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -29,6 +36,9 @@ public class Robot extends TimedRobot {
   public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
   public static SendableChooser<Command> test;
+  ShuffleboardTab testTab = Shuffleboard.getTab("PIT Test");
+  DoubleSupplier testSpeedSupplier;
+  static Boolean testsAdded;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -67,6 +77,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
 
+    testsAdded = false;
+    SmartDashboard.putNumber("TestSpeed", Constants.Swerve.testSpeed);
     test = new SendableChooser<Command>();
     Command stop = new InstantCommand();
     stop.setName("Nothing");
@@ -76,7 +88,6 @@ public class Robot extends TimedRobot {
       test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
       System.out.println("Added Command: " + PITTest.commandList[x].getName());
     }
-    SmartDashboard.putData("Test", test);
   }
 
   /**
@@ -139,27 +150,59 @@ public class Robot extends TimedRobot {
   public void testInit() {
     CommandScheduler.getInstance().close();
     CommandScheduler.getInstance().enable();
-    // xDrive = new XboxController(2);
     System.out.println("PITTEST");
-    Shuffleboard.getTab("Pit Test");
-    Shuffleboard.selectTab("Pit Test");
+    Shuffleboard.selectTab(testTab.getTitle());
+    if (testsAdded == false) {
+      testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
+
+      testTab.add("Testing Speed", SmartDashboard.getNumber("TestSpeed", 0))
+      .withWidget(BuiltInWidgets.kAccelerometer).withProperties(Map.of("min", 0, "max", 1));
+
+      testTab.add("Increase Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;})
+      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("TestSpeed", Constants.Swerve.testSpeed);})))
+      .withWidget(BuiltInWidgets.kCommand);
+
+      testTab.add("Decrease Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;})
+      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("TestSpeed", Constants.Swerve.testSpeed);})))
+      .withWidget(BuiltInWidgets.kCommand);
+      testsAdded = true;
+
+
+      // SmartDashboard.putString("pitStat", "null");
+      testTab.add("PIT Test Status", SmartDashboard.getString("pitStat", "null")).withWidget(BuiltInWidgets.kTextView);
+
+      /* PDH */
+      PITTest.init();
+      // new PITTest().until(() -> !isTest()).alongWith(new InstantCommand(() -> {SmartDashboard.putString("PIT Test PDH Stat", "Running");}));
+    }
+
+
+    // testTab.add("Test Speed", testSpeedSupplier.getAsDouble()).withWidget(BuiltInWidgets.k);
+    // SmartDashboard.putNumber("Test Speed", testSpeedSupplier.getAsDouble());
+    // testTab.add("Test Speed", testSpeedSupplier);
+    // testSpeedSupplier = () -> 0.2;
+    // SmartDashboard.putData("Test", test);
+    // testTab.addDouble("Test Speed", testSpeedSupplier).withWidget(BuiltInWidgets.kNumberSlider);
+
+    // NetworkTableEntry testSpeedEntry = testTab.add("Test Speed", 0.2).getEntry();
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    PITTest.PDH();
     Command newCMD = test.getSelected();
     if (newCMD.getName() == "Nothing") {
       new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).schedule();
     } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
       newCMD.schedule();
     }
-    SmartDashboard.putString("PIT Test Status", newCMD.getName());
+    SmartDashboard.putString("pitStat", newCMD.getName());
   }
 
   @Override
   public void testExit() {
     CommandScheduler.getInstance().cancelAll();
-    Shuffleboard.getTab("LiveWindow");
+    Shuffleboard.selectTab("SmartDashboard");
   }
 }
