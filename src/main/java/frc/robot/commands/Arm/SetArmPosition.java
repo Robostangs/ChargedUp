@@ -22,31 +22,31 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
          *
          */
-    private static final Vector2D cubeHighPosition = new Utils.Vector2D(1.731, 1.13);
+    private static final Vector2D cubeHighPosition = new Utils.Vector2D(1.731, 1.25);
     /**
          *
          */
-    private static final Vector2D cubeHighTweenPosition = new Utils.Vector2D(0.66, 1.13);
+    private static final Vector2D cubeHighTweenPosition = new Utils.Vector2D(0.66, 1.24);
     /**
          *
          */
-    private static final Vector2D coneHighPosition = new Utils.Vector2D(1.63, 1.2);
+    private static final Vector2D coneHighPosition = new Utils.Vector2D(1.44, 1.3);
     /**
          *
          */
-    private static final Vector2D coneHighTweenPosition = new Utils.Vector2D(0.66, 0.86);
+    private static final Vector2D coneHighTweenPosition = new Utils.Vector2D(0.66, 1.50);
     /**
          *
          */
-    private static final Vector2D cubeMediumPosition = new Utils.Vector2D(1.167, 0.781);
+    private static final Vector2D cubeMediumPosition = new Utils.Vector2D(1.067, 0.781);
     /**
          *
          */
-    private static final Vector2D cubeMediumTweenPosition = new Utils.Vector2D(0.65, 0.781);
+    private static final Vector2D cubeMediumTweenPosition = new Utils.Vector2D(0.65, 0.881);
     /**
          *
          */
-    private static final Vector2D coneMediumPosition = new Utils.Vector2D(1.142, 0.987);
+    private static final Vector2D coneMediumPosition = new Utils.Vector2D(1.042, 0.987);
     /**
          *
          */
@@ -58,16 +58,16 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
          *
          */
-    private static final Vector2D loadingZonePosition = new Utils.Vector2D(0.68, 0.995);
+    private static final Vector2D loadingZonePosition = new Utils.Vector2D(0.696, 1.105);
     /**
          *
          */
-    private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.15);
-    private static final Vector2D upIntakePosition = new Utils.Vector2D(0.59, 0.08);
+    private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
+    private static final Vector2D upIntakePosition = new Utils.Vector2D(0.59, 0);
     /**
          *
          */
-    private static final Vector2D generalIntakePosition = new Utils.Vector2D(0.59, -0.07);
+    private static final Vector2D generalIntakePosition = new Utils.Vector2D(0.59, -0.1);
     /**
          *
          */
@@ -80,7 +80,7 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
      *
      */
-    private static final Vector2D startPosition = new Utils.Vector2D(0.32, 0.17);
+    private static final Vector2D startPosition = new Utils.Vector2D(0.32, 0.21);
     /**
          *
          */

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -87,7 +88,9 @@ public class autoFromPath extends SequentialCommandGroup {
                     new WaitCommand(0.2),
                     new InstantCommand(() -> s_Arm.resetLash()),
                     new SetGrip().withTimeout(0.7),
-                    new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3),
+                    new ParallelDeadlineGroup(
+                        new SetArmPosition(ArmPosition.kStowPosition),
+                        new SetGrip()).withTimeout(2.5),
                     // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
                     swerveControllerCommand,
                     new balance());

@@ -82,8 +82,8 @@ public class ChangeSetPoint extends CommandBase {
         if(mElbowHysteresis.get() && mShoulderHysteresis.get()) {
             return true;
         }
-        if((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0 || 
-            Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0) && 
+        if((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 
+            Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1) && 
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
           ) {

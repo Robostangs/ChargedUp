@@ -52,7 +52,7 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
         TrajectoryConfig config = new TrajectoryConfig(
                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        .setKinematics(Constants.Swerve.swerveKinematics);
+                .setKinematics(Constants.Swerve.swerveKinematics);
 
         // An example trajectory to follow. All units in meters.
 
@@ -103,19 +103,19 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
                     new SetArmPosition(ArmPosition.kHighPosition).withTimeout(5),
                     new WaitCommand(0.2),
                     new SetGrip().withTimeout(0.7),
-
-                    new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3),
+                    new ParallelDeadlineGroup(
+                        new SetArmPosition(ArmPosition.kStowPosition),
+                        new SetGrip()),
                     firstController,
                     new InstantCommand(
                             () -> s_Swerve.drive(new Translation2d(0, 0), 0, false, false)),
                     new ParallelDeadlineGroup(
-                    new SetArmPosition(ArmPosition.kIntakePositionGeneral), // .andThen(new
-                                                                            // WaitCommand(0.2)),
-                    new SetGrip()
-                    ),
-                    new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3),
-                    swerveControllerCommand,
-                    new balance());
+                            new SetArmPosition(ArmPosition.kIntakePositionGeneral), // .andThen(new
+                                                                                    // WaitCommand(0.2)),
+                            new SetGrip()),
+                    new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3));
+                    // swerveControllerCommand,
+                    // new balance());
         } catch (IOException ex) {
 
             DriverStation.reportError("Unable to Open Trajectory" + Filesystem.getDeployDirectory(),

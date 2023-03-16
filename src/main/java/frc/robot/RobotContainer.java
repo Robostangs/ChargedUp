@@ -3,8 +3,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -84,7 +86,7 @@ public class RobotContainer {
         // clawGripToggle.whileTrue(new SetGrip());
         
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).onTrue(new ToggleHolding());
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(new SetArmPosition(ArmPosition.kHighPosition));
         new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(new SetArmPosition(ArmPosition.kMediumPosition));
         new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(new SetArmPosition(ArmPosition.kLowPosition));
@@ -129,7 +131,7 @@ public class RobotContainer {
         // An ExampleCommand will run in autonomous
         // return new translate(s_Swerve, s_Vision.);
         // TODO
-        return new doubleAutoFromPath();
+        return new autoFromPath();
     }
 
     //tbd if needed for the override in changeSetPoint    
