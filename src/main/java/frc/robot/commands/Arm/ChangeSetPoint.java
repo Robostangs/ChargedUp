@@ -28,8 +28,8 @@ public class ChangeSetPoint extends CommandBase {
     private final Debouncer leftButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
     private final Debouncer rightButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
 
-    LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 8);
-    LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 5);
+    LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 2);
+    LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 2);
 
     private ChangeSetPoint(Vector2D setPoint) {
         mSetPoint = setPoint;

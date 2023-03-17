@@ -481,7 +481,7 @@ public class Arm extends SubsystemBase {
                                                 )
                                             );
     }
-//THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
+//TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
     public void resetLash() {
         mShoulderMotor.setSelectedSensorPosition(mShoulderCanCoder.getPosition()/Constants.Arm.shoulderDegreesPerMotorTick);
