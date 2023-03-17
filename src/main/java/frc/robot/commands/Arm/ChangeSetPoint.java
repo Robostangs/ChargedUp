@@ -23,6 +23,7 @@ public class ChangeSetPoint extends CommandBase {
 
     private Arm mArm = Arm.getInstance();
     private Vector2D mSetPoint, mSetPointInAngles;
+    private double uncorrectedElbowTarget;
     public static Vector2D mCurrentSetpoint = new Vector2D(0.4, 0.1);
     private final XboxController mManipController = new XboxController(1);
     private final Debouncer leftButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
@@ -46,7 +47,7 @@ public class ChangeSetPoint extends CommandBase {
 
         mSetPointInAngles = mArm.calculateArmAngles(mSetPoint);
 
-        mArm.setElbowPosition(mSetPointInAngles);
+        uncorrectedElbowTarget=mArm.setElbowPosition(mSetPointInAngles);
         mArm.setShoulderPosition(mSetPointInAngles.y);
 
         mCurrentSetpoint.set(mSetPoint);
@@ -65,7 +66,7 @@ public class ChangeSetPoint extends CommandBase {
         SmartDashboard.putNumber("Elbow PID Error",mSetPointInAngles.x - mArm.getElbowPositionFromMotor());
         SmartDashboard.putNumber("Shoulder PID Error",mSetPointInAngles.y - mArm.getShoulderPositionFromMotor());
 
-        if(mElbowHysteresis.calculate(Math.abs(mSetPointInAngles.x - mArm.getElbowPositionFromMotor()))) {
+        if(mElbowHysteresis.calculate(Math.abs(uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition()))) {
             mArm.setElbowLock(true);
             mArm.setElbowPower(0);
         }else{
