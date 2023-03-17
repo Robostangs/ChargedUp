@@ -468,6 +468,7 @@ public class Arm extends SubsystemBase {
     public void setShoulderPower(double power) {
         mShoulderMotor.set(ControlMode.PercentOutput,power);
     }
+    //TODO: WE "ARE BAD" AT SCHEDULING
 //THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
     public void resetLash(double correctedShoulderCanCoderPostion, double correctedElbowCanCoderPostion) {
         mShoulderMotor.setSelectedSensorPosition(-correctedShoulderCanCoderPostion/Constants.Arm.shoulderDegreesPerMotorTick);
@@ -492,5 +493,13 @@ public class Arm extends SubsystemBase {
                                                     / Constants.Arm.elbowDegreesPerMotorTick
                                                 )
                                             );
+                                            DataLogManager.log("Reset Lash");
+    }
+
+    public ControlMode getElbowControlMode() {
+        return mElbowMotor.getControlMode();
+    }
+    public ControlMode getShoulderControlMode() {
+        return mShoulderMotor.getControlMode();
     }
 }

@@ -124,7 +124,7 @@ public final class Constants {
             public static final int driveMotorID = 11;
             public static final int angleMotorID = 10;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.229);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.492);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -134,7 +134,7 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.256);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.40);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -144,7 +144,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int canCoderID = 32;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445 );
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -162,7 +162,7 @@ public final class Constants {
         public static final class balancePID {
             public static final double kP = 0.012;
             public static final double kI = 0.00002;
-            public static final double kD = 0.001;
+            public static final double kD = 0.002;
         }
 
         public static final class Odometry {
@@ -239,14 +239,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 88.3; // Degrees
-    public static final double shoulderAngleSensor = 238.447; // Degrees
+    public static final double shoulderAngleActual = 68.3; // Degrees
+    public static final double shoulderAngleSensor = 223.066; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 108; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -(90 + 56.5); // Degrees
-    public static final double elbowAngleSensor = 159.6 ; // Degrees
+    public static final double elbowAngleActualDifference = -75.6; // Degrees
+    public static final double elbowAngleSensor = 235.459 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 

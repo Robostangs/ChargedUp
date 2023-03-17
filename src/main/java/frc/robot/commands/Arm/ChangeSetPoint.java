@@ -2,6 +2,8 @@ package frc.robot.commands.Arm;
 
 import javax.xml.crypto.Data;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -67,12 +69,16 @@ public class ChangeSetPoint extends CommandBase {
             mArm.setElbowLock(true);
             mArm.setElbowPower(0);
         }else{
+            if(mArm.getElbowControlMode()==ControlMode.PercentOutput)
+                mArm.setElbowPosition(mSetPointInAngles);
             mArm.setElbowLock(false);
         }
         if(mShoulderHysteresis.calculate(Math.abs(mSetPointInAngles.y - mArm.getShoulderPositionFromMotor()))) {
             mArm.setShoulderLock(true);
             mArm.setShoulderPower(0);
         }else{
+            if(mArm.getShoulderControlMode()==ControlMode.PercentOutput)
+                mArm.setShoulderPosition(mSetPointInAngles.y);
             mArm.setShoulderLock(false);
         }
     }
