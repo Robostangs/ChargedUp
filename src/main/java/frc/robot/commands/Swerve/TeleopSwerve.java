@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class TeleopSwerve extends CommandBase {    
-    private Swerve s_Swerve = Swerve.getInstance();    
+    public static Swerve s_Swerve = Swerve.getInstance();    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;

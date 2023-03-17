@@ -1,18 +1,9 @@
 package frc.robot.commands.Swerve;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.Vision;
-import frc.robot.Utils.Vector3D;
-import frc.robot.Vision.LimelightState;
 import frc.robot.autos.translate;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Utils;

@@ -3,7 +3,6 @@ package frc.robot.commands.Swerve;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.Vision;
 import frc.robot.subsystems.Swerve;
 

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.Map;
-import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -22,7 +21,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Lights.LightCMD;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Arm.ArmPosition;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -38,9 +41,9 @@ public class Robot extends TimedRobot {
   public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
   public static SendableChooser<Command> test;
-  ShuffleboardTab testTab = Shuffleboard.getTab("PIT Test");
-  DoubleSupplier testSpeedSupplier;
+  ShuffleboardTab testTab;
   static Boolean testsAdded;
+  
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -84,12 +87,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     test = new SendableChooser<Command>();
     Command stop = new InstantCommand();
-    stop.setName("Nothing");
-    test.setDefaultOption("Disabled", stop);
+    stop.setName("Disabled");
+    test.setDefaultOption("Disable", stop);
     for (int x = 0; x < PITTest.cmdList.length; x++) {
       PITTest.commandList[x].setName(PITTest.cmdList[x]);
       test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
-      System.out.println("Added Command: " + PITTest.commandList[x].getName());
+      // System.out.println("Added Command: " + PITTest.commandList[x].getName());
     }
   }
 
@@ -106,6 +109,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     LoggyThingManager.getInstance().periodic();
     CommandScheduler.getInstance().run();
+
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -141,7 +146,7 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer = new RobotContainer();
-    new Lighting().killLights();
+    new InstantCommand(() -> {new LightCMD(Lighting.killLights());}).schedule();
     new SetArmPosition(ArmPosition.kStartPosition).schedule();
   }
 
@@ -149,60 +154,78 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Vision.getInstance().getTargetHandX();
+    System.out.println(CommandScheduler.getInstance().getDefaultCommand(Swerve.getInstance()));
   }
 
   @Override
   public void testInit() {
     CommandScheduler.getInstance().close();
     CommandScheduler.getInstance().enable();
-    System.out.println("PITTEST");
-    Shuffleboard.selectTab(testTab.getTitle());
     if (testsAdded == false) {
+      testTab = Shuffleboard.getTab("PIT Test");
       testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
-
-      testTab.add("Testing Speed", SmartDashboard.getNumber("Test Speed", 0))
-      .withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 1));
-
-      testTab.add("Increase Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;})
+      
+      testTab.addDouble("Testing Speed",() -> SmartDashboard.getNumber("Test Speed", 0))
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", -1, "max", 1));
+      
+      testTab.add("Increase Speed", new InstantCommand(() -> {PITTest.speedPlus();})
       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
       .withWidget(BuiltInWidgets.kCommand);
-
-      testTab.add("Decrease Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;})
+      
+      testTab.add("Decrease Speed", new InstantCommand(() -> {PITTest.speedMinus();})
       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
       .withWidget(BuiltInWidgets.kCommand);
       testsAdded = true;
+      
+      testTab.addString("PIT Test Status", () -> SmartDashboard.getString("pitStat", "null"))
+      .withWidget(BuiltInWidgets.kTextView);
 
-
-      // SmartDashboard.putString("pitStat", "null");
-      testTab.add("PIT Test Status", SmartDashboard.getString("pitStat", "null")).withWidget(BuiltInWidgets.kTextView);
-
-      /* PDH */
+      SmartDashboard.putString("pitStat", "Initizalizing");
+      
       PITTest.init();
-      // new PITTest().until(() -> !isTest()).alongWith(new InstantCommand(() -> {SmartDashboard.putString("PIT Test PDH Stat", "Running");}));
     }
 
-
-    // testTab.add("Test Speed", testSpeedSupplier.getAsDouble()).withWidget(BuiltInWidgets.k);
-    // SmartDashboard.putNumber("Test Speed", testSpeedSupplier.getAsDouble());
-    // testTab.add("Test Speed", testSpeedSupplier);
-    // testSpeedSupplier = () -> 0.2;
-    // SmartDashboard.putData("Test", test);
-    // testTab.addDouble("Test Speed", testSpeedSupplier).withWidget(BuiltInWidgets.kNumberSlider);
-
-    // NetworkTableEntry testSpeedEntry = testTab.add("Test Speed", 0.2).getEntry();
+    new InstantCommand(() -> {new LightCMD(0.73);}).schedule();
+    Shuffleboard.selectTab(testTab.getTitle());
   }
-
+  
+  
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    PITTest.PDH();
+    // PITTest.PDH();
     Command newCMD = test.getSelected();
-    if (newCMD.getName() == "Nothing") {
-      new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).schedule();
+    SmartDashboard.putString("pitStat", newCMD.getName());
+    if (newCMD.getName() != "Translation Test" && newCMD.getName() != "Strafe Test" && newCMD.getName() != "Rotation Test" && newCMD.getName() != "Drivetrain Control") {
+      new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain").schedule();
     } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
       newCMD.schedule();
     }
-    SmartDashboard.putString("Pit Status", newCMD.getName());
+
+    // Command x = Swerve.getInstance().getCurrentCommand();
+    // Command y = Hand.getInstance().getCurrentCommand();
+    // Command z = Arm.getInstance().getCurrentCommand();
+
+    // if (x != null) {
+    //   System.out.println(x.getName());
+    // } else {
+    //   System.out.println(x);
+    // }
+
+    // if (y != null) {
+    //   System.out.println(y.getName());
+    // } else {
+    //   System.out.println(y);
+    // }
+
+    // if (z != null) {
+    //   System.out.println(z.getName());
+    // } else {
+    //   System.out.println(z);
+    // }
+
+    //Seems to work, it will change the command listed in the console based on whatever i am selecting in dashboard
   }
 
   @Override

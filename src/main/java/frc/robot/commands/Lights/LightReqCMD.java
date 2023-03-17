@@ -39,7 +39,7 @@ public class LightReqCMD extends InstantCommand {
             mLighting.setLights(cubeLight);
             reqPiece = "Cube";
         } else {
-            mLighting.killLights();
+            mLighting.setLights(Lighting.killLights());
             reqPiece = "None";
         }
     }

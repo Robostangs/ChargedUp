@@ -60,7 +60,11 @@
       "/LiveWindow/Ungrouped/Talon FX [51]": "Motor Controller",
       "/Shuffleboard/PIT Test/Decrease Speed": "Command",
       "/Shuffleboard/PIT Test/Increase Speed": "Command",
+      "/Shuffleboard/PIT Test/PIT Test Status": "String Chooser",
       "/Shuffleboard/PIT Test/Test Select": "String Chooser",
+      "/Shuffleboard/PIT Test/Testing Speed": "Motor Controller",
+      "/Shuffleboard/PIT Test/pitStat": "String Chooser",
+      "/SmartDashboard/ArmCommand": "Subsystem",
       "/SmartDashboard/ArmMechanism/Actual": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
@@ -89,6 +93,11 @@
         }
       },
       "/Shuffleboard/PIT Test/Test Select": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/PIT Test/Testing Speed": {
         "window": {
           "visible": true
         }
@@ -153,10 +162,10 @@
             "PIT Test Status": {
               "open": true
             },
-            "SendableChooser[1]": {
+            "Test Select": {
               "open": true
             },
-            "Test Select": {
+            "Testing Speed": {
               "open": true
             },
             "open": true
@@ -168,9 +177,6 @@
         },
         "PIT Test": {
           "Decrease Speed": {
-            "open": true
-          },
-          "Test Select": {
             "open": true
           },
           "open": true

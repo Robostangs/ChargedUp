@@ -32,7 +32,7 @@ public class Swerve extends SubsystemBase {
     // end up in dependecy hell
     // Use double suppliers or something instead and keep vision in robot
     // container...
-    public static Swerve mInstance;
+    private static Swerve mInstance;
 
     public static Swerve getInstance() {
 

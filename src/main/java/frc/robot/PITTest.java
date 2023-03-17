@@ -1,30 +1,29 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.networktables.NetworkTableType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
 
-public class PITTest extends CommandBase {
+public class PITTest {
     static XboxController xDrive = RobotContainer.mDriverController;
     static double testSpeed = frc.robot.Constants.Swerve.testSpeed;
     static PowerDistribution pdp = Robot.mPowerDistribution;
+    static Double maxSpeed = 1.0;
+    static Double minSpeed = -1.0;
     
     public static String[] cmdList = {
         "Translation Test", "Strafe Test", "Rotation Test", "Drivetrain Control",
@@ -47,13 +46,11 @@ public class PITTest extends CommandBase {
         /* Arm Testing */
         new ToggleGrip().andThen(new WaitCommand(4)),
         /* Hand Testing */
-        new SetArmPosition(ArmPosition.kIntakePositionGeneral),
-        new SetArmPosition(ArmPosition.kStowPosition),
+        new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new InstantCommand()),
+        new SetArmPosition(ArmPosition.kStowPosition).andThen(new InstantCommand()),
         new PercentOutput(
-            () -> Utils.customDeadzone(-xDrive.getLeftX()),
-            () -> Utils.customDeadzone(-xDrive.getLeftY())
-        ),
-        // new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
+            () -> Utils.customDeadzone(-xDrive.getLeftY()),
+            () -> Utils.customDeadzone(-xDrive.getRightY()))
     };
 
     private static DoubleSupplier BV;
@@ -84,18 +81,18 @@ public class PITTest extends CommandBase {
     private static DoubleSupplier Elbow2;
     private static DoubleSupplier Elbow3;
 
-    public PITTest() {
-        new Lighting().killLights();
+    public PITTest() {}
+
+    public static void speedPlus() {
+        if (Constants.Swerve.testSpeed + 0.1 < maxSpeed) {
+            Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;
+        }
     }
 
-    @Override
-    public void initialize() {
-        // BV = () -> RobotController.getBatteryVoltage();
-        // FL1 = () -> pdp.getCurrent(Constants.Swerve.Mod1.driveMotorID);
-        // FL2 = () -> Swerve.getInstance().mSwerveMods[1].TalonDriveTemperature();
-        // FL3 = () -> pdp.getCurrent(Constants.Swerve.Mod1.angleMotorID);
-        // FL4 = () -> Swerve.getInstance().mSwerveMods[1].TalonAngleTemperature();
-        // FL5 = () -> Swerve.getInstance().mSwerveMods[1].getCanCoder().getRotations();
+    public static void speedMinus() {
+        if (Constants.Swerve.testSpeed - 0.1 > minSpeed) {
+            Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;
+        }
     }
 
     public static void init() {
@@ -132,13 +129,6 @@ public class PITTest extends CommandBase {
         Elbow1 = () -> pdp.getCurrent(Constants.Arm.elbowMotorID);
         Elbow2 = () -> Arm.getInstance().getAbsolutePositionElbow();
         Elbow3 = () -> Arm.getInstance().getTemperature("elbow");
-    }
-
-    @Override
-    public void execute() {}
-
-    public void PITTestMain() {
-
     }
 
     public static void PDH() {
@@ -178,47 +168,5 @@ public class PITTest extends CommandBase {
         SmartDashboard.putNumber("Elbow Motor Temperature", Elbow3.getAsDouble());
     }
 
-
-
-    // @Override
-    // public void initSendable(SendableBuilder builder) {
-    //     builder.addDoubleProperty("Battery Voltage", () -> RobotController.getBatteryVoltage(), null);
-
-    //     //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
-
-    //     /* Front Left Metrics */
-    //     builder.addDoubleProperty("Drivetrain Front Left Drive Current", () -> pdp.getCurrent(Constants.Swerve.Mod0.driveMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Front Left Drive Temperature", () -> Swerve.getInstance().mSwerveMods[1].TalonDriveTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Front Left Angle Current", () -> pdp.getCurrent(Constants.Swerve.Mod0.angleMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Front Left Angle Temperature", () -> Swerve.getInstance().mSwerveMods[1].TalonAngleTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Front Left Module Can Coder", () -> Swerve.getInstance().mSwerveMods[1].getCanCoder().getRotations(), null);
-    //     /* Front Right Metrics */
-    //     builder.addDoubleProperty("Drivetrain Front Right Drive Current", () -> pdp.getCurrent(Constants.Swerve.Mod1.driveMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Front Right Drive Temperature", () -> Swerve.getInstance().mSwerveMods[0].TalonDriveTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Front Right Angle Current", () -> pdp.getCurrent(Constants.Swerve.Mod1.angleMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Front Right Angle Temperature", () -> Swerve.getInstance().mSwerveMods[0].TalonAngleTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Front Right Module Can Coder", () -> Swerve.getInstance().mSwerveMods[0].getCanCoder().getRotations(), null);
-    //     /* Back Left Metrics */
-    //     builder.addDoubleProperty("Drivetrain Back Left Drive Current", () -> pdp.getCurrent(Constants.Swerve.Mod2.driveMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Back Left Drive Temperature", () -> Swerve.getInstance().mSwerveMods[2].TalonDriveTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Back Left Angle Current", () -> pdp.getCurrent(Constants.Swerve.Mod2.angleMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Back Left Angle Temperature", () -> Swerve.getInstance().mSwerveMods[2].TalonAngleTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Back Left Module Can Coder", () -> Swerve.getInstance().mSwerveMods[2].getCanCoder().getRotations(), null);
-    //     /* Back Right Metrics */
-    //     builder.addDoubleProperty("Drivetrain Back Right Drive Current", () -> pdp.getCurrent(Constants.Swerve.Mod3.driveMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Back Right Drive Temperature", () -> Swerve.getInstance().mSwerveMods[3].TalonDriveTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Back Right Angle Current", () -> pdp.getCurrent(Constants.Swerve.Mod3.angleMotorID), null);
-    //     builder.addDoubleProperty("Drivetrain Back Right Angle Temperature", () -> Swerve.getInstance().mSwerveMods[3].TalonAngleTemperature(), null);
-    //     builder.addDoubleProperty("Drivetrain Back Right Module Can Coder", () -> Swerve.getInstance().mSwerveMods[3].getCanCoder().getRotations(), null);
-    //     /* Shoulder Metrics */
-    //     builder.addDoubleProperty("Arm Shoulder Motor Current", () -> pdp.getCurrent(Constants.Arm.shoulderMotorID), null);
-    //     builder.addDoubleProperty("Arm Shoulder Motor Can Coder", () -> Arm.getInstance().getCanCoder("shoulder"), null);
-    //     builder.addDoubleProperty("Arm Shoulder Motor Temperature", () -> Arm.getInstance().getTemperature("shoulder"), null);
-    //     /* Elbow Metrics */
-    //     builder.addDoubleProperty("Arm Elbow Motor Current", () -> pdp.getCurrent(Constants.Arm.elbowMotorID), null);
-    //     builder.addDoubleProperty("Arm Elbow Motor Can Coder", () -> Arm.getInstance().getCanCoder("elbow"), null);
-    //     builder.addDoubleProperty("Arm Elbow Motor Temperature", () -> Arm.getInstance().getTemperature("elbow"), null);
-
-    //     super.initSendable(builder);
-    // }
+    NetworkTableType x;
 }
