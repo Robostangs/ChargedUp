@@ -209,9 +209,6 @@ public class Arm extends SubsystemBase {
         double correctedElbowAngle = Math.toDegrees(q2);
         double correctedShoulderAngle = Math.toDegrees(q1) ;
 
-        // double uncorrectedElbowAngle = (
-        //     (correctedElbowAngle - (90 - correctedShoulderAngle) / Constants.Arm.elbowVirtualFourBarRatio) / Constants.Arm.elbowDegreesPerMotorTick
-        // );
 
         return new Vector2D(correctedElbowAngle, correctedShoulderAngle);
         // return new Utils.Vector2D(Math.toDegrees(q2), Math.toDegrees(q1));
@@ -391,14 +388,30 @@ public class Arm extends SubsystemBase {
     //     }
     // }
 
-    public void setElbowPosition(Vector2D positions) {
-        mElbowBrakeSolenoid.set(true);
-        double decorrectedElbowAngle = (
-            (positions.x - (90 - positions.y) / Constants.Arm.elbowVirtualFourBarRatio)
-        );
+    //Returns elbow motor angle in motor space with joint units
+    public double setElbowPosition(Vector2D positions) {
         mMechanismTargetElbow.setAngle(positions.x);
-        mElbowMotor.set(ControlMode.MotionMagic, decorrectedElbowAngle/Constants.Arm.elbowDegreesPerMotorTick);
+        double decorrectedElbowAngle=decorrectElbowAngle(positions);
+        setElbowPosition(decorrectedElbowAngle);
+        return decorrectedElbowAngle;
     }
+
+    //JUST CORRECTS FOR DEGREES PER MOTOR TICK, NOT COORDINATE SPACE CORRECTION
+    public void setElbowPosition(double elbowPosition){
+        mElbowBrakeSolenoid.set(true);
+        mElbowMotor.set(ControlMode.MotionMagic, elbowPosition/Constants.Arm.elbowDegreesPerMotorTick);
+    }
+
+
+    //Takes motor/target joint angles and returns elbow motor angle (where 0 is only parallel to forearm when vertical)
+    public double decorrectElbowAngle(Vector2D motorAnglesInJointSpace){
+        return (motorAnglesInJointSpace.x - (90 - motorAnglesInJointSpace.y) / Constants.Arm.elbowVirtualFourBarRatio);
+    }
+     //Takes elbow motor angle (where 0 is only parallel to forearm when vertical) and shoulder angle and returns motor/target elbow angle 
+     public double correctElbowAngle(Vector2D motorAnglesInMotorSpace){
+        return (motorAnglesInMotorSpace.x + (90 - motorAnglesInMotorSpace.y) / Constants.Arm.elbowVirtualFourBarRatio);
+    }
+
 
     public void setShoulderPosition(double shoulderPosition) {
         mShoulderBrakeSolenoid.set(true);
@@ -436,15 +449,13 @@ public class Arm extends SubsystemBase {
         return !mShoulderBrakeSolenoid.get();
     }
 
-    public void gotoElbowPosition(double positionDegrees) {
-        mElbowMotor.set(ControlMode.MotionMagic, positionDegrees/Constants.Arm.elbowDegreesPerMotorTick);
-        mElbowBrakeSolenoid.set(true);
+    //Returns elbow motor angle in joint units 
+    public double getUncorrectedElbowMotorPosition(){
+        return mElbowMotor.getSelectedSensorPosition()*Constants.Arm.elbowDegreesPerMotorTick;
     }
-
     public double getElbowPositionFromMotor(){
-        double uncorrectedAngle=mElbowMotor.getSelectedSensorPosition()*Constants.Arm.elbowDegreesPerMotorTick;
         double shoulderAngle = mShoulderMotor.getSelectedSensorPosition() * Constants.Arm.shoulderDegreesPerMotorTick;
-        return (uncorrectedAngle + (90 - shoulderAngle) / Constants.Arm.elbowVirtualFourBarRatio);
+        return correctElbowAngle(new Vector2D(getUncorrectedElbowMotorPosition(),shoulderAngle));
     }
 
     public void setShoulderLock(boolean value) {
@@ -472,28 +483,21 @@ public class Arm extends SubsystemBase {
 //THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
     public void resetLash(double correctedShoulderCanCoderPostion, double correctedElbowCanCoderPostion) {
         mShoulderMotor.setSelectedSensorPosition(-correctedShoulderCanCoderPostion/Constants.Arm.shoulderDegreesPerMotorTick);
-        mElbowMotor.setSelectedSensorPosition(-(
-                                                    (
-                                                        correctedElbowCanCoderPostion 
-                                                        - (90 - correctedShoulderCanCoderPostion) / Constants.Arm.elbowVirtualFourBarRatio
-                                                    ) 
-                                                    / Constants.Arm.elbowDegreesPerMotorTick
-                                                )
-                                            );
+        mElbowMotor.setSelectedSensorPosition(
+                                                -decorrectElbowAngle(new Vector2D(correctedElbowCanCoderPostion,correctedShoulderCanCoderPostion))
+                                                / Constants.Arm.elbowDegreesPerMotorTick
+                                             );
+        DataLogManager.log("Reset Lash");
     }
 //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
     public void resetLash() {
         mShoulderMotor.setSelectedSensorPosition(mShoulderCanCoder.getPosition()/Constants.Arm.shoulderDegreesPerMotorTick);
-        mElbowMotor.setSelectedSensorPosition((
-                                                    (
-                                                        mElbowCanCoder.getPosition() 
-                                                        - (90 - mShoulderCanCoder.getPosition()) / Constants.Arm.elbowVirtualFourBarRatio
-                                                    ) 
-                                                    / Constants.Arm.elbowDegreesPerMotorTick
-                                                )
-                                            );
-                                            DataLogManager.log("Reset Lash");
+        mElbowMotor.setSelectedSensorPosition(
+                                                decorrectElbowAngle(new Vector2D(mElbowCanCoder.getPosition(),mShoulderCanCoder.getPosition()))
+                                                / Constants.Arm.elbowDegreesPerMotorTick
+                                             );
+        DataLogManager.log("Reset Lash");
     }
 
     public ControlMode getElbowControlMode() {
