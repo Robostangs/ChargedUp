@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.doubleAutoFromPath;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
@@ -101,7 +102,7 @@ public class RobotContainer {
                 
         new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
             .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
-            .alongWith(new InstantCommand(() -> DataLogManager.log(String.valueOf(leftTrigger)))));
+            .alongWith(new LoggyPrintCommand(leftTrigger)));
        
             
         // new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {

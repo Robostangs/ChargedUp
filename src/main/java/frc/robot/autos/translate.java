@@ -1,5 +1,6 @@
 package frc.robot.autos;
 
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.subsystems.Swerve;
@@ -64,7 +65,7 @@ public class translate extends SequentialCommandGroup {
 
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())).andThen(new InstantCommand(() -> System.out.println("I reset"))),
+            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())).andThen(new LoggyPrintCommand("I reset")),
             swerveControllerCommand.deadlineWith(new RunCommand(() -> DataLogManager.log(s_Swerve.getPose().getX() + ", " + s_Swerve.getPose().getY())))
         );
     }
