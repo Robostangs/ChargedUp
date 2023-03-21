@@ -1,171 +1,198 @@
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.util.function.BooleanConsumer;
+import edu.wpi.first.networktables.NetworkTableType;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.Hand;
-import frc.robot.commands.AestheticsCMD.LightCMD;
-import frc.robot.commands.AestheticsCMD.MusicCMD;
-import frc.robot.commands.AestheticsCMD.WarningBeep;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleGrip;
+import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Aesthetics.Music;
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
 
-public class PITTest extends SequentialCommandGroup {
-    XboxController xDrive = new RobotContainer().mDriverController;
-    double testSpeed = frc.robot.Constants.Swerve.testSpeed;
-
-    SendableChooser<Command> chooser = new SendableChooser<Command>();
-
-    public ArrayList<Command> testedCommands = new ArrayList<Command>();
+public class PITTest extends SubsystemBase {
+    static XboxController xDrive = RobotContainer.mDriverController;
+    static double testSpeed = frc.robot.Constants.Swerve.testSpeed;
+    static Double maxSpeed = 1.0;
+    static Double minSpeed = -1.0;
     
-    Command 
-        translationTest, strafeTest, rotationTest,
-        toggleGrip,
-        setIntakePOS, setStowPOS, rawPower;
-
-    Command[] commandList = {
-        // /* Swerve testing */
-        translationTest = new TeleopSwerve
-            (() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
-        strafeTest = new TeleopSwerve
-            (() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
-        rotationTest = new TeleopSwerve
-            (() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
-        /* Arm Testing */
-        toggleGrip = new ToggleGrip(),
-        /* Hand Testing */
-        setIntakePOS = new SetArmPosition(ArmPosition.kIntakePosition, false),
-        setStowPOS = new SetArmPosition(ArmPosition.kStowPosition, true),
-        rawPower = new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY())
+    public static String[] cmdList = {
+        "Translation Test", "Strafe Test", "Rotation Test", "Drivetrain Control",
+        "Toggle Claw",
+        "General Intake Position", "Stow Position", "Fine Adjust"
     };
+    
+    public static Command[] commandList = {
+        /* Swerve testing */
+        // new InstantCommand(() -> {RobotContainer.s_Swerve.setDefaultCommand(new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false));}),
 
-    int currCommand = 0;
-    int offset = 0;
-    static boolean ran = false;
 
-    final Command init = new WaitCommand(1).andThen(new WarningBeep());
-    BooleanConsumer x;
+        new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
+        new TeleopSwerve(() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
+        new TeleopSwerve(() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
+        new TeleopSwerve(
+            () -> -xDrive.getLeftY(), 
+            () -> -xDrive.getLeftX(), 
+            () -> -xDrive.getRightX(), 
+            () ->  xDrive.getAButton(),
+            () ->  xDrive.getLeftBumper()
+        ),
+        /* Arm Testing */
+        // new InstantCommand(() -> {RobotContainer.s_Hand.setDefaultCommand(new ToggleGrip());}),
 
+        // new SequentialCommandGroupToggleGrip().alongWith(new WaitUntilCommand(4)).withName(null),
+        new SequentialCommandGroup(new ToggleGrip(), new WaitUntilCommand(4)),
+        // .andThen(new WaitCommand(4)),
+        /* Hand Testing */
+        // new InstantCommand(() -> {if (Arm.getInstance().getArmPosition().equals(ArmPosition.kIntakePositionGeneral)) {new InstantCommand(() -> System.out.println("Intake Position General"));} else {new SetArmPosition(ArmPosition.kIntakePositionGeneral);}}),
+        new ConditionalCommand(new InstantCommand(() -> System.out.println("Intake Position General")), new SetArmPosition(ArmPosition.kIntakePositionGeneral), () -> Arm.getInstance().getArmPosition().equals(ArmPosition.kIntakePositionGeneral)),
+        new ConditionalCommand(new InstantCommand(() -> System.out.println("Stow Position")), new SetArmPosition(ArmPosition.kStowPosition), () -> Arm.getInstance().getArmPosition().equals(ArmPosition.kStowPosition)),
+        // .andThen(new WaitCommand(4)),
+        // new SetArmPosition(ArmPosition.kStowPosition),
+        // .andThen(new WaitCommand(4)),
+        new PercentOutput(
+            () -> Utils.customDeadzone(-xDrive.getLeftY()),
+            () -> Utils.customDeadzone(-xDrive.getRightY()))
+    };      //TODO: VERY IMPORTANT PROBLEM, TOGGLEGRIP THRU PERCENT OUTPUT ARE NOT BEING DONE, EX: NOT SHOWING UP AS CURRENT COMMAND
 
     public PITTest() {
-        this.addRequirements(Swerve.getInstance(), Hand.getInstance(), Arm.getInstance());
-        setName("PIT Test");
-        Shuffleboard.getTab("Pit Test");
-        Shuffleboard.selectTab("Pit Test");
-        System.out.println("PITTEST");
+        new InstantCommand(() -> {Swerve.getInstance();});
+        new InstantCommand(() -> {Arm.getInstance();});
+        new InstantCommand(() -> {Hand.getInstance();});
+        new InstantCommand(() -> {Lighting.getInstance();});
+        
+        Swerve.getInstance().removeDefaultCommand();
+        Arm.getInstance().removeDefaultCommand();
+        Hand.getInstance().removeDefaultCommand();
+        Lighting.getInstance().removeDefaultCommand();
+        
+        new InstantCommand(() -> {new LightCMD(0.73);}).schedule();
+        Swerve.getInstance().setDefaultCommand(new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain"));
+        Arm.getInstance().setDefaultCommand(new PercentOutput(() -> 0, () -> 0).withName("Kill Arm"));
+        Hand.getInstance().setDefaultCommand(new SetGrip().withName("Close Claw"));
+        System.out.println("PITTest.PITTest()");
+    }
 
-        chooser.setDefaultOption("Default (Wait)", new WaitCommand(1));
-        for (Command cmd : commandList) {
-            chooser.addOption(cmd.getName(), cmd);
+    public static void speedPlus() {
+        if (Constants.Swerve.testSpeed + 0.1 < maxSpeed) {
+            Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;
         }
-
-        chooser.getSelected();
-
-        this.addCommands(
-            new InstantCommand(() -> {new LightCMD(0.73);}),
-            init
-            // new TeleopSwerve
-            //     (() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
-            // new TeleopSwerve
-            //     (() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
-            // new TeleopSwerve
-            //     (() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
-            // /* Arm Testing */
-            // new ToggleGrip(),
-            // /* Hand Testing */
-            // new SetArmPosition(ArmPosition.kIntakePosition, false),
-            // new SetArmPosition(ArmPosition.kStowPosition, false),
-            // new PercentOutput(() -> xDrive.getRightY(), () -> xDrive.getLeftY()),
-            // new InstantCommand(() -> {ran = true;})
-        );
+        SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     }
 
-    public void exec2() {
-        if (!chooser.getSelected().isScheduled()) {
-            chooser.getSelected().schedule();
+    public static void speedMinus() {
+        if (Constants.Swerve.testSpeed - 0.1 > minSpeed) {
+            Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;
         }
+        SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     }
 
-    public void exec() {
-        if (xDrive.getAButtonPressed()) {
-            this.addCommands(init, commandList[0]);
-        } else if (xDrive.getBButtonPressed()) {
-            x = new BooleanConsumer() {
-                public void accept(boolean ran) {PITTest.ran = true;}                    
-            };    
-            this.finallyDo(x);
-            this.end(false);
-        } else if (xDrive.getRightBumperPressed()) {
-            currCommand++;
-            if (currCommand == commandList.length) {
-                currCommand = commandList.length - 1;
-            } else if (currCommand < 0) {
-                currCommand = 0;
-            } else {
-                this.addCommands(init, commandList[currCommand]);
-            }
-        } else if (xDrive.getLeftBumperPressed()) {
-            currCommand--;
-            if (currCommand == commandList.length) {
-                currCommand = commandList.length - 1;
-            } else if (currCommand < 0) {
-                currCommand = 0;
-            } else {
-                this.addCommands(init, commandList[currCommand]);
-            }
-        } else {
-            if (commandList[currCommand].isFinished()) {
-                this.andThen(commandList[currCommand]);
-            }
-        }
-    }
+    static PowerDistribution pdp = Robot.mPowerDistribution;
 
-    public String updateBoard() {
-        if (currCommand == -1) {
-            return "Press A to begin test";
-        } else if (commandList[currCommand] == null) {
-            return "null";
-        } else {
-            testedCommands.add(commandList[currCommand--]);
-            SmartDashboard.putString("Tested Commands", testedCommands.toString());
-            return commandList[currCommand].getName();
-        }
-    }
+    // private static DoubleSupplier BV;
+    // private static DoubleSupplier FL1, FL2, FL3, FL4, FL5;
+    // private static DoubleSupplier FR1, FR2, FR3, FR4, FR5;
+    // private static DoubleSupplier BL1, BL2, BL3, BL4, BL5; 
+    // private static DoubleSupplier BR1, BR2, BR3, BR4, BR5;
+    // private static DoubleSupplier Shoulder1, Shoulder2, Shoulder3;
+    // private static DoubleSupplier Elbow1, Elbow2, Elbow3;
 
-    public Command musicCommand() {
-        final Command musicCMD = new MusicCMD();
-        new LightCMD(-0.81).schedule(); //Forrest Green Pallette
-        return musicCMD;
-    }
+    // public static void init() {
+    //     BV = () -> RobotController.getBatteryVoltage();
+    //     /* Front Left Metrics Mod[1] */
+    //     FL1 = () -> pdp.getCurrent(Constants.Swerve.Mod1.driveMotorID);
+    //     FL2 = () -> Swerve.getInstance().mSwerveMods[1].TalonDriveTemperature();
+    //     FL3 = () -> pdp.getCurrent(Constants.Swerve.Mod1.angleMotorID);
+    //     FL4 = () -> Swerve.getInstance().mSwerveMods[1].TalonAngleTemperature();
+    //     FL5 = () -> Swerve.getInstance().mSwerveMods[1].getCanCoder().getRotations();
+    //     /* Front Right Metrics Mod[0] */
+    //     FR1 = () -> pdp.getCurrent(Constants.Swerve.Mod0.driveMotorID);
+    //     FR2 = () -> Swerve.getInstance().mSwerveMods[0].TalonDriveTemperature();
+    //     FR3 = () -> pdp.getCurrent(Constants.Swerve.Mod0.angleMotorID);
+    //     FR4 = () -> Swerve.getInstance().mSwerveMods[0].TalonAngleTemperature();
+    //     FR5 = () -> Swerve.getInstance().mSwerveMods[0].getCanCoder().getRotations();
+    //     /* Back Left Metrics Mod[2] */
+    //     BL1 = () -> pdp.getCurrent(Constants.Swerve.Mod2.driveMotorID);
+    //     BL2 = () -> Swerve.getInstance().mSwerveMods[2].TalonDriveTemperature();
+    //     BL3 = () -> pdp.getCurrent(Constants.Swerve.Mod2.angleMotorID);
+    //     BL4 = () -> Swerve.getInstance().mSwerveMods[2].TalonAngleTemperature();
+    //     BL5 = () -> Swerve.getInstance().mSwerveMods[2].getCanCoder().getRotations();
+    //     /* Back Right Metrics Mod[3] */
+    //     BR1 = () -> pdp.getCurrent(Constants.Swerve.Mod3.driveMotorID);
+    //     BR2 = () -> Swerve.getInstance().mSwerveMods[3].TalonDriveTemperature();
+    //     BR3 = () -> pdp.getCurrent(Constants.Swerve.Mod3.angleMotorID);
+    //     BR4 = () -> Swerve.getInstance().mSwerveMods[3].TalonAngleTemperature();
+    //     BR5 = () -> Swerve.getInstance().mSwerveMods[3].getCanCoder().getRotations();
+    //     /* Shoulder Metrics */
+    //     Shoulder1 = () -> pdp.getCurrent(Constants.Arm.shoulderMotorID);
+    //     Shoulder2 = () -> Arm.getInstance().getAbsolutePositionShoulder();
+    //     Shoulder3 = () -> Arm.getInstance().getTemperature("shoulder");
+    //     /* Elbow Metrics */
+    //     Elbow1 = () -> pdp.getCurrent(Constants.Arm.elbowMotorID);
+    //     Elbow2 = () -> Arm.getInstance().getAbsolutePositionElbow();
+    //     Elbow3 = () -> Arm.getInstance().getTemperature("elbow");
+    // }
 
-    public static boolean didRun() {
-        return ran;
-    }
+    // public static void PDH() {
+    //     SmartDashboard.putNumber("Battery Voltage", BV.getAsDouble());
 
-    PowerDistribution pdp = Robot.pdh;
+    //     /* Front Left Metrics Mod[1] */
+    //     SmartDashboard.putNumber("Drivetrain Front Left Drive Current", FL1.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Left Drive Temperature", FL2.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Left Angle Current", FL3.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Left Angle Temperature", FL4.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Left Module Can Coder", FL5.getAsDouble());
+    //     /* Front Right Metrics Mod[0] */
+    //     SmartDashboard.putNumber("Drivetrain Front Right Drive Current", FR1.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Right Drive Temperature", FR2.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Right Angle Current", FR3.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Right Angle Temperature", FR4.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Front Right Module Can Coder", FR5.getAsDouble());
+    //     /* Back Left Metrics Mod[2] */
+    //     SmartDashboard.putNumber("Drivetrain Back Left Drive Current", BL1.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Left Drive Temperature", BL2.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Left Angle Current", BL3.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Left Angle Temperature", BL4.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Left Module Can Coder", BL5.getAsDouble());
+    //     /* Back Right Metrics Mod[3] */
+    //     SmartDashboard.putNumber("Drivetrain Back Right Drive Current", BR1.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Right Drive Temperature", BR2.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Right Angle Current", BR3.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Right Angle Temperature", BR4.getAsDouble());
+    //     SmartDashboard.putNumber("Drivetrain Back Right Module Can Coder", BR5.getAsDouble());
+    //     /* Shoulder Metrics */
+    //     SmartDashboard.putNumber("Shoulder Motor Current", Shoulder1.getAsDouble());
+    //     SmartDashboard.putNumber("Shoulder Motor Can Coder", Shoulder2.getAsDouble());
+    //     SmartDashboard.putNumber("Shoulder Motor Temperature", Shoulder3.getAsDouble());
+    //     /* Elbow Metrics */
+    //     SmartDashboard.putNumber("Elbow Motor Current", Elbow1.getAsDouble());
+    //     SmartDashboard.putNumber("Elbow Motor Can Coder", Elbow2.getAsDouble());
+    //     SmartDashboard.putNumber("Elbow Motor Temperature", Elbow3.getAsDouble());
+    // }
 
+    // NetworkTableType x;
     @Override
-    public void initSendable(SendableBuilder builder) {
+    public void initSendable() {
+        builder.setSmartDashboardType(NetworkTableType.kDouble.toString());
         builder.addDoubleProperty("Battery Voltage", () -> RobotController.getBatteryVoltage(), null);
 
         //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
@@ -196,13 +223,14 @@ public class PITTest extends SequentialCommandGroup {
         builder.addDoubleProperty("Drivetrain Back Right Module Can Coder", () -> Swerve.getInstance().mSwerveMods[3].getCanCoder().getRotations(), null);
         /* Shoulder Metrics */
         builder.addDoubleProperty("Arm Shoulder Motor Current", () -> pdp.getCurrent(Constants.Arm.shoulderMotorID), null);
-        builder.addDoubleProperty("Arm Shoulder Motor Can Coder", () -> Arm.getInstance().getCanCoder("shoulder"), null);
+        builder.addDoubleProperty("Arm Shoulder Motor Can Coder", () -> Arm.getInstance().getAbsolutePositionShoulder(), null);
         builder.addDoubleProperty("Arm Shoulder Motor Temperature", () -> Arm.getInstance().getTemperature("shoulder"), null);
         /* Elbow Metrics */
         builder.addDoubleProperty("Arm Elbow Motor Current", () -> pdp.getCurrent(Constants.Arm.elbowMotorID), null);
-        builder.addDoubleProperty("Arm Elbow Motor Can Coder", () -> Arm.getInstance().getCanCoder("elbow"), null);
+        builder.addDoubleProperty("Arm Elbow Motor Can Coder", () -> Arm.getInstance().getAbsolutePositionElbow(), null);
         builder.addDoubleProperty("Arm Elbow Motor Temperature", () -> Arm.getInstance().getTemperature("elbow"), null);
 
-        super.initSendable(builder);
+        Shuffleboard.getTab("PIT Test").add("stuff", (Sendable) builder);
+        // SmartDashboard.putData("stuff", (Sendable) builder);
     }
 }
