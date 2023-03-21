@@ -176,22 +176,20 @@ public class Robot extends TimedRobot {
 
     if (testsAdded == false) {
       testTab = Shuffleboard.getTab("PIT Test");
-      testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
+      testTab.add("Test Select", test)
+      .withWidget(BuiltInWidgets.kComboBoxChooser).withPosition(4, 1).withSize(2, 1);
       
       testTab.addDouble("Testing Speed",() -> SmartDashboard.getNumber("Test Speed", 0))
-      .withWidget(BuiltInWidgets.kNumberSlider)
-      .withProperties(Map.of("min", -1, "max", 1));
+      .withWidget(BuiltInWidgets.kNumberBar).withPosition(4, 0).withSize(4, 1);
       
-      testTab.add("Increase Speed", new InstantCommand(() -> {PITTest.speedPlus();})
-      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
-      .withWidget(BuiltInWidgets.kCommand);
+      testTab.add("Increase Speed", new InstantCommand(() -> {PITTest.speedPlus();}).withName("Increase Speed"))
+      .withWidget(BuiltInWidgets.kCommand).withPosition(6, 2).withSize(2, 1);
       
-      testTab.add("Decrease Speed", new InstantCommand(() -> {PITTest.speedMinus();})
-      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
-      .withWidget(BuiltInWidgets.kCommand);
+      testTab.add("Decrease Speed", new InstantCommand(() -> {PITTest.speedMinus();}).withName("Decrease Speed"))
+      .withWidget(BuiltInWidgets.kCommand).withPosition(4, 2).withSize(2, 1);
       
       testTab.addString("PIT Test Status", () -> SmartDashboard.getString("pitStat", "null"))
-      .withWidget(BuiltInWidgets.kTextView);
+      .withWidget(BuiltInWidgets.kTextView).withPosition(6, 1).withSize(2, 1);
       
       SmartDashboard.putString("pitStat", "Initizalizing");
       
