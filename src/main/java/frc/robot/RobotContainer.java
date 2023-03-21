@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -13,6 +14,7 @@ import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
+import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Lights.LightReqCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Swerve.balance;
@@ -29,13 +31,14 @@ public class RobotContainer {
     /* Controllers */
     public final static XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
-    private XboxController instance;
+    // private XboxController instance;
   
     /* Subsystems */
-    public final static Swerve s_Swerve = Swerve.getInstance();
-    private final Arm s_Arm = Arm.getInstance();
-    private final Hand s_Hand = Hand.getInstance();
-    private final Vision s_Vision = Vision.getInstance();
+    private final static Swerve s_Swerve = Swerve.getInstance();
+    private final static Arm s_Arm = Arm.getInstance();
+    private final static Hand s_Hand = Hand.getInstance();
+    private final static Vision s_Vision = Vision.getInstance();
+    private final static Lighting s_Lighting = Lighting.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -78,6 +81,8 @@ public class RobotContainer {
             )
         );
 
+        // s_Lighting.setDefaultCommand(new LightCMD(s_Lighting.killLights()));
+
         //Seems like a waste of everyones time
         // Trigger clawGripToggle = new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value);
         // clawGripToggle.whileTrue(new SetGrip());
@@ -112,8 +117,8 @@ public class RobotContainer {
         // });
 
         // new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
-        new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
-        new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
+        new POVButton(mManipController, 90).onTrue(new LightReqCMD(90).alongWith(new WaitCommand(10)));
+        new POVButton(mManipController, 270).onTrue(new LightReqCMD(270).alongWith(new WaitCommand(10)));
         new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));
         
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));

@@ -8,13 +8,21 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleGrip;
+import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
 
@@ -33,6 +41,9 @@ public class PITTest {
     
     public static Command[] commandList = {
         /* Swerve testing */
+        // new InstantCommand(() -> {RobotContainer.s_Swerve.setDefaultCommand(new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false));}),
+
+
         new TeleopSwerve(() -> testSpeed, () -> 0, () -> 0, () -> false, () -> false),
         new TeleopSwerve(() -> 0, () -> testSpeed, () -> 0, () -> false, () -> false),
         new TeleopSwerve(() -> 0, () -> 0, () -> testSpeed, () -> false, () -> false),
@@ -44,44 +55,48 @@ public class PITTest {
             () ->  xDrive.getLeftBumper()
         ),
         /* Arm Testing */
-        new ToggleGrip().andThen(new WaitCommand(4)),
+        // new InstantCommand(() -> {RobotContainer.s_Hand.setDefaultCommand(new ToggleGrip());}),
+
+        // new SequentialCommandGroupToggleGrip().alongWith(new WaitUntilCommand(4)).withName(null),
+        new SequentialCommandGroup(new ToggleGrip(), new WaitUntilCommand(4)),
+        // .andThen(new WaitCommand(4)),
         /* Hand Testing */
-        new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new InstantCommand()),
-        new SetArmPosition(ArmPosition.kStowPosition).andThen(new InstantCommand()),
+        // new InstantCommand(() -> {if (Arm.getInstance().getArmPosition().equals(ArmPosition.kIntakePositionGeneral)) {new InstantCommand(() -> System.out.println("Intake Position General"));} else {new SetArmPosition(ArmPosition.kIntakePositionGeneral);}}),
+        new ConditionalCommand(new InstantCommand(() -> System.out.println("Intake Position General")), new SetArmPosition(ArmPosition.kIntakePositionGeneral), () -> Arm.getInstance().getArmPosition().equals(ArmPosition.kIntakePositionGeneral)),
+        new ConditionalCommand(new InstantCommand(() -> System.out.println("Stow Position")), new SetArmPosition(ArmPosition.kStowPosition), () -> Arm.getInstance().getArmPosition().equals(ArmPosition.kStowPosition)),
+        // .andThen(new WaitCommand(4)),
+        // new SetArmPosition(ArmPosition.kStowPosition),
+        // .andThen(new WaitCommand(4)),
         new PercentOutput(
             () -> Utils.customDeadzone(-xDrive.getLeftY()),
             () -> Utils.customDeadzone(-xDrive.getRightY()))
-    };
+    };      //TODO: VERY IMPORTANT PROBLEM, TOGGLEGRIP THRU PERCENT OUTPUT ARE NOT BEING DONE, EX: NOT SHOWING UP AS CURRENT COMMAND
 
     private static DoubleSupplier BV;
-    private static DoubleSupplier FL1;
-    private static DoubleSupplier FL2;
-    private static DoubleSupplier FL3;
-    private static DoubleSupplier FL4;
-    private static DoubleSupplier FL5;
-    private static DoubleSupplier FR1;
-    private static DoubleSupplier FR2;
-    private static DoubleSupplier FR3;
-    private static DoubleSupplier FR4;
-    private static DoubleSupplier FR5;
-    private static DoubleSupplier BL1; 
-    private static DoubleSupplier BL2;
-    private static DoubleSupplier BL3;
-    private static DoubleSupplier BL4;
-    private static DoubleSupplier BL5;
-    private static DoubleSupplier BR1;
-    private static DoubleSupplier BR2;
-    private static DoubleSupplier BR3;
-    private static DoubleSupplier BR4;
-    private static DoubleSupplier BR5;
-    private static DoubleSupplier Shoulder1;
-    private static DoubleSupplier Shoulder2;
-    private static DoubleSupplier Shoulder3;
-    private static DoubleSupplier Elbow1;
-    private static DoubleSupplier Elbow2;
-    private static DoubleSupplier Elbow3;
+    private static DoubleSupplier FL1, FL2, FL3, FL4, FL5;
+    private static DoubleSupplier FR1, FR2, FR3, FR4, FR5;
+    private static DoubleSupplier BL1, BL2, BL3, BL4, BL5; 
+    private static DoubleSupplier BR1, BR2, BR3, BR4, BR5;
+    private static DoubleSupplier Shoulder1, Shoulder2, Shoulder3;
+    private static DoubleSupplier Elbow1, Elbow2, Elbow3;
 
-    public PITTest() {}
+    public PITTest() {
+        new InstantCommand(() -> {Swerve.getInstance();});
+        new InstantCommand(() -> {Arm.getInstance();});
+        new InstantCommand(() -> {Hand.getInstance();});
+        new InstantCommand(() -> {Lighting.getInstance();});
+        
+        Swerve.getInstance().removeDefaultCommand();
+        Arm.getInstance().removeDefaultCommand();
+        Hand.getInstance().removeDefaultCommand();
+        Lighting.getInstance().removeDefaultCommand();
+        
+        new InstantCommand(() -> {new LightCMD(0.73);}).schedule();
+        Swerve.getInstance().setDefaultCommand(new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain"));
+        Arm.getInstance().setDefaultCommand(new PercentOutput(() -> 0, () -> 0).withName("Kill Arm"));
+        Hand.getInstance().setDefaultCommand(new SetGrip().withName("Close Claw"));
+        System.out.println("PITTest.PITTest()");
+    }
 
     public static void speedPlus() {
         if (Constants.Swerve.testSpeed + 0.1 < maxSpeed) {
@@ -168,5 +183,5 @@ public class PITTest {
         SmartDashboard.putNumber("Elbow Motor Temperature", Elbow3.getAsDouble());
     }
 
-    NetworkTableType x;
+    // NetworkTableType x;
 }

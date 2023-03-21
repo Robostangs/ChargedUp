@@ -12,15 +12,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Swerve.TeleopSwerve;
+import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Lights.LightCMD;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
@@ -86,9 +90,14 @@ public class Robot extends TimedRobot {
     testsAdded = false;
     SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     test = new SendableChooser<Command>();
-    Command stop = new InstantCommand();
-    stop.setName("Disabled");
-    test.setDefaultOption("Disable", stop);
+    // Command stop = new InstantCommand().withName("Disabled");
+    // Command stop = new InstantCommand(() -> {System.out.println("Disable Test");});
+              // new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain").andThen(
+              // new PercentOutput(() -> 0, () -> 0).withName("Kill Arm").andThen(
+              // new SetGrip()).withName("Close Arm")).withName("Disabled");
+
+    test.setDefaultOption("Disable", new WaitUntilCommand(() -> test.getSelected().getName() != "Stop").withName("Stop"));
+    // new InstantCommand(() -> {System.out.println("Disable Test");}).withName("Stop"));
     for (int x = 0; x < PITTest.cmdList.length; x++) {
       PITTest.commandList[x].setName(PITTest.cmdList[x]);
       test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
@@ -146,21 +155,25 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer = new RobotContainer();
-    new InstantCommand(() -> {new LightCMD(Lighting.killLights());}).schedule();
-    new SetArmPosition(ArmPosition.kStartPosition).schedule();
+    new InstantCommand(() -> {new LightCMD(Lighting.getInstance().killLights());}).schedule();
+    DriverStation.silenceJoystickConnectionWarning(false);
+    // new SetArmPosition(ArmPosition.kStartPosition).schedule();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     Vision.getInstance().getTargetHandX();
-    System.out.println(CommandScheduler.getInstance().getDefaultCommand(Swerve.getInstance()));
+    // System.out.println(CommandScheduler.getInstance().getDefaultCommand(Swerve.getInstance()));
   }
 
   @Override
   public void testInit() {
     CommandScheduler.getInstance().close();
     CommandScheduler.getInstance().enable();
+    DriverStation.silenceJoystickConnectionWarning(true);
+    new PITTest();
+
     if (testsAdded == false) {
       testTab = Shuffleboard.getTab("PIT Test");
       testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
@@ -176,18 +189,32 @@ public class Robot extends TimedRobot {
       testTab.add("Decrease Speed", new InstantCommand(() -> {PITTest.speedMinus();})
       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
       .withWidget(BuiltInWidgets.kCommand);
-      testsAdded = true;
       
       testTab.addString("PIT Test Status", () -> SmartDashboard.getString("pitStat", "null"))
       .withWidget(BuiltInWidgets.kTextView);
-
+      
       SmartDashboard.putString("pitStat", "Initizalizing");
       
       PITTest.init();
+      testsAdded = true;
     }
 
-    new InstantCommand(() -> {new LightCMD(0.73);}).schedule();
     Shuffleboard.selectTab(testTab.getTitle());
+
+    // Swerve x1 = Swerve.mInstance;
+    // Arm y1 = Arm.mInstance;
+    // Hand z1 = Hand.mInstance;
+    // Swerve.getInstance().setDefaultCommand(new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain"));
+    // Arm.getInstance().setDefaultCommand(new PercentOutput(() -> 0, () -> 0).withName("Kill Arm"));
+    // Hand.getInstance().setDefaultCommand(new SetGrip().withName("Close Claw"));
+
+    // System.out.println(Swerve.mInstance.getSubsystem());
+    // System.out.println(Arm.mInstance.getSubsystem());
+    // System.out.println(Hand.mInstance.getSubsystem());
+
+    // System.out.println(Swerve.getInstance());
+    // System.out.println(Arm.getInstance());
+    // System.out.println(Hand.getInstance());
   }
   
   
@@ -197,33 +224,34 @@ public class Robot extends TimedRobot {
     // PITTest.PDH();
     Command newCMD = test.getSelected();
     SmartDashboard.putString("pitStat", newCMD.getName());
-    if (newCMD.getName() != "Translation Test" && newCMD.getName() != "Strafe Test" && newCMD.getName() != "Rotation Test" && newCMD.getName() != "Drivetrain Control") {
-      new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain").schedule();
-    } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
+    // if (newCMD.getName() == "Disabled") {
+    //   new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).withName("Kill Drivetrain").schedule();
+    //   new PercentOutput(() -> 0, () -> 0).withName("Kill Arm").schedule();
+    if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
+      CommandScheduler.getInstance().cancelAll();
       newCMD.schedule();
     }
 
-    // Command x = Swerve.getInstance().getCurrentCommand();
-    // Command y = Hand.getInstance().getCurrentCommand();
-    // Command z = Arm.getInstance().getCurrentCommand();
+    // System.out.println("NEW CMD: " + newCMD.getName());
+    // System.out.println(SetArmPosition.mArm.toString());
 
-    // if (x != null) {
-    //   System.out.println(x.getName());
-    // } else {
-    //   System.out.println(x);
-    // }
+    // Swerve x = Swerve.mInstance.getCurrentCommand().getName();
+    // Arm y = Arm.mInstance.getCurrentCommand().getName();
+    // Hand z = Hand.mInstance.getCurrentCommand().getName();
+    // Swerve x1 = Swerve.getInstance();
+    // Arm y1 = Arm.getInstance();
+    // Hand z1 = Hand.getInstance();
 
-    // if (y != null) {
-    //   System.out.println(y.getName());
-    // } else {
-    //   System.out.println(y);
-    // }
+    // System.out.println(Swerve.mInstance.getSubsystem());
+    // System.out.println(Arm.mInstance.getSubsystem());
+    // System.out.println(Hand.mInstance.getSubsystem());
 
-    // if (z != null) {
-    //   System.out.println(z.getName());
-    // } else {
-    //   System.out.println(z);
-    // }
+    // System.out.println((CommandScheduler.getInstance().getDefaultCommand(Swerve.getInstance()).getName()));
+
+    // System.out.println(Swerve.getInstance().getDefaultCommand().getName());
+    // System.out.println(Arm.getInstance().getCurrentCommand().getName());
+    // System.out.println(Hand.getInstance().getCurrentCommand().getName());
+
 
     //Seems to work, it will change the command listed in the console based on whatever i am selecting in dashboard
   }
@@ -232,5 +260,9 @@ public class Robot extends TimedRobot {
   public void testExit() {
     CommandScheduler.getInstance().cancelAll();
     Shuffleboard.selectTab("SmartDashboard");
+
+    Swerve.getInstance().removeDefaultCommand();
+    Arm.getInstance().removeDefaultCommand();
+    Hand.getInstance().removeDefaultCommand();
   }
 }

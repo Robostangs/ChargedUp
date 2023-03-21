@@ -14,16 +14,14 @@ public class LightReqCMD extends InstantCommand {
     double coneLight = 0.65;
     double cubeLight = 0.91;
 
-    public LightReqCMD(int Angle) {
-        if (Angle == 270) {
+    public LightReqCMD(int angle) {
+        addRequirements(mLighting);
+        if (angle == 270) {
             Cone = true;
             Cube = false;
-        } if (Angle == 90) {
+        } if (angle == 90) {
             Cone = false;
             Cube = true;
-        } if (Angle == 180) {
-            Cone = false;
-            Cube = false;
         }
     }
 
@@ -39,7 +37,7 @@ public class LightReqCMD extends InstantCommand {
             mLighting.setLights(cubeLight);
             reqPiece = "Cube";
         } else {
-            mLighting.setLights(Lighting.killLights());
+            mLighting.setLights(mLighting.killLights());
             reqPiece = "None";
         }
     }

@@ -22,6 +22,7 @@ import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.Utils.LockHysteresis;
 import frc.robot.Utils.Vector2D;
+import frc.robot.commands.Arm.SetArmPosition;
 
 public class Arm extends SubsystemBase {
     private static Arm mInstance;
@@ -71,7 +72,8 @@ public class Arm extends SubsystemBase {
         kLoadingZonePosition,
         kLowPosition,
         kMediumPosition,
-        kHighPosition
+        kHighPosition,
+        kHoldPosition
     }
 
     public static Arm getInstance() {
@@ -501,5 +503,9 @@ public class Arm extends SubsystemBase {
         } else {
             return null;
         }
+    }
+
+    public ArmPosition getArmPosition() {
+        return SetArmPosition.mPreviousPosition;        
     }
 }

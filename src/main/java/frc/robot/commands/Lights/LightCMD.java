@@ -10,6 +10,7 @@ public class LightCMD extends InstantCommand {
     private double PWMVal;
 
     public LightCMD(double color) {
+        addRequirements(mLighting);
         PWMVal = color;
     }
 

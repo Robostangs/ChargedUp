@@ -79,12 +79,12 @@ public class SetArmPosition extends SequentialCommandGroup {
          *
          */
     private static final Vector2D startTweenPosition = new Utils.Vector2D(0.6, 0.4);
-    private static Arm mArm = Arm.getInstance();
+    public static Arm mArm = Arm.getInstance();
     private Hand mHand = Hand.getInstance();
     private Arm.ArmPosition mDesiredState = null;
-    private static ArmPosition mPreviousPosition = ArmPosition.kHighPosition;
+    public static ArmPosition mPreviousPosition = ArmPosition.kHighPosition;
 
-    public SetArmPosition(Arm.ArmPosition state) {
+    public SetArmPosition(ArmPosition state) {
         addRequirements(mArm);
         mDesiredState = state;
 
@@ -181,6 +181,10 @@ public class SetArmPosition extends SequentialCommandGroup {
                                         new InstantCommand(()-> mPreviousPosition = ArmPosition.kHighPosition)),
                                 () -> mHand.holdingCone)));
                                    
+                break;
+
+            case kHoldPosition:
+                addCommands(new InstantCommand(() -> System.out.println("Holding Position")));
                 break;
         }
         addCommands(new InstantCommand(() -> DataLogManager.log("SET ARM POSITION DONE")));
