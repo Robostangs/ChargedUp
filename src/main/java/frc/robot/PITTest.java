@@ -102,12 +102,14 @@ public class PITTest {
         if (Constants.Swerve.testSpeed + 0.1 < maxSpeed) {
             Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;
         }
+        SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     }
 
     public static void speedMinus() {
         if (Constants.Swerve.testSpeed - 0.1 > minSpeed) {
             Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;
         }
+        SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     }
 
     public static void init() {
