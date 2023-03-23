@@ -17,7 +17,7 @@ public class StraightenManager extends SequentialCommandGroup {
 
         addCommands(
             new Flatten(angleSpeed),
-            new GetToPosition(moveSpeed, isCone)
+            new GetToPosition()
         );
     }
 
@@ -29,7 +29,7 @@ public class StraightenManager extends SequentialCommandGroup {
         addCommands(
             // new Flatten(0),
             new InstantCommand(()-> DataLogManager.log("starting straighten")),
-            new GetToPosition(0.2, isCone)
+            new GetToPosition()
         );
     }
 

@@ -30,7 +30,7 @@ public class SetArmPosition extends SequentialCommandGroup {
     /**
          *
          */
-    private static final Vector2D coneHighPosition = new Utils.Vector2D(1.44, 1.3);
+    private static final Vector2D coneHighPosition = new Utils.Vector2D(1.48, 1.24);
     /**
          *
          */
@@ -64,7 +64,7 @@ public class SetArmPosition extends SequentialCommandGroup {
          * 
          */
     private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
-    private static final Vector2D upIntakePosition = new Utils.Vector2D(0.59, 0.09);
+    private static final Vector2D upIntakePosition = new Utils.Vector2D(0.59, 0.02);
     /**
          *
          */

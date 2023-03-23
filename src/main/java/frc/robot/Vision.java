@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Utils.Vector2D;
 import frc.robot.Utils.Vector3D;
 import frc.robot.subsystems.Arm;
 
@@ -19,12 +20,11 @@ public class Vision {
    
     private final NetworkTable mLeftLimelight = NetworkTableInstance.getDefault().getTable("limelight-left");
     private DoubleArraySubscriber mLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    private DoubleArraySubscriber mRelativeLeftPosition = mLeftLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    // private DoubleArraySubscriber mLeftTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
+    private DoubleArraySubscriber mLeftTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
     private final NetworkTable mRightLimelight = NetworkTableInstance.getDefault().getTable("limelight-right");
     private DoubleArraySubscriber mRightPosition = mRightLimelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    // private DoubleArraySubscriber mRightTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
+    private DoubleArraySubscriber mRightTarget = mLeftLimelight.getDoubleArrayTopic("").subscribe(new double[] {});
 
     private final NetworkTable mDriverLimelight = NetworkTableInstance.getDefault().getTable("limelight-driver");
     private DoubleSubscriber mObjectTY = mDriverLimelight.getDoubleTopic("ty").subscribe(value);
@@ -53,7 +53,8 @@ public class Vision {
             } else {
                 return false;
             }
-        } else if(limelight.compareTo(LimelightState.rightLimelight) == 0) {
+        } else 
+       if(limelight.compareTo(LimelightState.rightLimelight) == 0) {
             if(mRightLimelight.getEntry("ta").getDouble(0) != 0) {
                 return true;
             } else {
@@ -67,7 +68,8 @@ public class Vision {
     public Utils.Vector3D getPosition(LimelightState Limelight) {
         if(Limelight.compareTo(LimelightState.leftLimelight) == 0) {
             return fromAT(mLeftPosition);
-        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 0) {
+        } else 
+        if(Limelight.compareTo(LimelightState.rightLimelight) == 0) {
             return fromAT(mRightPosition);
         } else {
             return new Utils.Vector3D(0, 0, 0);
@@ -77,7 +79,8 @@ public class Vision {
     public Rotation2d getRotation(LimelightState Limelight) {
         if(Limelight.compareTo(LimelightState.leftLimelight) == 0) {
             return rotFromAT(mLeftPosition);
-        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 0) {
+        } else 
+        if(Limelight.compareTo(LimelightState.rightLimelight) == 0) {
             return rotFromAT(mRightPosition);
         } else {
             return new Rotation2d();
@@ -110,15 +113,15 @@ public class Vision {
         return mObjectTX.get();
     }
 
-    // public Utils.Vector3D getLimelightPosition(LimelightState Limelight) {
-    //     if(Limelight.compareTo(LimelightState.leftLimelight) == 1) {
-    //         return forTarget(mLeftTarget);
-    //     } else if(Limelight.compareTo(LimelightState.rightLimelight) == 1) {
-    //         return forTarget(mRightTarget);
-    //     } else {
-    //         return new Utils.Vector3D(100, 100, 100);
-    //     }
-    // }
+    public Utils.Vector3D getLimelightPosition(LimelightState Limelight) {
+        if(Limelight.compareTo(LimelightState.leftLimelight) == 1) {
+            return forTarget(mLeftTarget);
+        } else if(Limelight.compareTo(LimelightState.rightLimelight) == 1) {
+            return forTarget(mRightTarget);
+        } else {
+            return new Utils.Vector3D(100, 100, 100);
+        }
+    }
 
     /**
      * Calculates 3 Dimensional Coordinates from the information of the limelight
@@ -150,10 +153,10 @@ public class Vision {
         return Rotation2d.fromDegrees(positions[5]);
     }
 
-    // public Utils.Vector3D forTarget(DoubleArraySubscriber sub) {
-    //     double[] positions = sub.get();
-    //     return new Utils.Vector3D(positions[0], positions[1], positions[2]);
-    // }
+    public Utils.Vector3D forTarget(DoubleArraySubscriber sub) {
+        double[] positions = sub.get();
+        return new Utils.Vector3D(positions[0], positions[1], positions[2]);
+    }
 
     public Optional<LimelightMeasurement> getNewLeftMeasurement() {
         double[] positions = mLeftPosition.get();
@@ -191,6 +194,10 @@ public class Vision {
         return Optional.of(
             new LimelightMeasurement(new Pose2d(position.x, position.y, rotation),
             timestamp));
+    }
+
+    public Vector2D objectPosition() {
+        return new Vector2D(mObjectTX.get(), mObjectTY.get());
     }
 
     private static double delayToTime(double delay) {

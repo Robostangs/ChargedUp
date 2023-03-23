@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -10,13 +12,20 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Utils.Vector2D;
+import frc.robot.Utils.Vector3D;
+import frc.robot.Vision.LimelightMeasurement;
 import frc.robot.autos.autoFromPath;
+import frc.robot.autos.basicTranslate;
 import frc.robot.autos.doubleAutoFromPath;
+import frc.robot.autos.translate;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
+import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
+import frc.robot.commands.Swerve.GetToPosition;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.*;
@@ -104,21 +113,23 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> DataLogManager.log(String.valueOf(leftTrigger)))));
        
             
-        // new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
-        //     Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
-        //     Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
-        //     if (leftMeasurement.isPresent()) {
-        //         s_Swerve.resetOdometry(leftMeasurement.get().mPose);
-        //     } else if(rightMeasurement.isPresent()) {
-        //         s_Swerve.resetOdometry(rightMeasurement.get().mPose);
-        //     }
-        // });
+        new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
+            Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
+            Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
+            if (leftMeasurement.isPresent()) {
+                s_Swerve.resetOdometry(leftMeasurement.get().mPose);
+            } else if(rightMeasurement.isPresent()) {
+                s_Swerve.resetOdometry(rightMeasurement.get().mPose);
+            }
+        });
 
         // new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
         new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));
         
+        new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager()));
+        new POVButton(mDriverController, 270).onTrue(new GetToPosition());
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
@@ -131,7 +142,9 @@ public class RobotContainer {
         // An ExampleCommand will run in autonomous
         // return new translate(s_Swerve, s_Vision.);
         // TODO
-        return new autoFromPath();
+        //Math - Vector3d(height * Math.tan(ty)*Math.cos(tx), height * Math.tan(ty)*Math.sin(tx), tx)
+
+        return new basicTranslate(s_Swerve, new Vector3D(0.71, 0, 0));
     }
 
     //tbd if needed for the override in changeSetPoint    

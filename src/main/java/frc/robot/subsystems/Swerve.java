@@ -103,7 +103,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
+        swerveOdometry.resetPosition(Rotation2d.fromDegrees(getGyroAngle()), getModulePositions(), pose);
     }
 
     public SwerveModuleState[] getModuleStates() {
@@ -173,16 +173,16 @@ public class Swerve extends SubsystemBase {
     }
 
     private void updateWithLimelight() {
-        Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
-        if (!leftMeasurement.isEmpty()) {
-            // SmartDashboard.putNumber("left-ll/pose-x", leftMeasurement.get().mPose.getX());
-            // SmartDashboard.putNumber("left-ll/pose-y", leftMeasurement.get().mPose.getY());
-            // SmartDashboard.putNumber("left-ll/rotation", leftMeasurement.get().mPose.getRotation().getDegrees());
-            // SmartDashboard.putNumber("left-ll/timestamp", leftMeasurement.get().mTime);
-            swerveOdometry.addVisionMeasurement(leftMeasurement.get().mPose, leftMeasurement.get().mTime);
-        }
+        // Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
+        // if (!leftMeasurement.isEmpty()) {
+        //     // SmartDashboard.putNumber("left-ll/pose-x", leftMeasurement.get().mPose.getX());
+        //     // SmartDashboard.putNumber("left-ll/pose-y", leftMeasurement.get().mPose.getY());
+        //     // SmartDashboard.putNumber("left-ll/rotation", leftMeasurement.get().mPose.getRotation().getDegrees());
+        //     // SmartDashboard.putNumber("left-ll/timestamp", leftMeasurement.get().mTime);
+        //     swerveOdometry.addVisionMeasurement(leftMeasurement.get().mPose, leftMeasurement.get().mTime);
+        // }
 
-        Optional<LimelightMeasurement> rightMeasurement = mVision.getNewLeftMeasurement();
+        Optional<LimelightMeasurement> rightMeasurement = mVision.getNewRightMeasurement();
         if (!rightMeasurement.isEmpty()) {
             // SmartDashboard.putNumber("right-ll/pose-x", rightMeasurement.get().mPose.getX());
             // SmartDashboard.putNumber("right-ll/pose-y", rightMeasurement.get().mPose.getY());
@@ -204,7 +204,8 @@ public class Swerve extends SubsystemBase {
         // SmartDashboard.putNumber("Physical Location X", getPose().getTranslation().getX());
         // SmartDashboard.putNumber("Physical Location Y", getPose().getTranslation().getX());
         // SmartDashboard.putNumber("Physical Angle", getGyroAngle());
-
+        SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
+        SmartDashboard.putNumber("angle", getGyroAngle());
         mField.setRobotPose(getPose());
     }
 }
