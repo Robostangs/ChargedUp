@@ -173,21 +173,13 @@ public class Swerve extends SubsystemBase {
     }
 
     private void updateWithLimelight() {
-        // Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
-        // if (!leftMeasurement.isEmpty()) {
-        //     // SmartDashboard.putNumber("left-ll/pose-x", leftMeasurement.get().mPose.getX());
-        //     // SmartDashboard.putNumber("left-ll/pose-y", leftMeasurement.get().mPose.getY());
-        //     // SmartDashboard.putNumber("left-ll/rotation", leftMeasurement.get().mPose.getRotation().getDegrees());
-        //     // SmartDashboard.putNumber("left-ll/timestamp", leftMeasurement.get().mTime);
-        //     swerveOdometry.addVisionMeasurement(leftMeasurement.get().mPose, leftMeasurement.get().mTime);
-        // }
+        Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
+        if (!leftMeasurement.isEmpty()) {
+            swerveOdometry.addVisionMeasurement(leftMeasurement.get().mPose, leftMeasurement.get().mTime);
+        }
 
         Optional<LimelightMeasurement> rightMeasurement = mVision.getNewRightMeasurement();
         if (!rightMeasurement.isEmpty()) {
-            // SmartDashboard.putNumber("right-ll/pose-x", rightMeasurement.get().mPose.getX());
-            // SmartDashboard.putNumber("right-ll/pose-y", rightMeasurement.get().mPose.getY());
-            // SmartDashboard.putNumber("right-ll/rotation", rightMeasurement.get().mPose.getRotation().getDegrees());
-            // SmartDashboard.putNumber("right-ll/timestamp", rightMeasurement.get().mTime);
             swerveOdometry.addVisionMeasurement(rightMeasurement.get().mPose, rightMeasurement.get().mTime);
         }
     }
@@ -195,15 +187,6 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometry();
-        for (SwerveModule mod : mSwerveMods) {
-            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-            // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-        }
-
-        // SmartDashboard.putNumber("Physical Location X", getPose().getTranslation().getX());
-        // SmartDashboard.putNumber("Physical Location Y", getPose().getTranslation().getX());
-        // SmartDashboard.putNumber("Physical Angle", getGyroAngle());
         SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putNumber("angle", getGyroAngle());
         mField.setRobotPose(getPose());

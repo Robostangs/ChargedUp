@@ -128,7 +128,7 @@ public class RobotContainer {
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));
         
-        new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager()));
+        new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager().andThen(new SetArmPosition(ArmPosition.kStowPosition))));
         new POVButton(mDriverController, 270).onTrue(new GetToPosition());
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 

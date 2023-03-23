@@ -174,9 +174,9 @@ public final class Constants {
             STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
             STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
 
-            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
-            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
-            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
+            VISION_STANDARD_DEVS.set(0, 0, 30); // Vision x position
+            VISION_STANDARD_DEVS.set(1, 0, 30); // Vision y position
+            VISION_STANDARD_DEVS.set(2, 0, 30); // Vision rotation
           }
 
           public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
