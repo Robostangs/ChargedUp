@@ -440,6 +440,11 @@ public class Utils {
         y *= scalar;
     }
 
+    public void elementwiseMultiply(double vx, double vy) {
+        x *= vx;
+        y *= vy;
+    }
+
     public Vector2D getMultiplied(double scalar) {
         return new Vector2D(x * scalar, y * scalar);
     }

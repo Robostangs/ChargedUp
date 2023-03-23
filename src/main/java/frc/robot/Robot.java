@@ -47,7 +47,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    ArmTrajectoryPlannerTest.main(null);
 
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -127,6 +126,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    ArmTrajectoryPlannerTest.main(null);
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
