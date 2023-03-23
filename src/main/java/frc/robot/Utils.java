@@ -270,6 +270,10 @@ public class Utils {
         }
     }
     
+    /**
+     * X is Elbow
+     * Y is Shoulder
+     */
     public static class Vector2D {
 
     public double x;
