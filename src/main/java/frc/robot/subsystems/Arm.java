@@ -64,6 +64,7 @@ public class Arm extends SubsystemBase {
     private MechanismLigament2d mMechanismMotorShoulder;
     private MechanismLigament2d mMechanismMotorElbow;
 
+    private Vector2D handPosFromMotors;
     private Vector2D handPos = new Vector2D();
 
     public Vector2D getHandPos() {
@@ -360,9 +361,9 @@ public class Arm extends SubsystemBase {
         handPos = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
          SmartDashboard.putNumber("Hand Actual X", handPos.x);
          SmartDashboard.putNumber("Hand Actual Y", handPos.y);
-         Vector2D handPosFromMotor  = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
-         SmartDashboard.putNumber("Hand Motor X", handPosFromMotor.x);
-         SmartDashboard.putNumber("Hand Motor Y", handPosFromMotor.y);;
+        handPosFromMotors  = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
+         SmartDashboard.putNumber("Hand Motor X", handPosFromMotors.x);
+         SmartDashboard.putNumber("Hand Motor Y", handPosFromMotors.y);;
 
         // SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
         // SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
@@ -391,9 +392,9 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putData("ArmMechanism/Motor", mMechanismMotor);
     }
 
-    // public double getHandPositionX() {
-    //     return handPos.x;
-    // }
+    public double getHandPositionX() {
+        return handPosFromMotors.x;
+    }
 
     // public void changeSetpoint(Utils.Vector2D currentAngles, Utils.Vector2D setpoint) {
     //     Vector2D mCurrentAngle = currentAngles;

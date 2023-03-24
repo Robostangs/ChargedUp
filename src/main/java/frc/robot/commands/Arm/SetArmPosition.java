@@ -23,8 +23,8 @@ public class SetArmPosition extends SequentialCommandGroup {
 
     //Scoring Positions
     private static final Vector2D cubeHighTweenPosition = new Utils.Vector2D(0.66, 1.24);
-    private static final Vector2D cubeHighPosition = new Utils.Vector2D(1.731, 1.25);
 
+    private static final Vector2D cubeHighPosition = new Utils.Vector2D(1.731, 1.25);
     private static final Vector2D coneHighTweenPosition = new Utils.Vector2D(0.66, 1.50);
     private static final Vector2D coneHighPosition = new Utils.Vector2D(1.44, 1.3);
 
@@ -40,6 +40,7 @@ public class SetArmPosition extends SequentialCommandGroup {
     private static final Vector2D loadingZonePosition = new Utils.Vector2D(0.666, 1.005);
 
     private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
+
     private static final Vector2D upIntakePosition = new Utils.Vector2D(0.59, 0.09);
     private static final Vector2D generalIntakePosition = new Utils.Vector2D(0.59, 0);
 

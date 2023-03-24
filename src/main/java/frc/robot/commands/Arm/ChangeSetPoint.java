@@ -63,7 +63,7 @@ public class ChangeSetPoint extends CommandBase {
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Elbow PID Error",mSetPointInAngles.x - mArm.getElbowPositionFromMotor());
+        SmartDashboard.putNumber("Elbow PID Error",uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition());
         SmartDashboard.putNumber("Shoulder PID Error",mSetPointInAngles.y - mArm.getShoulderPositionFromMotor());
 
         if(mElbowHysteresis.calculate(Math.abs(uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition()))) {
