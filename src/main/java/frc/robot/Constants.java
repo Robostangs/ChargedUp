@@ -174,9 +174,9 @@ public final class Constants {
             STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
             STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
 
-            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
-            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
-            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
+            VISION_STANDARD_DEVS.set(0, 0, 30); // Vision x position
+            VISION_STANDARD_DEVS.set(1, 0, 30); // Vision y position
+            VISION_STANDARD_DEVS.set(2, 0, 30); // Vision rotation
           }
 
           public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
@@ -239,14 +239,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 68.3; // Degrees
-    public static final double shoulderAngleSensor = 223.066; // Degrees
+    public static final double shoulderAngleActual = 55.9; // Degrees
+    public static final double shoulderAngleSensor = 224.648; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 108; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -75.6; // Degrees
-    public static final double elbowAngleSensor = 235.459 ; // Degrees
+    public static final double elbowAngleActualDifference = -37.4; // Degrees
+    public static final double elbowAngleSensor = 272.9 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 

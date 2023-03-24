@@ -1,6 +1,5 @@
 package frc.robot.autos;
 
-import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.subsystems.Swerve;
@@ -20,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class translate extends SequentialCommandGroup {
-    public translate(Swerve s_Swerve, Utils.Vector3D position){
+public class basicTranslate extends SequentialCommandGroup {
+    public basicTranslate(Swerve s_Swerve, Utils.Vector3D position){
         addRequirements(s_Swerve);
         TrajectoryConfig config =
             new TrajectoryConfig(
@@ -33,20 +32,20 @@ public class translate extends SequentialCommandGroup {
 
         new Rotation2d();
         Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            // new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(s_Swerve.getGyroAngle())),
-            new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(
-                    // new Translation2d(1, 0),
-                    // new Translation2d(1, 1),
-                    // new Translation2d(0, 1)
-                    ),
-            // End 3 meters straight ahead of where we started, facing forward
-            // new Pose2d(position.x, position.y, Rotation2d.fromDegrees((position.y >= Constants.fieldLength/2) ? 0 : 180)),
-            new Pose2d(position.x, position.y, Rotation2d.fromDegrees(position.z)),
-            config);
+            TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                // new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(s_Swerve.getGyroAngle())),
+                new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(0)),
+                // Pass through these two interior waypoints, making an 's' curve path
+                List.of(
+                        // new Translation2d(1, 0),
+                        // new Translation2d(1, 1),
+                        // new Translation2d(0, 1)
+                        ),
+                // End 3 meters straight ahead of where we started, facing forward
+                // new Pose2d(position.x, position.y, Rotation2d.fromDegrees((position.y >= Constants.fieldLength/2) ? 0 : 180)),
+                new Pose2d(s_Swerve.getPose().getX() + position.x, s_Swerve.getPose().getY() + position.y, Rotation2d.fromDegrees(position.z)),
+                config);
 
 
         var thetaController =
@@ -67,7 +66,7 @@ public class translate extends SequentialCommandGroup {
 
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())).andThen(new LoggyPrintCommand("I reset")),
+            // new InstantCommand(() -> new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose()))),
             swerveControllerCommand.deadlineWith(new RunCommand(() -> DataLogManager.log(s_Swerve.getPose().getX() + ", " + s_Swerve.getPose().getY())))
         );
     }
