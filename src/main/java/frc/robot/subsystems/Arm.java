@@ -54,6 +54,11 @@ public class Arm extends SubsystemBase {
     private MechanismLigament2d mMechanismTargetShoulder;
     private MechanismLigament2d mMechanismTargetElbow;
 
+    private Mechanism2d mMechanismProfile = new Mechanism2d(Constants.Hand.maxFrameExtension.x*2, Constants.Hand.maxFrameExtension.y);
+    private MechanismRoot2d mMechanismProfileRoot;
+    private MechanismLigament2d mMechanismProfileShoulder;
+    private MechanismLigament2d mMechanismProfileElbow;
+
     private Mechanism2d mMechanismMotor = new Mechanism2d(Constants.Hand.maxFrameExtension.x*2, Constants.Hand.maxFrameExtension.y);
     private MechanismRoot2d mMechanismMotorRoot;
     private MechanismLigament2d mMechanismMotorShoulder;
@@ -179,6 +184,12 @@ public class Arm extends SubsystemBase {
         mMechanismTargetElbow = mMechanismTargetShoulder.append(
                 new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kRed)));
 
+        mMechanismProfileRoot = mMechanismProfile.getRoot("ArmRoot", Constants.Hand.maxFrameExtension.x, 0);
+        mMechanismProfileShoulder = mMechanismProfileRoot.append(
+                new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kHotPink)));
+        mMechanismProfileElbow = mMechanismProfileShoulder.append(
+                new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kHotPink)));
+
         mMechanismMotorRoot = mMechanismMotor.getRoot("ArmRoot", Constants.Hand.maxFrameExtension.x, 0);
         mMechanismMotorShoulder = mMechanismMotorRoot.append(
                 new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kWhite)));
@@ -222,6 +233,13 @@ public class Arm extends SubsystemBase {
         double correctedElbowAngle = Math.toDegrees(q2);
         double correctedShoulderAngle = Math.toDegrees(q1) ;
 
+        //Go to tpose position instead of NaN when reaching inside itself
+        if(Double.isNaN(correctedElbowAngle)){
+            correctedElbowAngle = -90;
+        }
+        if(Double.isNaN(correctedShoulderAngle)){
+            correctedShoulderAngle = 90;
+        }
 
         return new Vector2D(correctedElbowAngle, correctedShoulderAngle);
         // return new Utils.Vector2D(Math.toDegrees(q2), Math.toDegrees(q1));
@@ -369,6 +387,7 @@ public class Arm extends SubsystemBase {
 
         SmartDashboard.putData("ArmMechanism/Actual", mMechanismActual);
         SmartDashboard.putData("ArmMechanism/Target", mMechanismTarget);
+        SmartDashboard.putData("ArmMechanism/Profile", mMechanismProfile);
         SmartDashboard.putData("ArmMechanism/Motor", mMechanismMotor);
     }
 
@@ -435,6 +454,10 @@ public class Arm extends SubsystemBase {
     public void updateTargetMechanism(Vector2D armAngles){
         mMechanismTargetElbow.setAngle(armAngles.getElbow());
         mMechanismTargetShoulder.setAngle(armAngles.getShoulder());
+    }
+    public void updateProfileMechanism(Vector2D armAngles){
+        mMechanismProfileElbow.setAngle(armAngles.getElbow());
+        mMechanismProfileShoulder.setAngle(armAngles.getShoulder());
     }
 
     public double getAbsolutePositionElbow() {
@@ -545,5 +568,14 @@ public class Arm extends SubsystemBase {
     }
     public boolean getShoulderMotionProfileFinished(){
         return mShoulderMotor.isMotionProfileFinished();
+    }
+    public Vector2D getActiveTrajectoryArmAngles(){
+        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick,mShoulderMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick);
+        ret.setElbow(correctElbowAngle(ret));
+        return ret;
+    }
+    public Vector2D getActiveTrajectoryAngularVelocity(){
+        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10,mShoulderMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10);
+        return ret;
     }
 }

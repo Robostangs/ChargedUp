@@ -34,23 +34,33 @@ public class ProfiledChangeSetPoint extends CommandBase {
     private double uncorrectedElbowTarget;
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 2);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 2);
+    private PathPoint startPoint;
+    private PathPoint endPoint;
+    private double targetMaxSpeed;
+    private double targetMaxAccel;
 
     private ProfiledChangeSetPoint(PathPoint startPoint, PathPoint endPoint, double targetMaxSpeed, double targetMaxAccel) {
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.targetMaxSpeed = targetMaxSpeed;
+        this.targetMaxAccel = targetMaxAccel;
         addRequirements(mArm);
         setName("ProfiledChangeSetPoint");
-        mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxAccel);
-        mSetPoint = new Vector2D(endPoint.position);
     }
 
     @Override
     public void initialize() {
-        DataLogManager.log("Setpoint: " + mSetPoint.x + "," + mSetPoint.y);
+        mSetPoint = new Vector2D(endPoint.position);
+        DataLogManager.log(String.format("ProfiledChangeSetPoint from (%3.3f,%3.3f)@%3.3f deg to (%3.3f,%3.3f)@%3.3f deg",startPoint.position.getX(), startPoint.position.getY(),startPoint.heading.getDegrees(),endPoint.position.getX(), endPoint.position.getY(),endPoint.heading.getDegrees()));
         long preplanTime = System.nanoTime();
+        mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxAccel);
         mPlanner.plan();
         DataLogManager.log("Trajectory planning took "+((double)(System.nanoTime()-preplanTime)/1000000)+"ms");
         mPlanner.simulateToLogInOtherThread();
+
         SmartDashboard.putNumber("Hand Target X", mSetPoint.x);
         SmartDashboard.putNumber("Hand Target Y", mSetPoint.y);
+
 
         mSetPointInAngles = Arm.calculateArmAngles(mSetPoint);
         mArm.updateTargetMechanism(mSetPointInAngles);
@@ -71,6 +81,11 @@ public class ProfiledChangeSetPoint extends CommandBase {
     public void execute() {
         SmartDashboard.putNumber("Elbow PID Error",mSetPointInAngles.x - mArm.getElbowPositionFromMotor());
         SmartDashboard.putNumber("Shoulder PID Error",mSetPointInAngles.y - mArm.getShoulderPositionFromMotor());
+        mArm.updateProfileMechanism(mArm.getActiveTrajectoryArmAngles());
+        Vector2D activeTrajectoryAngularVelocity = mArm.getActiveTrajectoryAngularVelocity();
+        SmartDashboard.putNumber("Elbow Profile Velocity", activeTrajectoryAngularVelocity.getElbow());
+        SmartDashboard.putNumber("Shoulder Profile Velocity", activeTrajectoryAngularVelocity.getShoulder());
+
 
         if(mElbowHysteresis.calculate(Math.abs(uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition()))&&mArm.getElbowMotionProfileFinished()) {
             mArm.setElbowLock(true);

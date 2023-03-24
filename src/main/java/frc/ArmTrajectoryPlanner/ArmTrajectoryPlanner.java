@@ -82,6 +82,12 @@ public class ArmTrajectoryPlanner {
             endPoint);
         Vector2D startV2D = new Vector2D(startPoint.position);
         Vector2D endV2D = new Vector2D(endPoint.position);
+        SmartDashboard.putNumber("ArmPlanner/startPoint/x", startPoint.position.getX());
+        SmartDashboard.putNumber("ArmPlanner/startPoint/y", startPoint.position.getY());
+        SmartDashboard.putNumber("ArmPlanner/startPoint/angle", startPoint.heading.getDegrees());
+        SmartDashboard.putNumber("ArmPlanner/endPoint/x", endPoint.position.getX());
+        SmartDashboard.putNumber("ArmPlanner/endPoint/y", endPoint.position.getY());
+        SmartDashboard.putNumber("ArmPlanner/endPoint/angle", endPoint.heading.getDegrees());
 
         pathPoints.add(startV2D);
         pathVelocities.add(new Vector2D());
@@ -183,10 +189,10 @@ public class ArmTrajectoryPlanner {
         pathAngularVelocities.add(new Vector2D());
         pathAngularAccelerations.add(new Vector2D());
         timestamps.add(timestamps.get(timestamps.size() - 1) + sampleTime);
-        SmartDashboard.putNumberArray("ArmPlanner/pathPointsDisplay/X", pathPoints.stream().mapToDouble((vector) -> {
+        SmartDashboard.putNumberArray("ArmPlanner/pathPointsDisplay/x", pathPoints.stream().mapToDouble((vector) -> {
             return Constants.Hand.maxFrameExtension.x + vector.x;
         }).toArray());
-        SmartDashboard.putNumberArray("ArmPlanner/pathPointsDisplay/Y", pathPoints.stream().mapToDouble((vector) -> {
+        SmartDashboard.putNumberArray("ArmPlanner/pathPointsDisplay/y", pathPoints.stream().mapToDouble((vector) -> {
             return Constants.Hand.maxFrameExtension.y - vector.y;
         }).toArray());
 
@@ -217,13 +223,13 @@ public class ArmTrajectoryPlanner {
             elbowTrajectoryPointStream.Write(elbowPoint);
 
             TrajectoryPoint shoulderPoint = new TrajectoryPoint();
-            elbowPoint.position = pathAngles.get(i).getShoulder()/Constants.Arm.shoulderDegreesPerMotorTick;
-            elbowPoint.velocity = pathAngularVelocities.get(i).getShoulder()/Constants.Arm.shoulderDegreesPerMotorTick/10;
-            elbowPoint.arbFeedFwd = 0;
-            elbowPoint.profileSlotSelect0 = 0;
-            elbowPoint.isLastPoint = (i==pathPoints.size()-1);
-            elbowPoint.zeroPos = false;//Don't zero the sensor
-            elbowPoint.timeDur = 0;//Don't wait longer than is set in config
+            shoulderPoint.position = pathAngles.get(i).getShoulder()/Constants.Arm.shoulderDegreesPerMotorTick;
+            shoulderPoint.velocity = pathAngularVelocities.get(i).getShoulder()/Constants.Arm.shoulderDegreesPerMotorTick/10;
+            shoulderPoint.arbFeedFwd = 0;
+            shoulderPoint.profileSlotSelect0 = 0;
+            shoulderPoint.isLastPoint = (i==pathPoints.size()-1);
+            shoulderPoint.zeroPos = false;//Don't zero the sensor
+            shoulderPoint.timeDur = 0;//Don't wait longer than is set in config
             shoulderTrajectoryPointStream.Write(shoulderPoint);
         }
     }
@@ -245,7 +251,7 @@ public class ArmTrajectoryPlanner {
     }
 
     private void velocityFoldbackReplan(String source) {
-        targetMaxSpeed *= 0.9;
+        targetMaxSpeed *= 0.8;
         if (targetMaxSpeed > 0.1 * originalTargetMaxSpeed) {
             DataLogManager
                     .log("Warning: ArmTrajectoryPlanner Backed off to " + (targetMaxSpeed / originalTargetMaxSpeed)
@@ -257,7 +263,7 @@ public class ArmTrajectoryPlanner {
     }
 
     private void accelerationFoldbackReplan(String source) {
-        targetMaxAccel *= 0.9;
+        targetMaxAccel *= 0.8;
         if (targetMaxAccel > 0.1 * originalTargetMaxAccel) {
             DataLogManager
                     .log("Warning: ArmTrajectoryPlanner Backed off to " + (targetMaxAccel / originalTargetMaxAccel)
