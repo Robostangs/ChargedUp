@@ -214,7 +214,7 @@ public class ArmTrajectoryPlanner {
         for (int i = 0; i < pathPoints.size(); i++) {
             TrajectoryPoint elbowPoint = new TrajectoryPoint();
             elbowPoint.position = Arm.decorrectElbowAngle(pathAngles.get(i))/Constants.Arm.elbowDegreesPerMotorTick;
-            elbowPoint.velocity = pathAngularVelocities.get(i).getElbow()/Constants.Arm.elbowDegreesPerMotorTick/10;
+            elbowPoint.velocity = Arm.decorrectElbowVelocity(pathAngularVelocities.get(i))/Constants.Arm.elbowDegreesPerMotorTick/10;
             elbowPoint.arbFeedFwd = 0;
             elbowPoint.profileSlotSelect0 = 0;
             elbowPoint.isLastPoint = (i==pathPoints.size()-1);

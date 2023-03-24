@@ -144,7 +144,7 @@ public class Robot extends TimedRobot {
     //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
     //                                             new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(180+45)).withControlLengths(0.25, 0.25))
     //                                     .schedule();
-        ProfiledChangeSetPoint.createWithTimeout(
+        ProfiledChangeSetPoint.createWithLongTimeout(
                                                 new PathPoint(Arm.getInstance().getHandPos().toTranslation2d(), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25),
                                                 new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(90)).withControlLengths(0.5, 0.5))
                                         .schedule();

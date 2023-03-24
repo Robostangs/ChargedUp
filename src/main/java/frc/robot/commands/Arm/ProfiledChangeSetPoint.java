@@ -126,8 +126,10 @@ public class ProfiledChangeSetPoint extends CommandBase {
     public static ParallelRaceGroup createWithTimeout(PathPoint startPoint, PathPoint endPoint, double targetMaxSpeed, double targetMaxAccel, double timeout) {
         return new ProfiledChangeSetPoint(startPoint, endPoint, targetMaxSpeed, targetMaxAccel).withTimeout(timeout);
     }
-    
     public static ParallelRaceGroup createWithTimeout(PathPoint startPoint, PathPoint endPoint) {
         return createWithTimeout(startPoint, endPoint, 3, 2,3);
+    }
+    public static ParallelRaceGroup createWithLongTimeout(PathPoint startPoint, PathPoint endPoint) {
+        return createWithTimeout(startPoint, endPoint, 3, 2,10);
     }
 }

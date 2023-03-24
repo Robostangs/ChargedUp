@@ -439,6 +439,11 @@ public class Arm extends SubsystemBase {
     public static double decorrectElbowAngle(Vector2D motorAnglesInJointSpace){
         return (motorAnglesInJointSpace.x - (90 - motorAnglesInJointSpace.y) / Constants.Arm.elbowVirtualFourBarRatio);
     }
+    //Takes motor/target joint angles and returns elbow motor angle (where 0 is only parallel to forearm when vertical)
+    public static double decorrectElbowVelocity(Vector2D motorVelocitiesInJointSpace){
+        return (motorVelocitiesInJointSpace.x - motorVelocitiesInJointSpace.y / Constants.Arm.elbowVirtualFourBarRatio);
+    }
+
      //Takes elbow motor angle (where 0 is only parallel to forearm when vertical) and shoulder angle and returns motor/target elbow angle 
      public double correctElbowAngle(Vector2D motorAnglesInMotorSpace){
         return (motorAnglesInMotorSpace.x + (90 - motorAnglesInMotorSpace.y) / Constants.Arm.elbowVirtualFourBarRatio);
