@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.Arm.ChangeSetPoint;
@@ -293,7 +294,9 @@ public class Utils {
     public Vector2D(Vector2D v) {
         set(v);
     }
-
+    public Vector2D(Translation2d v) {
+        this(v.getX(),v.getY());
+    }
     public void set(double x, double y) {
         this.x = x;
         this.y = y;
@@ -549,6 +552,10 @@ public class Utils {
     @Override
     public String toString() {
         return "Vector2d[" + x + ", " + y + "]";
+    }
+
+    public Translation2d toTranslation2d() {
+        return new Translation2d(x,y);
     }
 }    
 

@@ -1,24 +1,20 @@
 package frc.ArmTrajectoryPlanner;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.robot.Utils.Vector2D;
+import com.pathplanner.lib.PathPoint;
 
 public class ArmTrajectoryPlannerTest {
     public static void main(String[] args){
-        Thread thread= new Thread(()->{
-            Vector2D maxSpeeds=new Vector2D(Constants.Arm.elbowCruiseVelocity,Constants.Arm.shoulderCruiseVelocity);
-            maxSpeeds.multiply(10);//to units per second
-            maxSpeeds.elementwiseMultiply(Constants.Arm.elbowDegreesPerMotorTick,Constants.Arm.shoulderDegreesPerMotorTick);//to degrees per second
-
-            Vector2D maxAccels=new Vector2D(Constants.Arm.elbowAccelerationFactor,Constants.Arm.elbowAccelerationFactor);
-            maxAccels.multiply(10);//to units per second squared
-            maxAccels.elementwiseMultiply(Constants.Arm.elbowDegreesPerMotorTick,Constants.Arm.shoulderDegreesPerMotorTick);//to degrees per second squared
-
-            ArmTrajectoryPlanner planner = new ArmTrajectoryPlanner(new Vector2D(1.44, 1.3), new Vector2D(0.27, 0.18), maxSpeeds, maxAccels, 1, 5, 0.01);
+            ArmTrajectoryPlanner planner = new ArmTrajectoryPlanner(
+                                                new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(1, 1),
+                                                new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(180)).withControlLengths(1, 1),
+                                                4,
+                                                3);
             planner.plan();
-            planner.simulateToLog();
-        });
-        thread.start();
+            planner.simulateToLogInOtherThread();
         
     }
 }
