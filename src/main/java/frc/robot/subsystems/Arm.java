@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
+import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
@@ -51,12 +54,22 @@ public class Arm extends SubsystemBase {
     private MechanismLigament2d mMechanismTargetShoulder;
     private MechanismLigament2d mMechanismTargetElbow;
 
+    private Mechanism2d mMechanismProfile = new Mechanism2d(Constants.Hand.maxFrameExtension.x*2, Constants.Hand.maxFrameExtension.y);
+    private MechanismRoot2d mMechanismProfileRoot;
+    private MechanismLigament2d mMechanismProfileShoulder;
+    private MechanismLigament2d mMechanismProfileElbow;
+
     private Mechanism2d mMechanismMotor = new Mechanism2d(Constants.Hand.maxFrameExtension.x*2, Constants.Hand.maxFrameExtension.y);
     private MechanismRoot2d mMechanismMotorRoot;
     private MechanismLigament2d mMechanismMotorShoulder;
     private MechanismLigament2d mMechanismMotorElbow;
 
     private Vector2D handPosFromMotors;
+    private Vector2D handPos = new Vector2D();
+
+    public Vector2D getHandPos() {
+        return handPos;
+    }
     Debouncer mElbowDebouncer = new Debouncer(0.3, DebounceType.kRising);
     Debouncer mShoulderDebouncer = new Debouncer(0.3, DebounceType.kRising);
 
@@ -146,6 +159,11 @@ public class Arm extends SubsystemBase {
         mElbowMotor.configMotionAcceleration(Constants.Arm.elbowAccelerationFactor);
         mElbowMotor.configMotionSCurveStrength(Constants.Arm.smoothingFactor);
 
+        mShoulderMotor.configMotionProfileTrajectoryInterpolationEnable(true);
+        mShoulderMotor.configMotionProfileTrajectoryPeriod((int)(ArmTrajectoryPlanner.sampleTime*1000));
+        mElbowMotor.configMotionProfileTrajectoryInterpolationEnable(true);
+        mElbowMotor.configMotionProfileTrajectoryPeriod((int)(ArmTrajectoryPlanner.sampleTime*1000));
+
         mShoulderMotor.setNeutralMode(NeutralMode.Brake);
         mElbowMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -167,6 +185,12 @@ public class Arm extends SubsystemBase {
         mMechanismTargetElbow = mMechanismTargetShoulder.append(
                 new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kRed)));
 
+        mMechanismProfileRoot = mMechanismProfile.getRoot("ArmRoot", Constants.Hand.maxFrameExtension.x, 0);
+        mMechanismProfileShoulder = mMechanismProfileRoot.append(
+                new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kHotPink)));
+        mMechanismProfileElbow = mMechanismProfileShoulder.append(
+                new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kHotPink)));
+
         mMechanismMotorRoot = mMechanismMotor.getRoot("ArmRoot", Constants.Hand.maxFrameExtension.x, 0);
         mMechanismMotorShoulder = mMechanismMotorRoot.append(
                 new MechanismLigament2d("Shoulder", Constants.Arm.upperarmLength, 0, 2, new Color8Bit(Color.kWhite)));
@@ -176,7 +200,7 @@ public class Arm extends SubsystemBase {
     }
 
     // Not needed if we use normal pid for predefined positions
-    public Utils.Vector2D calculateArmAngles(Utils.Vector2D targetPos) {
+    public static Utils.Vector2D calculateArmAngles(Utils.Vector2D targetPos) {
         double targetDist = Math.sqrt(targetPos.x * targetPos.x + targetPos.y * targetPos.y);
         if (targetDist > Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05) {
             double targetAngle = Math.atan2(targetPos.y, targetPos.x);
@@ -210,6 +234,13 @@ public class Arm extends SubsystemBase {
         double correctedElbowAngle = Math.toDegrees(q2);
         double correctedShoulderAngle = Math.toDegrees(q1) ;
 
+        //Go to tpose position instead of NaN when reaching inside itself
+        if(Double.isNaN(correctedElbowAngle)){
+            correctedElbowAngle = -90;
+        }
+        if(Double.isNaN(correctedShoulderAngle)){
+            correctedShoulderAngle = 90;
+        }
 
         return new Vector2D(correctedElbowAngle, correctedShoulderAngle);
         // return new Utils.Vector2D(Math.toDegrees(q2), Math.toDegrees(q1));
@@ -327,7 +358,7 @@ public class Arm extends SubsystemBase {
         // SmartDashboard.putNumber("Target Elbow Angle", motorAngles.x);
         // SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
 
-        Vector2D handPos = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
+        handPos = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
          SmartDashboard.putNumber("Hand Actual X", handPos.x);
          SmartDashboard.putNumber("Hand Actual Y", handPos.y);
         handPosFromMotors  = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
@@ -357,6 +388,7 @@ public class Arm extends SubsystemBase {
 
         SmartDashboard.putData("ArmMechanism/Actual", mMechanismActual);
         SmartDashboard.putData("ArmMechanism/Target", mMechanismTarget);
+        SmartDashboard.putData("ArmMechanism/Profile", mMechanismProfile);
         SmartDashboard.putData("ArmMechanism/Motor", mMechanismMotor);
     }
 
@@ -405,7 +437,7 @@ public class Arm extends SubsystemBase {
 
 
     //Takes motor/target joint angles and returns elbow motor angle (where 0 is only parallel to forearm when vertical)
-    public double decorrectElbowAngle(Vector2D motorAnglesInJointSpace){
+    public static double decorrectElbowAngle(Vector2D motorAnglesInJointSpace){
         return (motorAnglesInJointSpace.x - (90 - motorAnglesInJointSpace.y) / Constants.Arm.elbowVirtualFourBarRatio);
     }
      //Takes elbow motor angle (where 0 is only parallel to forearm when vertical) and shoulder angle and returns motor/target elbow angle 
@@ -418,6 +450,15 @@ public class Arm extends SubsystemBase {
         mShoulderBrakeSolenoid.set(true);
         mMechanismTargetShoulder.setAngle(shoulderPosition);
         mShoulderMotor.set(ControlMode.MotionMagic, shoulderPosition/Constants.Arm.shoulderDegreesPerMotorTick);
+    }
+
+    public void updateTargetMechanism(Vector2D armAngles){
+        mMechanismTargetElbow.setAngle(armAngles.getElbow());
+        mMechanismTargetShoulder.setAngle(armAngles.getShoulder());
+    }
+    public void updateProfileMechanism(Vector2D armAngles){
+        mMechanismProfileElbow.setAngle(armAngles.getElbow());
+        mMechanismProfileShoulder.setAngle(armAngles.getShoulder());
     }
 
     public double getAbsolutePositionElbow() {
@@ -506,5 +547,36 @@ public class Arm extends SubsystemBase {
     }
     public ControlMode getShoulderControlMode() {
         return mShoulderMotor.getControlMode();
+    }
+
+    public void startMotionProfiles(BufferedTrajectoryPointStream elbowStream,BufferedTrajectoryPointStream shoulderStream){
+        mElbowMotor.startMotionProfile(elbowStream,10,ControlMode.MotionProfile);//10 points to start with
+        mShoulderMotor.startMotionProfile(shoulderStream,10,ControlMode.MotionProfile);//10 points to start with
+    }
+    public MotionProfileStatus getElbowMotionProfileStatus(){
+        MotionProfileStatus status = new MotionProfileStatus();
+        mElbowMotor.getMotionProfileStatus(status);
+        return status;
+    }
+    
+    public MotionProfileStatus getShoulderMotionProfileStatus(){
+        MotionProfileStatus status = new MotionProfileStatus();
+        mShoulderMotor.getMotionProfileStatus(status);
+        return status;
+    }
+    public boolean getElbowMotionProfileFinished(){
+        return mElbowMotor.isMotionProfileFinished();
+    }
+    public boolean getShoulderMotionProfileFinished(){
+        return mShoulderMotor.isMotionProfileFinished();
+    }
+    public Vector2D getActiveTrajectoryArmAngles(){
+        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick,mShoulderMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick);
+        ret.setElbow(correctElbowAngle(ret));
+        return ret;
+    }
+    public Vector2D getActiveTrajectoryAngularVelocity(){
+        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10,mShoulderMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10);
+        return ret;
     }
 }
