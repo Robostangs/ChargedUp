@@ -122,9 +122,9 @@ public class SetArmPosition extends SequentialCommandGroup {
             case kHighPosition:
                 addCommands(
                         new ConditionalCommand(
-                                ProfiledChangeSetPoint.createWithLongTimeout(
+                                ProfiledChangeSetPoint.createWithTimeout(
                                         ()->new PathPoint(Arm.getInstance().getHandPosFromMotor().toTranslation2d(), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25),
-                                        ()->new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5)),
+                                        ()->new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5),7,7,2,10),
                                 new SequentialCommandGroup(
                                         ChangeSetPoint.createWithTimeout(cubeHighTweenPosition),
                                         ChangeSetPoint.createWithTimeout(cubeHighPosition)),
