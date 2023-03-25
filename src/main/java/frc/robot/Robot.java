@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.ArmTrajectoryPlanner.ArmTrajectoryPlannerTest;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.subsystems.Arm;

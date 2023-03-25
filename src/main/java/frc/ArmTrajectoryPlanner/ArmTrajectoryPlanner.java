@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm;
 
@@ -40,15 +41,15 @@ public class ArmTrajectoryPlanner {
     public static final double sampleTime=0.01;
     private PathPoint startPoint,endPoint;
     private Vector2D maxJointSpeeds, maxJointAccelerations;
-    private double targetMaxSpeed, originalTargetMaxSpeed, originalTargetMaxAccel, targetMaxAccel;
+    private double targetMaxSpeed, originalTargetMaxSpeed, originalTargetMaxPosAccel, originalTargetMaxNegAccel, targetMaxPosAccel, targetMaxNegAccel;
     private ArrayList<Vector2D> pathPoints, pathVelocities, pathAccelerations, pathAngles, pathAngularVelocities,
             pathAngularAccelerations;
-    private ArrayList<Double> timestamps;
+    private ArrayList<Double> timestamps, pathSplineAcceleration, pathSplineVelocity;
     public BufferedTrajectoryPointStream elbowTrajectoryPointStream = new BufferedTrajectoryPointStream();
     public BufferedTrajectoryPointStream shoulderTrajectoryPointStream = new BufferedTrajectoryPointStream();
 
 
-    public ArmTrajectoryPlanner(PathPoint startPoint, PathPoint endPoint, double targetMaxSpeed, double targetMaxAccel) {
+    public ArmTrajectoryPlanner(PathPoint startPoint, PathPoint endPoint, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel) {
         this.maxJointSpeeds = new Vector2D(Constants.Arm.elbowCruiseVelocity,Constants.Arm.shoulderCruiseVelocity);
 
         maxJointSpeeds.multiply(10);//to units per second
@@ -61,8 +62,12 @@ public class ArmTrajectoryPlanner {
 
         this.targetMaxSpeed = targetMaxSpeed;
         this.originalTargetMaxSpeed = this.targetMaxSpeed;
-        this.targetMaxAccel = targetMaxAccel;
-        this.originalTargetMaxAccel = this.targetMaxAccel;
+        this.targetMaxPosAccel = targetMaxPosAccel;
+        this.targetMaxNegAccel = targetMaxNegAccel;
+
+        this.originalTargetMaxPosAccel = this.targetMaxPosAccel;
+        this.originalTargetMaxNegAccel = this.targetMaxNegAccel;
+
         this.startPoint = startPoint;
         this.endPoint = endPoint;
     }
@@ -70,14 +75,16 @@ public class ArmTrajectoryPlanner {
     public void plan() {
         pathPoints = new ArrayList<>();
         pathVelocities = new ArrayList<>();
+        pathSplineVelocity = new ArrayList<>();
         pathAccelerations = new ArrayList<>();
+        pathSplineAcceleration = new ArrayList<>();
         pathAngles = new ArrayList<>();
         pathAngularVelocities = new ArrayList<>();
         pathAngularAccelerations = new ArrayList<>();
         timestamps = new ArrayList<>();
         //needs to be here for speed/accel foldback regeneration
         PathPlannerTrajectory path = PathPlanner.generatePath(
-            new PathConstraints(targetMaxSpeed, targetMaxAccel),
+            new PathConstraints(targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel),
             startPoint,
             endPoint);
         Vector2D startV2D = new Vector2D(startPoint.position);
@@ -91,7 +98,10 @@ public class ArmTrajectoryPlanner {
 
         pathPoints.add(startV2D);
         pathVelocities.add(new Vector2D());
+        pathSplineVelocity.add(0.0);
         pathAccelerations.add(new Vector2D());
+        pathSplineAcceleration.add(0.0);
+
         pathAngles.add(Arm.calculateArmAngles(startV2D));
         pathAngularVelocities.add(new Vector2D());
         pathAngularAccelerations.add(new Vector2D());
@@ -131,19 +141,24 @@ public class ArmTrajectoryPlanner {
 
             pathPoints.add(currentPosition);
             pathVelocities.add(currentVelocity);
+            pathSplineVelocity.add(state.velocityMetersPerSecond);
             pathAccelerations.add(currentAcceleration);
+            pathSplineAcceleration.add(state.accelerationMetersPerSecondSq);
+
             pathAngles.add(currentArmAngles);
             pathAngularVelocities.add(currentAngularVelocities);
             pathAngularAccelerations.add(currentAnglularAccelerations);
 
-            boolean isSteadyState = state.accelerationMetersPerSecondSq < 0.1 * targetMaxAccel;// not accelerating, must be
-                                                                                           // angle weirdness
+            boolean isSteadyState = state.accelerationMetersPerSecondSq < 0.1 * targetMaxPosAccel && state.accelerationMetersPerSecondSq > -0.1 * targetMaxNegAccel;// not accelerating, must be angle weirdness
             if (Math.abs(currentAnglularAccelerations.getElbow()) > maxJointAccelerations.getElbow()) {
                 if (isSteadyState) {
                     velocityFoldbackReplan("Elbow Acceleration");
                     return;
                 } else {
-                    accelerationFoldbackReplan("Elbow Acceleration");
+                    if(state.accelerationMetersPerSecondSq>0)
+                        positiveAccelerationFoldbackReplan("Elbow Acceleration");
+                    else
+                        negativeAccelerationFoldbackReplan("Elbow Acceleration");
                     return;
                 }
             }
@@ -157,7 +172,10 @@ public class ArmTrajectoryPlanner {
                     velocityFoldbackReplan("Shoulder Acceleration");
                     return;
                 } else {
-                    accelerationFoldbackReplan("Shoulder Acceleration");
+                    if(state.accelerationMetersPerSecondSq>0)
+                        positiveAccelerationFoldbackReplan("Shoulder Acceleration");
+                    else
+                        negativeAccelerationFoldbackReplan("Shoulder Acceleration");
                     return;
                 }
             }
@@ -183,7 +201,10 @@ public class ArmTrajectoryPlanner {
         }
         pathPoints.add(endV2D);
         pathVelocities.add(new Vector2D());
+        pathSplineVelocity.add(0.0);
+
         pathAccelerations.add(new Vector2D());
+        pathSplineAcceleration.add(0.0);
 
         pathAngles.add(Arm.calculateArmAngles(endV2D));
         pathAngularVelocities.add(new Vector2D());
@@ -196,16 +217,21 @@ public class ArmTrajectoryPlanner {
             return Constants.Hand.maxFrameExtension.y - vector.y;
         }).toArray());
 
-        String csvHeader = String.format("%-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s",
-                "Time",
-                "Pos X",
-                "Pos Y", "Vel X", "Vel Y", "Acc X", "Acc Y", "Elb Ang", "Sho Ang", "Elb Vel", "Sho Vel",
-                "Elb Acc", "Sho Acc");
-        // dumpCsvToConsole(csvHeader, timestamps, pathPoints, pathVelocities, pathAccelerations, pathAngles,
-        //         pathAngularVelocities,
-        //         pathAngularAccelerations);
+        if (Robot.isSimulation()) {
+            String csvHeader = String.format(
+                    "%-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s, %-8s",
+                    "Time", "VelSplin", "AccSplin",
+                    "Pos X",
+                    "Pos Y", "Vel X", "Vel Y", "Acc X", "Acc Y",  "Elb Ang", "Sho Ang", "Elb Vel", "Sho Vel",
+                    "Elb Acc", "Sho Acc");
 
-         buildFalconProfiles();
+            dumpCsvToConsole(csvHeader, timestamps, pathSplineVelocity, pathSplineAcceleration, pathPoints, pathVelocities, pathAccelerations, pathAngles,
+                    pathAngularVelocities,
+                    pathAngularAccelerations);
+
+        }
+        buildFalconProfiles();
+
     }
 
     private void buildFalconProfiles() {
@@ -235,11 +261,15 @@ public class ArmTrajectoryPlanner {
     }
 
     @SafeVarargs
-    private void dumpCsvToConsole(String heading, ArrayList<Double> timestamps, ArrayList<Vector2D>... data) {
+    private void dumpCsvToConsole(String heading, ArrayList<Double> timestamps, ArrayList<Double> pathVel, ArrayList<Double> pathAcc,ArrayList<Vector2D>... data) {
         StringBuilder builder = new StringBuilder("~~~~~~~~~~~~~~~Arm Path Planned~~~~~~~~~~~~~~~~~~").append("\n")
                 .append(heading).append("\n");
         for (int i = 0; i < pathPoints.size(); i++) {
             builder.append(String.format("%8.3f, ", timestamps.get(i)));
+            builder.append(String.format("%8.3f, ", pathVel.get(i)));
+            builder.append(String.format("%8.3f, ", pathAcc.get(i)));
+
+
             for (ArrayList<Vector2D> list : data) {
                 builder.append(String.format("%8.3f, ", list.get(i).x));
                 builder.append(String.format("%8.3f, ", list.get(i).y));
@@ -262,12 +292,23 @@ public class ArmTrajectoryPlanner {
         }
     }
 
-    private void accelerationFoldbackReplan(String source) {
-        targetMaxAccel *= 0.8;
-        if (targetMaxAccel > 0.1 * originalTargetMaxAccel) {
+    private void positiveAccelerationFoldbackReplan(String source) {
+        targetMaxPosAccel *= 0.8;
+        if (targetMaxPosAccel > 0.1 * originalTargetMaxPosAccel) {
             DataLogManager
-                    .log("Warning: ArmTrajectoryPlanner Backed off to " + (targetMaxAccel / originalTargetMaxAccel)
-                            + "x original target accel due to " + source);
+                    .log("Warning: ArmTrajectoryPlanner Backed off to " + (targetMaxPosAccel / originalTargetMaxPosAccel)
+                            + "x original target positive accel due to " + source);
+            plan();
+        } else {
+            DataLogManager.log("Error: ArmTrajectoryPlanner Cannot generate path with acceptable" + source);
+        }
+    }
+    private void negativeAccelerationFoldbackReplan(String source) {
+        targetMaxNegAccel *= 0.8;
+        if (targetMaxNegAccel > 0.1 * originalTargetMaxNegAccel) {
+            DataLogManager
+                    .log("Warning: ArmTrajectoryPlanner Backed off to " + (targetMaxNegAccel / originalTargetMaxNegAccel)
+                            + "x original target neagtive accel due to " + source);
             plan();
         } else {
             DataLogManager.log("Error: ArmTrajectoryPlanner Cannot generate path with acceptable" + source);

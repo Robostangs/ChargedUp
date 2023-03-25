@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.Utils.LockHysteresis;
 import frc.robot.Utils.Vector2D;
@@ -39,13 +40,14 @@ public class ProfiledChangeSetPoint extends CommandBase {
     private Supplier<PathPoint> startPointSupplier;
     private Supplier<PathPoint> endPointSupplier;
     private double targetMaxSpeed;
-    private double targetMaxAccel;
+    private double targetMaxPosAccel,targetMaxNegAccel;
 
-    private ProfiledChangeSetPoint(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxAccel) {
+    private ProfiledChangeSetPoint(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel) {
         this.startPointSupplier = startPointSupplier;
         this.endPointSupplier = endPointSupplier;
         this.targetMaxSpeed = targetMaxSpeed;
-        this.targetMaxAccel = targetMaxAccel;
+        this.targetMaxPosAccel = targetMaxPosAccel;
+        this.targetMaxNegAccel = targetMaxNegAccel;
         addRequirements(mArm);
         setName("ProfiledChangeSetPoint");
     }
@@ -61,12 +63,14 @@ public class ProfiledChangeSetPoint extends CommandBase {
         }
         mSetPoint = new Vector2D(endPoint.position);
         DataLogManager.log(String.format("ProfiledChangeSetPoint from (%3.3f,%3.3f)@%3.3f deg to (%3.3f,%3.3f)@%3.3f deg",startPoint.position.getX(), startPoint.position.getY(),startPoint.heading.getDegrees(),endPoint.position.getX(), endPoint.position.getY(),endPoint.heading.getDegrees()));
-        mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxAccel);
+        mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel);
         long preplanTime = System.nanoTime();
 
         mPlanner.plan();
         DataLogManager.log("~~~~~~~~~~~Trajectory planning took "+((double)(System.nanoTime()-preplanTime)/1000000)+"ms~~~~~~~~~~~~~~~");
-        mPlanner.simulateToLogInOtherThread();
+        if(Robot.isSimulation()){
+            mPlanner.simulateToLogInOtherThread();
+        }
 
         SmartDashboard.putNumber("Hand Target X", mSetPoint.x);
         SmartDashboard.putNumber("Hand Target Y", mSetPoint.y);
@@ -117,7 +121,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
           ) {
-            end(true);
+            cancel();
         }
         return false;
     }
@@ -133,13 +137,13 @@ public class ProfiledChangeSetPoint extends CommandBase {
         }
     }
 
-    public static ParallelRaceGroup createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxAccel, double timeout) {
-        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxAccel).withTimeout(timeout);
+    public static ParallelRaceGroup createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel, double timeout) {
+        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel).withTimeout(timeout);
     }
     public static ParallelRaceGroup createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
-        return createWithTimeout(startPointSupplier, endPointSupplier, 4, 2,3);
+        return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,3,3);
     }
     public static ParallelRaceGroup createWithLongTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
-        return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,10);
+        return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,3,10);
     }
 }

@@ -94,7 +94,7 @@ public class ChangeSetPoint extends CommandBase {
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
           ) {
-            end(true);
+            cancel();
         }
         return false;
     }
