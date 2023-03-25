@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+  //public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
@@ -56,9 +56,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    mPowerDistribution.setSwitchableChannel(true);
+    //mPowerDistribution.setSwitchableChannel(true);
 
-    SmartDashboard.putData("PDH", mPowerDistribution);
+    //SmartDashboard.putData("PDH", mPowerDistribution);
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");
@@ -145,10 +145,6 @@ public class Robot extends TimedRobot {
     //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
     //                                             new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(180+45)).withControlLengths(0.25, 0.25))
     //                                     .schedule();
-        ProfiledChangeSetPoint.createWithLongTimeout(
-                                                new PathPoint(Arm.getInstance().getHandPos().toTranslation2d(), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25),
-                                                new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(90)).withControlLengths(0.5, 0.5))
-                                        .schedule();
   }
 
   /** This function is called periodically during operator control. */

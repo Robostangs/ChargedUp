@@ -1,5 +1,7 @@
 package frc.robot.commands.Arm;
 
+import java.util.function.Supplier;
+
 import javax.xml.crypto.Data;
 
 import com.ctre.phoenix.motion.MotionProfileStatus;
@@ -34,14 +36,14 @@ public class ProfiledChangeSetPoint extends CommandBase {
     private double uncorrectedElbowTarget;
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 2);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 2);
-    private PathPoint startPoint;
-    private PathPoint endPoint;
+    private Supplier<PathPoint> startPointSupplier;
+    private Supplier<PathPoint> endPointSupplier;
     private double targetMaxSpeed;
     private double targetMaxAccel;
 
-    private ProfiledChangeSetPoint(PathPoint startPoint, PathPoint endPoint, double targetMaxSpeed, double targetMaxAccel) {
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
+    private ProfiledChangeSetPoint(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxAccel) {
+        this.startPointSupplier = startPointSupplier;
+        this.endPointSupplier = endPointSupplier;
         this.targetMaxSpeed = targetMaxSpeed;
         this.targetMaxAccel = targetMaxAccel;
         addRequirements(mArm);
@@ -50,12 +52,20 @@ public class ProfiledChangeSetPoint extends CommandBase {
 
     @Override
     public void initialize() {
+        PathPoint startPoint = startPointSupplier.get();
+        PathPoint endPoint = endPointSupplier.get();
+        if(endPoint.position.getDistance(startPoint.position)<0.2){
+            this.cancel();
+            ChangeSetPoint.createWithTimeout(new Vector2D(endPoint.position)).schedule();
+            return;
+        }
         mSetPoint = new Vector2D(endPoint.position);
         DataLogManager.log(String.format("ProfiledChangeSetPoint from (%3.3f,%3.3f)@%3.3f deg to (%3.3f,%3.3f)@%3.3f deg",startPoint.position.getX(), startPoint.position.getY(),startPoint.heading.getDegrees(),endPoint.position.getX(), endPoint.position.getY(),endPoint.heading.getDegrees()));
-        long preplanTime = System.nanoTime();
         mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxAccel);
+        long preplanTime = System.nanoTime();
+
         mPlanner.plan();
-        DataLogManager.log("Trajectory planning took "+((double)(System.nanoTime()-preplanTime)/1000000)+"ms");
+        DataLogManager.log("~~~~~~~~~~~Trajectory planning took "+((double)(System.nanoTime()-preplanTime)/1000000)+"ms~~~~~~~~~~~~~~~");
         mPlanner.simulateToLogInOtherThread();
 
         SmartDashboard.putNumber("Hand Target X", mSetPoint.x);
@@ -65,6 +75,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
         mSetPointInAngles = Arm.calculateArmAngles(mSetPoint);
         mArm.updateTargetMechanism(mSetPointInAngles);
         uncorrectedElbowTarget = Arm.decorrectElbowAngle(mSetPointInAngles);
+
         mArm.setElbowLock(false);
         mArm.setShoulderLock(false);
         mArm.startMotionProfiles(mPlanner.elbowTrajectoryPointStream, mPlanner.shoulderTrajectoryPointStream);
@@ -85,7 +96,6 @@ public class ProfiledChangeSetPoint extends CommandBase {
         Vector2D activeTrajectoryAngularVelocity = mArm.getActiveTrajectoryAngularVelocity();
         SmartDashboard.putNumber("Elbow Profile Velocity", activeTrajectoryAngularVelocity.getElbow());
         SmartDashboard.putNumber("Shoulder Profile Velocity", activeTrajectoryAngularVelocity.getShoulder());
-
 
         if(mElbowHysteresis.calculate(Math.abs(uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition()))&&mArm.getElbowMotionProfileFinished()) {
             mArm.setElbowLock(true);
@@ -123,13 +133,13 @@ public class ProfiledChangeSetPoint extends CommandBase {
         }
     }
 
-    public static ParallelRaceGroup createWithTimeout(PathPoint startPoint, PathPoint endPoint, double targetMaxSpeed, double targetMaxAccel, double timeout) {
-        return new ProfiledChangeSetPoint(startPoint, endPoint, targetMaxSpeed, targetMaxAccel).withTimeout(timeout);
+    public static ParallelRaceGroup createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxAccel, double timeout) {
+        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxAccel).withTimeout(timeout);
     }
-    public static ParallelRaceGroup createWithTimeout(PathPoint startPoint, PathPoint endPoint) {
-        return createWithTimeout(startPoint, endPoint, 3, 2,3);
+    public static ParallelRaceGroup createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
+        return createWithTimeout(startPointSupplier, endPointSupplier, 4, 2,3);
     }
-    public static ParallelRaceGroup createWithLongTimeout(PathPoint startPoint, PathPoint endPoint) {
-        return createWithTimeout(startPoint, endPoint, 3, 2,10);
+    public static ParallelRaceGroup createWithLongTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
+        return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,10);
     }
 }

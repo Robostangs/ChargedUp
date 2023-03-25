@@ -121,8 +121,8 @@ public class ArmTrajectoryPlanner {
             Vector2D currentArmAngles = Arm.calculateArmAngles(currentPosition);
             currentArmAngles = currentArmAngles.getMultiplied(0.3).getAdded(lastAngles.getMultiplied(1 - 0.3));
             Vector2D currentAngularVelocities = currentArmAngles.getSubtracted(lastAngles).getDivided(sampleTime);
-            currentAngularVelocities = currentAngularVelocities.getMultiplied(0.3)
-                    .getAdded(lastAngularVelocities.getMultiplied(1 - 0.3));
+            // currentAngularVelocities = currentAngularVelocities.getMultiplied(0.3)
+            //         .getAdded(lastAngularVelocities.getMultiplied(1 - 0.3));
             Vector2D currentAnglularAccelerations = currentAngularVelocities.getSubtracted(lastAngularVelocities)
                     .getDivided(sampleTime);// actually sent to motor, don't want too much latency
             currentAnglularAccelerations = currentAnglularAccelerations.getMultiplied(0.05)
@@ -201,11 +201,11 @@ public class ArmTrajectoryPlanner {
                 "Pos X",
                 "Pos Y", "Vel X", "Vel Y", "Acc X", "Acc Y", "Elb Ang", "Sho Ang", "Elb Vel", "Sho Vel",
                 "Elb Acc", "Sho Acc");
-        dumpCsvToConsole(csvHeader, timestamps, pathPoints, pathVelocities, pathAccelerations, pathAngles,
-                pathAngularVelocities,
-                pathAngularAccelerations);
+        // dumpCsvToConsole(csvHeader, timestamps, pathPoints, pathVelocities, pathAccelerations, pathAngles,
+        //         pathAngularVelocities,
+        //         pathAngularAccelerations);
 
-        buildFalconProfiles();
+         buildFalconProfiles();
     }
 
     private void buildFalconProfiles() {

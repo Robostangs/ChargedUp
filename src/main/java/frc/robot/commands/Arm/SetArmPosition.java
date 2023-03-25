@@ -2,6 +2,10 @@ package frc.robot.commands.Arm;
 
 import java.time.Instant;
 
+import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -118,9 +122,9 @@ public class SetArmPosition extends SequentialCommandGroup {
             case kHighPosition:
                 addCommands(
                         new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        ChangeSetPoint.createWithTimeout(coneHighTweenPosition),
-                                        ChangeSetPoint.createWithTimeout(coneHighPosition)),
+                                ProfiledChangeSetPoint.createWithLongTimeout(
+                                        ()->new PathPoint(Arm.getInstance().getHandPosFromMotor().toTranslation2d(), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25),
+                                        ()->new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5)),
                                 new SequentialCommandGroup(
                                         ChangeSetPoint.createWithTimeout(cubeHighTweenPosition),
                                         ChangeSetPoint.createWithTimeout(cubeHighPosition)),

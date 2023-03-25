@@ -4,6 +4,7 @@ import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.filter.Debouncer;
@@ -161,8 +162,11 @@ public class Arm extends SubsystemBase {
 
         mShoulderMotor.configMotionProfileTrajectoryInterpolationEnable(true);
         mShoulderMotor.configMotionProfileTrajectoryPeriod((int)(ArmTrajectoryPlanner.sampleTime*1000));
+        mShoulderMotor.changeMotionControlFramePeriod((int)(ArmTrajectoryPlanner.sampleTime*1000/2));
         mElbowMotor.configMotionProfileTrajectoryInterpolationEnable(true);
         mElbowMotor.configMotionProfileTrajectoryPeriod((int)(ArmTrajectoryPlanner.sampleTime*1000));
+        mElbowMotor.changeMotionControlFramePeriod((int)(ArmTrajectoryPlanner.sampleTime*1000/2));
+
 
         mShoulderMotor.setNeutralMode(NeutralMode.Brake);
         mElbowMotor.setNeutralMode(NeutralMode.Brake);
@@ -361,7 +365,7 @@ public class Arm extends SubsystemBase {
         handPos = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
          SmartDashboard.putNumber("Hand Actual X", handPos.x);
          SmartDashboard.putNumber("Hand Actual Y", handPos.y);
-        handPosFromMotors  = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
+        handPosFromMotors  = calculateHandPosition(new Utils.Vector2D(getElbowPositionFromMotor(), getShoulderPositionFromMotor()));
          SmartDashboard.putNumber("Hand Motor X", handPosFromMotors.x);
          SmartDashboard.putNumber("Hand Motor Y", handPosFromMotors.y);;
 
@@ -576,12 +580,16 @@ public class Arm extends SubsystemBase {
         return mShoulderMotor.isMotionProfileFinished();
     }
     public Vector2D getActiveTrajectoryArmAngles(){
-        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick,mShoulderMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick);
+        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryPosition()*Constants.Arm.elbowDegreesPerMotorTick,mShoulderMotor.getActiveTrajectoryPosition()*Constants.Arm.shoulderDegreesPerMotorTick);
         ret.setElbow(correctElbowAngle(ret));
         return ret;
     }
     public Vector2D getActiveTrajectoryAngularVelocity(){
-        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10,mShoulderMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10);
+        Vector2D ret = new Vector2D(mElbowMotor.getActiveTrajectoryVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10,mShoulderMotor.getActiveTrajectoryVelocity()*Constants.Arm.shoulderDegreesPerMotorTick*10);
         return ret;
+    }
+
+    public Vector2D getHandPosFromMotor() {
+        return handPosFromMotors;
     }
 }
