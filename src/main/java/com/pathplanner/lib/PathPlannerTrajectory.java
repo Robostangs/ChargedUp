@@ -270,7 +270,7 @@ public class PathPlannerTrajectory extends Trajectory {
       } else {
         states.get(i).curveRadius = radius;
 
-        double maxVCurve = Math.sqrt(Math.min(maxPosAccel, maxNegAccel) * Math.abs(radius));
+        double maxVCurve = Math.sqrt((maxPosAccel+maxNegAccel)/2 * Math.abs(radius));
 
         states.get(i).velocityMetersPerSecond =
             Math.min(maxVCurve, states.get(i).velocityMetersPerSecond);

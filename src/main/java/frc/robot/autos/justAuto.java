@@ -30,7 +30,6 @@ import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
-import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.balance;

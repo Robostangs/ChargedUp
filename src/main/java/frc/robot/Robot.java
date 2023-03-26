@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.subsystems.Arm;
@@ -85,6 +86,11 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
+   
+    // double startTime=System.nanoTime();
+    // for(int i=0;i<10;i++)
+    //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
+    //   System.out.println(new Double(System.nanoTime()-startTime)/10000000);
   }
 
   /**

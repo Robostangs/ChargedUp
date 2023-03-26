@@ -2,7 +2,6 @@ package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -13,14 +12,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.LoggyThings.LoggyPrintCommand;
-import frc.robot.autos.autoFromPath;
 import frc.robot.autos.basicTranslate;
-import frc.robot.autos.doubleAutoFromPath;
-import frc.robot.autos.translate;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.PercentOutput;
-import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.GetToPosition;
@@ -39,9 +35,8 @@ import frc.robot.Vision.LimelightMeasurement;
  */
 public class RobotContainer {
     /* Controllers */
-    public final XboxController mDriverController = new XboxController(0);
+    private final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
-    private XboxController instance;
   
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
@@ -95,14 +90,14 @@ public class RobotContainer {
         // clawGripToggle.whileTrue(new SetGrip());
         
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
-        new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(new SetArmPosition(ArmPosition.kHighPosition));
-        new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(new SetArmPosition(ArmPosition.kMediumPosition));
-        new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(new SetArmPosition(ArmPosition.kLowPosition));
-        new JoystickButton(mManipController, XboxController.Button.kX.value).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral));
-        new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).onTrue(new SetArmPosition(ArmPosition.kStowPosition));
-        new JoystickButton(mManipController, XboxController.Button.kRightStick.value).onTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition));
-        new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(new SetArmPosition(ArmPosition.kStartPosition));
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
+        new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneHighPosition:Constants.Arm.SetPoint.cubeHighPosition));
+        new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneMediumPosition:Constants.Arm.SetPoint.cubeMediumPosition));
+        new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.lowPosition));
+        new JoystickButton(mManipController, XboxController.Button.kX.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition));
+        new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
+        new JoystickButton(mManipController, XboxController.Button.kRightStick.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.loadingZonePosition));
+        new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.startPosition));
         new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value).onTrue(new InstantCommand(() -> s_Arm.resetLash()));
 
         Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
@@ -126,9 +121,9 @@ public class RobotContainer {
         // new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
         new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
-        new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));
+        new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
         
-        new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager().andThen(new SetArmPosition(ArmPosition.kStowPosition))));
+        new POVButton(mDriverController, 90).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
         new POVButton(mDriverController, 270).onTrue(new GetToPosition());
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 

@@ -30,7 +30,7 @@ import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
-import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.balance;
@@ -84,11 +84,11 @@ public class autoFromPath extends SequentialCommandGroup {
                                         s_Swerve);
 
                         addCommands(
-                                        new SetArmPosition(ArmPosition.kHighPosition).withTimeout(5),
+                                        ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                                         new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
                                         new SetGrip().withTimeout(0.7),
                                         new ParallelDeadlineGroup(
-                                                        new SetArmPosition(ArmPosition.kStowPosition),
+                                                        ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
                                                         new SetGrip()).withTimeout(2.5),
                                         // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
                                         swerveControllerCommand,

@@ -98,8 +98,8 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder/");
-        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow/");
+        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder/Motor/");
+        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow/Motor/");
 
         mShoulderMotor.configVoltageCompSaturation(10);
         mShoulderMotor.enableVoltageCompensation(true);
@@ -167,6 +167,9 @@ public class Arm extends SubsystemBase {
         mElbowMotor.configMotionProfileTrajectoryPeriod((int)(ArmTrajectoryPlanner.sampleTime*1000));
         mElbowMotor.changeMotionControlFramePeriod((int)(ArmTrajectoryPlanner.sampleTime*1000/2));
 
+
+        mElbowMotor.setStatusFramePeriod(StatusFrame.Status_10_Targets, 20);
+        mShoulderMotor.setStatusFramePeriod(StatusFrame.Status_10_Targets, 20);
 
         mShoulderMotor.setNeutralMode(NeutralMode.Brake);
         mElbowMotor.setNeutralMode(NeutralMode.Brake);
@@ -323,28 +326,28 @@ public class Arm extends SubsystemBase {
         if (shoulderAngleActual > Constants.Arm.shoulderAngleForwardSoftStop) {
             shoulderPeakOutputs.x = 0.00;
             shoulderPeakOutputs.y = 1.00;
-            SmartDashboard.putString("Shoulder Soft Limit", "Forward (Up)");
+            SmartDashboard.putString("Shoulder/Soft Limit", "Forward (Up)");
 
         } else if (shoulderAngleActual < Constants.Arm.shoulderAngleReverseSoftStop) {
             shoulderPeakOutputs.x = 1.00;
             shoulderPeakOutputs.y = 0.00;
-            SmartDashboard.putString("Shoulder Soft Limit", "Reverse (Down)");
+            SmartDashboard.putString("Shoulder/Soft Limit", "Reverse (Down)");
 
         }else{
-            SmartDashboard.putString("Shoulder Soft Limit", "None");
+            SmartDashboard.putString("Shoulder/Soft Limit", "None");
         }
 
         if (elbowAngleActual > Constants.Arm.elbowAngleForwardSoftStop) {
             elbowPeakOutputs.x = 0.00;
             elbowPeakOutputs.y = 1.00;
-            SmartDashboard.putString("Elbow Soft Limit", "Forward (Up)");
+            SmartDashboard.putString("Elbow/Soft Limit", "Forward (Up)");
 
         } else if (elbowAngleActual < Constants.Arm.elbowAngleReverseSoftStop) {
             elbowPeakOutputs.x = 1.00;
             elbowPeakOutputs.y = 0.00;
-            SmartDashboard.putString("Elbow Soft Limit", "Reverse (Down)");
+            SmartDashboard.putString("Elbow/Soft Limit", "Reverse (Down)");
         }else{
-            SmartDashboard.putString("Elbow Soft Limit", "None");
+            SmartDashboard.putString("Elbow/Soft Limit", "None");
         }
 
 
@@ -363,18 +366,18 @@ public class Arm extends SubsystemBase {
         // SmartDashboard.putNumber("Target Shoulder Angle", motorAngles.y);
 
         handPos = calculateHandPosition(new Utils.Vector2D(elbowAngleActual, shoulderAngleActual));
-         SmartDashboard.putNumber("Hand Actual X", handPos.x);
-         SmartDashboard.putNumber("Hand Actual Y", handPos.y);
+         SmartDashboard.putNumber("Hand/Actual X", handPos.x);
+         SmartDashboard.putNumber("Hand/Actual Y", handPos.y);
         handPosFromMotors  = calculateHandPosition(new Utils.Vector2D(getElbowPositionFromMotor(), getShoulderPositionFromMotor()));
-         SmartDashboard.putNumber("Hand Motor X", handPosFromMotors.x);
-         SmartDashboard.putNumber("Hand Motor Y", handPosFromMotors.y);;
+         SmartDashboard.putNumber("Hand/Motor X", handPosFromMotors.x);
+         SmartDashboard.putNumber("Hand/Motor Y", handPosFromMotors.y);;
 
         // SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
         // SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
         // mLastMotorAngles = motorAngles.clone();
 
-        SmartDashboard.putBoolean("ElbowLock", getElbowLocked());
-        SmartDashboard.putBoolean("ShoulderLock", getShoulderLocked());
+        SmartDashboard.putBoolean("Elbow/Lock", getElbowLocked());
+        SmartDashboard.putBoolean("Shoulder/Lock", getShoulderLocked());
         SmartDashboard.putData("ArmCommand",Arm.getInstance());
 
         // SmartDashboard.putNumber("Shoulder Cancoder", mShoulderCanCoder.getPosition());
@@ -488,8 +491,8 @@ public class Arm extends SubsystemBase {
         mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
         mElbowMotor.set(ControlMode.PercentOutput, elbow);
 
-        mShoulderBrakeSolenoid.set(Math.abs(mShoulderMotor.getMotorOutputPercent())>0.01);
-        mElbowBrakeSolenoid.set(Math.abs(mElbowMotor.getMotorOutputPercent())>0.01);
+        mShoulderBrakeSolenoid.set(Math.abs(shoulder)>0.01);
+        mElbowBrakeSolenoid.set(Math.abs(elbow)>0.01);
     }
 
     public boolean getElbowLocked() {
@@ -592,4 +595,15 @@ public class Arm extends SubsystemBase {
     public Vector2D getHandPosFromMotor() {
         return handPosFromMotors;
     }
+
+    public double getElbowOutputPercent() {
+        return mElbowMotor.getMotorOutputPercent();
+    }public double getShoulderOutputPercent() {
+        return mShoulderMotor.getMotorOutputPercent();
+    }
+
+    public Vector2D getMotorAngularVelocities() {
+        Vector2D ret = new Vector2D(mElbowMotor.getSelectedSensorVelocity()*Constants.Arm.elbowDegreesPerMotorTick*10,mShoulderMotor.getSelectedSensorVelocity()*Constants.Arm.shoulderDegreesPerMotorTick*10);
+        return ret;
+        }
 }
