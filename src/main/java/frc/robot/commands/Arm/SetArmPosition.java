@@ -39,10 +39,10 @@ public class SetArmPosition extends SequentialCommandGroup {
     //Intaking Positions
     private static final Vector2D loadingZonePosition = new Utils.Vector2D(0.666, 1.005);
 
-    private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
+    private static final Vector2D intakeTweenPosition = new Vector2D(0.75, 0.4);
 
     private static final Vector2D upIntakePosition = new Utils.Vector2D(0.59, 0.09);
-    private static final Vector2D generalIntakePosition = new Utils.Vector2D(0.59, 0);
+    private static final Vector2D generalIntakePosition = new Utils.Vector2D(0.65, 0);
 
     //Stowing Positions
     private static final Vector2D highStowTweenPosition = new Utils.Vector2D(0.59, 1.3);
