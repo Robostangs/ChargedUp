@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.basicTranslate;
+import frc.robot.autos.charlieAutoGrab;
 import frc.robot.autos.doubleAutoFromPath;
+import frc.robot.autos.rotation;
 import frc.robot.autos.translate;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.IntakingManager;
@@ -128,8 +130,9 @@ public class RobotContainer {
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));
         
-        new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager().andThen(new SetArmPosition(ArmPosition.kStowPosition))));
-        new POVButton(mDriverController, 270).onTrue(new GetToPosition());
+        // new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager().andThen(new SetArmPosition(ArmPosition.kStowPosition))));
+        new POVButton(mDriverController, 90).onTrue(new charlieAutoGrab());
+        new POVButton(mDriverController, 270).onTrue(new rotation(10));
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));

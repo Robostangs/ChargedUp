@@ -25,10 +25,10 @@ public class translate extends CommandBase {
     private Swerve s_Swerve;
     private Utils.Vector3D position;
     private TrajectoryConfig config;
-    public translate(Swerve s_Swerve, Utils.Vector3D position){
-        addRequirements(s_Swerve);
-        s_Swerve = s_Swerve;
-        position = position;
+    public translate(Utils.Vector3D position){
+        addRequirements(Swerve.getInstance());
+        s_Swerve = Swerve.getInstance();
+        this.position = position;
         config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,

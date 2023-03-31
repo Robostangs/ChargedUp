@@ -151,6 +151,10 @@ public class Vision {
     // Math.asin(tx));
     // }
 
+    public double getCenterLimelightTX() {
+         return mObjectTX.get();
+    }
+
     public Utils.Vector3D fromAT(DoubleArraySubscriber sub) {
         double[] positions = sub.get();
         return new Utils.Vector3D(positions[0], positions[1], positions[2]);

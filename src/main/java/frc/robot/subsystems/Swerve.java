@@ -135,7 +135,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getRawGyroAngle() {
-        return -mGyro.getYaw() % 360;
+        return mGyro.getYaw();
     }
 
     public double getPitchAngle() {
