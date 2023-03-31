@@ -25,7 +25,7 @@ import frc.robot.subsystems.Arm;
 
 public class ProfiledChangeSetPoint extends CommandBase {
 
-    private Arm mArm = Arm.getInstance();
+    private static Arm mArm = Arm.getInstance();
     private final XboxController mManipController = new XboxController(1);
     private final Debouncer leftButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
     private final Debouncer rightButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
@@ -135,16 +135,24 @@ public class ProfiledChangeSetPoint extends CommandBase {
         return false;
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        // mArm.setElbowLock(true);
-        // mArm.setShoulderLock(true);
-        // mArm.setShoulderPower(0);
-        // mArm.setElbowPower(0);
+    public static void laterEnd(boolean interrupted) {
+            mArm.setElbowLock(true);
+            mArm.setShoulderLock(true);
+            mArm.setShoulderPower(0);
+            mArm.setElbowPower(0);
+            if(interrupted)
+                DataLogManager.log("PCSP Ended Normally");
+            else
+                DataLogManager.log("PCSP Interrupted");
+
     }
 
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel, double timeout) {
-        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel).withTimeout(timeout).andThen(new WaitCommand(0.5)).withName("ProfiledChangeSetPoint");
+        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel)
+        .withTimeout(timeout)
+        .andThen(new WaitCommand(0.5))
+        .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
+        .withName("ProfiledChangeSetPoint");
     }
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
         return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,3,4);
