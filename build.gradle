@@ -3,6 +3,8 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2023.4.2"
 }
 
+gradle.startParameter.showStacktrace = org.gradle.api.logging.configuration.ShowStacktrace.ALWAYS
+
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 

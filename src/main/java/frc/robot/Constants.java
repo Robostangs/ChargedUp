@@ -227,8 +227,8 @@ public final class Constants {
     public static final double elbowMotorF = 0.06;
     public static final double elbowMotorIZone = 1000;
     public static final double elbowMaxIntegeralAccumulator = 0;
-    public static final double elbowCruiseVelocity = 10000; // Degrees per second
-    public static final double elbowAccelerationFactor = 20000; // Degrees per second squared
+    public static final double elbowCruiseVelocity = 10000; // sensorUnitsPer100ms 
+    public static final double elbowAccelerationFactor = 20000; // sensorUnitsPer100ms per second
 
     public static final double upperarmLength = 1.033; // Meters
     public static final double LimelightCenterToShoulderPivot = 0.13;//Meters

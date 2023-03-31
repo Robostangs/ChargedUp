@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.Arm.ChangeSetPoint;
@@ -270,6 +271,10 @@ public class Utils {
         }
     }
     
+    /**
+     * X is Elbow
+     * Y is Shoulder
+     */
     public static class Vector2D {
 
     public double x;
@@ -277,6 +282,10 @@ public class Utils {
     
     public Vector2D() { }
 
+    /**
+     * @param x Elbow
+     * @param y Shoulder
+    */
     public Vector2D(double x, double y) {
         this.x = x;
         this.y = y;
@@ -285,7 +294,9 @@ public class Utils {
     public Vector2D(Vector2D v) {
         set(v);
     }
-
+    public Vector2D(Translation2d v) {
+        this(v.getX(),v.getY());
+    }
     public void set(double x, double y) {
         this.x = x;
         this.y = y;
@@ -295,16 +306,31 @@ public class Utils {
         return this.x;
     }
 
+    public double getElbow(){
+        return getX();
+    }
+
     public double getY() {
         return this.y;
     }
+    public double getShoulder(){
+        return getY();
+    } 
     
     public void setX(double x) {
         this.x = x;
     }
+
+    public void setElbow(double x) {
+        setX(x);
+    }
     
     public void setY(double y) {
         this.y = y;
+    }
+
+    public void setShoulder(double y) {
+        setY(y);
     }
 
     public void set(Vector2D v) {
@@ -329,6 +355,10 @@ public class Utils {
         return (x * x + y * y);
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public double distanceSq(double vx, double vy) {
         vx -= x;
         vy -= y;
@@ -341,6 +371,10 @@ public class Utils {
         return (vx * vx + vy * vy);
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public double distance(double vx, double vy) {
         vx -= x;
         vy -= y;
@@ -373,6 +407,10 @@ public class Utils {
         this.y += v.y;
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public void add(double vx, double vy) {
         this.x += vx;
         this.y += vy;
@@ -387,6 +425,10 @@ public class Utils {
         this.y -= v.y;
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public void subtract(double vx, double vy) {
         this.x -= vx;
         this.y -= vy;
@@ -399,6 +441,11 @@ public class Utils {
     public void multiply(double scalar) {
         x *= scalar;
         y *= scalar;
+    }
+
+    public void elementwiseMultiply(double vx, double vy) {
+        x *= vx;
+        y *= vy;
     }
 
     public Vector2D getMultiplied(double scalar) {
@@ -422,6 +469,10 @@ public class Utils {
         return (this.x * v.x + this.y * v.y);
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public double dot(double vx, double vy) {
         return (this.x * vx + this.y * vy);
     }
@@ -430,6 +481,10 @@ public class Utils {
         return (this.x * v.y - this.y * v.x);
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public double cross(double vx, double vy) {
         return (this.x * vy - this.y * vx);
     }
@@ -438,6 +493,10 @@ public class Utils {
         return (this.dot(v) / this.getLength());
     }
 
+    /**
+     * @param vx Elbow
+     * @param vy Shoulder
+    */
     public double project(double vx, double vy) {
         return (this.dot(vx, vy) / this.getLength());
     }
@@ -493,6 +552,10 @@ public class Utils {
     @Override
     public String toString() {
         return "Vector2d[" + x + ", " + y + "]";
+    }
+
+    public Translation2d toTranslation2d() {
+        return new Translation2d(x,y);
     }
 }    
 
