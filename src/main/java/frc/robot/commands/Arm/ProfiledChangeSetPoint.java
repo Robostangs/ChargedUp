@@ -63,7 +63,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
         long preplanTime = System.nanoTime();
         mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel);
         mPlanner.plan();
-        DataLogManager.log("~~~~~~~~~~~Trajectory planning took "+((double)(System.nanoTime()-preplanTime)/1000000)+"ms~~~~~~~~~~~~~~~");
+        SmartDashboard.putNumber("ArmPlanner/Planning Time (ms)",((double)(System.nanoTime()-preplanTime)/1000000));
         if(Robot.isSimulation()){
             mPlanner.simulateToLogInOtherThread();
         }
@@ -124,26 +124,24 @@ public class ProfiledChangeSetPoint extends CommandBase {
             && mArm.getShoulderMotionProfileFinished()) {
             return true;
         }
-        if((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 
-            Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1) && 
-            leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
-            rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
-          ) {
-            DataLogManager.log("PCSP Manual Override");
-            return true;
-        }
         return false;
     }
 
     public static void laterEnd(boolean interrupted) {
-            mArm.setElbowLock(true);
-            mArm.setShoulderLock(true);
-            mArm.setShoulderPower(0);
-            mArm.setElbowPower(0);
-            if(interrupted)
+        mArm.setElbowLock(true);
+        mArm.setShoulderLock(true);
+        mArm.setShoulderPower(0);
+        mArm.setElbowPower(0);
+        if (interrupted) {
+            if ((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 ||
+                    Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1)) {
+                DataLogManager.log("PCSP Probably Manual Override");
+            }else{
                 DataLogManager.log("PCSP Interrupted");
-            else
-                DataLogManager.log("PCSP Ended Normally");
+            }
+
+        } else
+            DataLogManager.log("PCSP Ended Normally");
 
     }
 
@@ -151,11 +149,11 @@ public class ProfiledChangeSetPoint extends CommandBase {
         return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel)
         .withTimeout(timeout)
         .andThen(new WaitCommand(0.5))
-        .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
         .until(()->{return(Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 
             Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1) && 
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton());})
+        .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
         .withName("ProfiledChangeSetPoint");
     }
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
