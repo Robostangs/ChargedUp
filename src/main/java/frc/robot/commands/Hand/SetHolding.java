@@ -10,17 +10,19 @@ public class SetHolding extends InstantCommand{
 
     private Hand mHand = Hand.getInstance();
     private XboxController mManipController = new XboxController(1);
+    private Boolean holding;
     
     
-    public SetHolding() {
+    public SetHolding(Boolean holding) {
+        this.holding = holding;
         addRequirements(mHand);
     }
 
     @Override
     public void initialize() {
-        mHand.setHolding(!mHand.getHolding());
+        mHand.setHolding(holding);
 
-        if(mHand.getHolding()) {
+        if(holding) {
             mManipController.setRumble(RumbleType.kLeftRumble, 0.25);
         } else {
             mManipController.setRumble(RumbleType.kRightRumble, 0.25);

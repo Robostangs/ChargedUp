@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -216,8 +217,8 @@ public final class Constants {
     public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0.06;
     public static final double shoulderMotorIZone = 5000;
-    public static final double shoulderCruiseVelocity = 8000; // Degrees per second
-    public static final double shoulderAccelerationFactor = 10000; // Degrees per second squared
+    public static final double shoulderCruiseVelocity = 20000; // Degrees per second
+    public static final double shoulderAccelerationFactor = 25000; // Degrees per second squared
 
     public static final int elbowMotorID = 51;
 
@@ -227,8 +228,8 @@ public final class Constants {
     public static final double elbowMotorF = 0.06;
     public static final double elbowMotorIZone = 1000;
     public static final double elbowMaxIntegeralAccumulator = 0;
-    public static final double elbowCruiseVelocity = 10000; // sensorUnitsPer100ms 
-    public static final double elbowAccelerationFactor = 20000; // sensorUnitsPer100ms per second
+    public static final double elbowCruiseVelocity = 15000; // sensorUnitsPer100ms 
+    public static final double elbowAccelerationFactor = 25000; // sensorUnitsPer100ms per second
 
     public static final double upperarmLength = 1.033; // Meters
     public static final double LimelightCenterToShoulderPivot = 0.13;//Meters
@@ -239,14 +240,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 74.8; // Degrees
-    public static final double shoulderAngleSensor = 257.959  ; // Degrees
+    public static final double shoulderAngleActual = 75.8; // Degrees
+    public static final double shoulderAngleSensor = 267.451; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
-    public static final double shoulderAngleForwardSoftStop = 108; // Degrees
+    public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -86.3; // Degrees
-    public static final double elbowAngleSensor = 219.990; // Degrees
+    public static final double elbowAngleActualDifference = -60.1; // Degrees
+    public static final double elbowAngleSensor = 248.379; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -254,8 +255,8 @@ public final class Constants {
     public static final int elbowBrakeSolenoid = 1;
     public static final int shoulderBrakeSolenoid = 2;
 
-    public static final double elbowLockThreshold = 1; // CANCoder sensor units
-    public static final double shoulderLockThreshold = 1; // CANCoder sensor units
+    public static final double elbowLockThreshold = 1; // degrees
+    public static final double shoulderLockThreshold = 1; // degrees
 
     
     public static final int smoothingFactor = 2; // Arbitrary 1-8
@@ -274,6 +275,28 @@ public final class Constants {
     public static final double elbowDegreesPerMotorTick = 360.0/2048.0 / Constants.Arm.elbowGearRatio / elbowVirtualFourBarRatio;
 
     public static final double floorHeight = -0.15;
+
+    public static class SetPoint {
+      //Scoring Positions
+      public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint coneHighPosition = new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
+      public static final PathPoint cubeMediumPosition = new PathPoint(new Translation2d(1.067, 0.781), Rotation2d.fromDegrees(-30), "cubeMediumPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint coneMediumPosition = new PathPoint(new Translation2d(1.042, 0.987), Rotation2d.fromDegrees(-30), "coneMediumPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.7, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
+
+      //Intaking Positions
+      public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.666, 1.005), Rotation2d.fromDegrees(0), "loadingZonePosition").withControlLengths(0.25, 0.25);
+
+      // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
+
+      public static final PathPoint upIntakePosition = new PathPoint(new Translation2d(0.59, 0.09), Rotation2d.fromDegrees(-90), "upIntakePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, -0.03), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
+
+      //Stowing Positions
+      public static final PathPoint stowPosition = new PathPoint(new Translation2d(0.423, 0.324), Rotation2d.fromDegrees(-90), "stowPosition");
+
+      public static final PathPoint startPosition = new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(-135), "startPosition").withControlLengths(0.25, 0.25);
+    }
 
   }
 

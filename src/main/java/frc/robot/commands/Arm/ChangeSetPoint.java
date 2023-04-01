@@ -41,8 +41,8 @@ public class ChangeSetPoint extends CommandBase {
     @Override
     public void initialize() {
         DataLogManager.log("Setpoint: " + mSetPoint.x + "," + mSetPoint.y);
-        SmartDashboard.putNumber("Hand Target X", mSetPoint.x);
-        SmartDashboard.putNumber("Hand Target Y", mSetPoint.y);
+        SmartDashboard.putNumber("Hand/Target X", mSetPoint.x);
+        SmartDashboard.putNumber("Hand/Target Y", mSetPoint.y);
 
 
         mSetPointInAngles = mArm.calculateArmAngles(mSetPoint);
@@ -63,8 +63,8 @@ public class ChangeSetPoint extends CommandBase {
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Elbow PID Error",uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition());
-        SmartDashboard.putNumber("Shoulder PID Error",mSetPointInAngles.y - mArm.getShoulderPositionFromMotor());
+        SmartDashboard.putNumber("Elbow/PID Error",uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition());
+        SmartDashboard.putNumber("Shoulder/PID Error",mSetPointInAngles.y - mArm.getShoulderPositionFromMotor());
 
         if(mElbowHysteresis.calculate(Math.abs(uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition()))) {
             mArm.setElbowLock(true);
@@ -94,7 +94,8 @@ public class ChangeSetPoint extends CommandBase {
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
           ) {
-            end(true);
+            DataLogManager.log("Change Set Point interrupted");
+            return true;
         }
         return false;
     }
@@ -106,7 +107,6 @@ public class ChangeSetPoint extends CommandBase {
         mArm.setShoulderPower(0);
         mArm.setElbowPower(0);
         if(interrupted) {
-            DataLogManager.log("Change Set Point interrupted");
         }
     }
 

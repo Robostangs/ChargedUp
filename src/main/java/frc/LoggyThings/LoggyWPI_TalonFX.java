@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.Faults;
@@ -200,6 +201,25 @@ public class LoggyWPI_TalonFX extends WPI_TalonFX implements ILoggyMotor {
             }
         }
 
+    }
+
+    @Override
+    public ErrorCode startMotionProfile(BufferedTrajectoryPointStream stream, int minBufferedPts, ControlMode motionProfControlMode){
+        ErrorCode rc = super.startMotionProfile(stream, minBufferedPts, motionProfControlMode);
+        try {// Don't jeopardize robot functionality
+
+            if(mDataLogEntries.keySet().contains(LogItem.SET_FUNCTION_CONTROL_MODE) && LoggyThingManager.getInstance().getGlobalMaxLogLevel().contains(LogItem.SET_FUNCTION_CONTROL_MODE)){
+                long now = WPIUtilJNI.now();
+                mDataLogEntries.get(LogItem.SET_FUNCTION_CONTROL_MODE).logStringIfChanged(motionProfControlMode.toString(), now);
+                justFailed = false;
+            }
+        } catch (Exception e) {
+            if (!justFailed) {// don't spam log
+                e.printStackTrace();
+                justFailed = true;
+            }
+        }
+        return rc;
     }
 
     @Override

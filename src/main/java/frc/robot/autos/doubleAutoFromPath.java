@@ -30,7 +30,7 @@ import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
-import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.balance;
@@ -100,20 +100,20 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
                     s_Swerve);
 
             addCommands(
-                    new SetArmPosition(ArmPosition.kHighPosition).withTimeout(5),
+                ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                     new WaitCommand(0.2),
                     new SetGrip().withTimeout(0.7),
                     new ParallelDeadlineGroup(
-                        new SetArmPosition(ArmPosition.kStowPosition),
+                        ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
                         new SetGrip()),
                     firstController,
                     new InstantCommand(
                             () -> s_Swerve.drive(new Translation2d(0, 0), 0, false, false)),
                     new ParallelDeadlineGroup(
-                            new SetArmPosition(ArmPosition.kIntakePositionGeneral), // .andThen(new
+                        ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.generalIntakePosition), // .andThen(new
                                                                                     // WaitCommand(0.2)),
                             new SetGrip()),
-                    new SetArmPosition(ArmPosition.kStowPosition).withTimeout(3));
+                            ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition));
                     // swerveControllerCommand,
                     // new balance());
         } catch (IOException ex) {

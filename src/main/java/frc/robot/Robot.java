@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -22,7 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.ArmTrajectoryPlanner.ArmTrajectoryPlannerTest;
+import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.subsystems.Arm;
@@ -41,7 +43,7 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+  //public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
 
@@ -56,9 +58,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    mPowerDistribution.setSwitchableChannel(true);
+    //mPowerDistribution.setSwitchableChannel(true);
 
-    SmartDashboard.putData("PDH", mPowerDistribution);
+    //SmartDashboard.putData("PDH", mPowerDistribution);
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");
@@ -86,6 +88,12 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
+   
+    new WaitCommand(1).andThen(new InstantCommand(()->Arm.getInstance().resetLash()).ignoringDisable(true)).andThen(new LoggyPrintCommand("Robot.java reset lash")).ignoringDisable(true).schedule();
+    // double startTime=System.nanoTime();
+    // for(int i=0;i<10;i++)
+    //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
+    //   System.out.println(new Double(System.nanoTime()-startTime)/10000000);
   }
 
   /**
@@ -145,10 +153,6 @@ public class Robot extends TimedRobot {
     //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
     //                                             new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(180+45)).withControlLengths(0.25, 0.25))
     //                                     .schedule();
-        ProfiledChangeSetPoint.createWithTimeout(
-                                                new PathPoint(Arm.getInstance().getHandPos().toTranslation2d(), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25),
-                                                new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(90)).withControlLengths(0.5, 0.5))
-                                        .schedule();
   }
 
   /** This function is called periodically during operator control. */

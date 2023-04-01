@@ -510,6 +510,15 @@ public class Utils {
         return this.getNormalized().getMultiplied(this.dot(vx, vy) / this.getLength());
     }
 
+
+    public void exponentialFilter(Vector2D oldData, double alpha){
+        this.x=this.x*alpha+oldData.x*(1.0-alpha);
+        this.y=this.y*alpha+oldData.y*(1.0-alpha);
+    }
+    public Vector2D getDerivative(Vector2D oldData, double sampleTime){
+        return new Vector2D((this.x-oldData.x)/sampleTime,(this.y-oldData.y)/sampleTime);
+    }
+
     public void rotateBy(double angle) {
         double cos = Math.cos(angle);
         double sin = Math.sin(angle);
