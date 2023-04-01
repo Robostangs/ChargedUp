@@ -7,6 +7,11 @@
         }
       }
     },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
     "PowerDistributions": {
       "1": {
         "PowerDistribution[1]": {
@@ -61,6 +66,7 @@
       "/Shuffleboard/PIT Test/Decrease Speed": "Command",
       "/Shuffleboard/PIT Test/Increase Speed": "Command",
       "/Shuffleboard/PIT Test/Test Select": "String Chooser",
+      "/SmartDashboard/ArmCommand": "Subsystem",
       "/SmartDashboard/ArmMechanism/Actual": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",

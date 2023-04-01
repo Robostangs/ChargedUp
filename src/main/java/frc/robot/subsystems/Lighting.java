@@ -9,6 +9,10 @@ public class Lighting extends SubsystemBase {
     
     private Spark blinken;
 
+    public double coneLight = 0.65;
+    public double cubeLight = 0.91;
+    public double killLights = 0.99;
+
     public static Lighting getInstance() {
         if (mLighting == null) {
             mLighting = new Lighting();
@@ -25,7 +29,7 @@ public class Lighting extends SubsystemBase {
         blinken.set(PWMVal);
     }
 
-    public void killLights() {
+    public void lightsOff() {
         blinken.set(0.99);
     }
 }

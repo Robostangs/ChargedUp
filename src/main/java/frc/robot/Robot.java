@@ -37,10 +37,13 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
+
+  /*
   public static SendableChooser<Command> test;
   ShuffleboardTab testTab = Shuffleboard.getTab("PIT Test");
   DoubleSupplier testSpeedSupplier;
   static Boolean testsAdded;
+  */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -80,6 +83,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
 
+    /*
     testsAdded = false;
     SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
     test = new SendableChooser<Command>();
@@ -91,6 +95,7 @@ public class Robot extends TimedRobot {
       test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
       System.out.println("Added Command: " + PITTest.commandList[x].getName());
     }
+    */
   }
 
   /**
@@ -141,7 +146,7 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer = new RobotContainer();
-    new Lighting().killLights();
+    Lighting.getInstance().lightsOff();
     new SetArmPosition(ArmPosition.kStartPosition).schedule();
   }
 
@@ -151,63 +156,64 @@ public class Robot extends TimedRobot {
     Vision.getInstance().getTargetHandX();
   }
 
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().close();
-    CommandScheduler.getInstance().enable();
-    System.out.println("PITTEST");
-    Shuffleboard.selectTab(testTab.getTitle());
-    if (testsAdded == false) {
-      testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
 
-      testTab.add("Testing Speed", SmartDashboard.getNumber("Test Speed", 0))
-      .withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 1));
+//   @Override
+//   public void testInit() {
+//     CommandScheduler.getInstance().close();
+//     CommandScheduler.getInstance().enable();
+//     System.out.println("PITTEST");
+//     Shuffleboard.selectTab(testTab.getTitle());
+//     if (testsAdded == false) {
+//       testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
 
-      testTab.add("Increase Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;})
-      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
-      .withWidget(BuiltInWidgets.kCommand);
+//       testTab.add("Testing Speed", SmartDashboard.getNumber("Test Speed", 0))
+//       .withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 1));
 
-      testTab.add("Decrease Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;})
-      .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
-      .withWidget(BuiltInWidgets.kCommand);
-      testsAdded = true;
+//       testTab.add("Increase Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;})
+//       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
+//       .withWidget(BuiltInWidgets.kCommand);
 
-
-      // SmartDashboard.putString("pitStat", "null");
-      testTab.add("PIT Test Status", SmartDashboard.getString("pitStat", "null")).withWidget(BuiltInWidgets.kTextView);
-
-      /* PDH */
-      PITTest.init();
-      // new PITTest().until(() -> !isTest()).alongWith(new InstantCommand(() -> {SmartDashboard.putString("PIT Test PDH Stat", "Running");}));
-    }
+//       testTab.add("Decrease Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;})
+//       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
+//       .withWidget(BuiltInWidgets.kCommand);
+//       testsAdded = true;
 
 
-    // testTab.add("Test Speed", testSpeedSupplier.getAsDouble()).withWidget(BuiltInWidgets.k);
-    // SmartDashboard.putNumber("Test Speed", testSpeedSupplier.getAsDouble());
-    // testTab.add("Test Speed", testSpeedSupplier);
-    // testSpeedSupplier = () -> 0.2;
-    // SmartDashboard.putData("Test", test);
-    // testTab.addDouble("Test Speed", testSpeedSupplier).withWidget(BuiltInWidgets.kNumberSlider);
+//       // SmartDashboard.putString("pitStat", "null");
+//       testTab.add("PIT Test Status", SmartDashboard.getString("pitStat", "null")).withWidget(BuiltInWidgets.kTextView);
 
-    // NetworkTableEntry testSpeedEntry = testTab.add("Test Speed", 0.2).getEntry();
-  }
+//       /* PDH */
+//       PITTest.init();
+//       // new PITTest().until(() -> !isTest()).alongWith(new InstantCommand(() -> {SmartDashboard.putString("PIT Test PDH Stat", "Running");}));
+//     }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {
-    PITTest.PDH();
-    Command newCMD = test.getSelected();
-    if (newCMD.getName() == "Nothing") {
-      new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).schedule();
-    } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
-      newCMD.schedule();
-    }
-    SmartDashboard.putString("Pit Status", newCMD.getName());
-  }
 
-  @Override
-  public void testExit() {
-    CommandScheduler.getInstance().cancelAll();
-    Shuffleboard.selectTab("SmartDashboard");
-  }
+//     // testTab.add("Test Speed", testSpeedSupplier.getAsDouble()).withWidget(BuiltInWidgets.k);
+//     // SmartDashboard.putNumber("Test Speed", testSpeedSupplier.getAsDouble());
+//     // testTab.add("Test Speed", testSpeedSupplier);
+//     // testSpeedSupplier = () -> 0.2;
+//     // SmartDashboard.putData("Test", test);
+//     // testTab.addDouble("Test Speed", testSpeedSupplier).withWidget(BuiltInWidgets.kNumberSlider);
+
+//     // NetworkTableEntry testSpeedEntry = testTab.add("Test Speed", 0.2).getEntry();
+//   }
+
+//   /** This function is called periodically during test mode. */
+//   @Override
+//   public void testPeriodic() {
+//     PITTest.PDH();
+//     Command newCMD = test.getSelected();
+//     if (newCMD.getName() == "Nothing") {
+//       new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).schedule();
+//     } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
+//       newCMD.schedule();
+//     }
+//     SmartDashboard.putString("Pit Status", newCMD.getName());
+//   }
+
+//   @Override
+//   public void testExit() {
+//     CommandScheduler.getInstance().cancelAll();
+//     Shuffleboard.selectTab("SmartDashboard");
+//   }
 }

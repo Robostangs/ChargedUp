@@ -1,8 +1,13 @@
 package frc.robot;
 
+import javax.swing.plaf.basic.BasicSplitPaneUI.KeyboardHomeHandler;
+
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.HIDType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -29,13 +34,13 @@ public class RobotContainer {
     /* Controllers */
     public final static XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
-    private XboxController instance;
   
     /* Subsystems */
     public final static Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
     private final Vision s_Vision = Vision.getInstance();
+    private final Lighting s_Lighting = Lighting.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -115,6 +120,13 @@ public class RobotContainer {
         new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
         new POVButton(mManipController, 180).onTrue(new SetArmPosition(ArmPosition.kIntakePositionUp));
+
+        // if (Robot.isSimulation()) {
+        //     final GenericHID keyboard = new GenericHID(16);
+        //     DriverStation.silenceJoystickConnectionWarning(true);
+        //     new POVButton(keyboard, 90).onTrue(new LightReqCMD(90));
+        //     new POVButton(keyboard, 270).onTrue(new LightReqCMD(270));
+        // }
         
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
