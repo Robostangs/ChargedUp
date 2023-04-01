@@ -71,7 +71,9 @@
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
       "/SmartDashboard/field": "Field2d",
-      "/SmartDashboard/jefy": "String Chooser"
+      "/SmartDashboard/jefy": "String Chooser",
+      "/SmartDashboard/ArmMechanism/Profile": "Mechanism2d",
+      "/SmartDashboard/sim arm": "Mechanism2d"
     },
     "windows": {
       "/FMSInfo": {

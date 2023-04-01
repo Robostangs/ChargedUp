@@ -16,14 +16,27 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Swerve.TeleopSwerve;
-import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Arm.ArmPosition;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
+import frc.LoggyThings.LoggyThingManager;
+import frc.robot.commands.Arm.ProfiledChangeSetPoint;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Arm.ArmPosition;
+import com.pathplanner.lib.PathPoint;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -35,7 +48,7 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+  //public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
 
   /*
@@ -51,10 +64,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    mPowerDistribution.setSwitchableChannel(true);
+    m_robotContainer = new RobotContainer();
+    //mPowerDistribution.setSwitchableChannel(true);
+
+    //SmartDashboard.putData("PDH", mPowerDistribution);
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");
@@ -82,20 +99,12 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
-
-    /*
-    testsAdded = false;
-    SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);
-    test = new SendableChooser<Command>();
-    Command stop = new InstantCommand();
-    stop.setName("Nothing");
-    test.setDefaultOption("Disabled", stop);
-    for (int x = 0; x < PITTest.cmdList.length; x++) {
-      PITTest.commandList[x].setName(PITTest.cmdList[x]);
-      test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
-      System.out.println("Added Command: " + PITTest.commandList[x].getName());
-    }
-    */
+   
+    new WaitCommand(0.5).andThen(new InstantCommand(()->Arm.getInstance().resetLash())).schedule();
+    // double startTime=System.nanoTime();
+    // for(int i=0;i<10;i++)
+    //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
+    //   System.out.println(new Double(System.nanoTime()-startTime)/10000000);
   }
 
   /**
@@ -109,6 +118,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    SmartDashboard.putString("path", chooser.getSelected());
     LoggyThingManager.getInstance().periodic();
     CommandScheduler.getInstance().run();
   }
@@ -124,7 +134,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = new RobotContainer().getAutonomousCommand();
+    
+    m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -137,6 +148,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    //ArmTrajectoryPlannerTest.main(null);
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -145,9 +158,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer = new RobotContainer();
     Lighting.getInstance().lightsOff();
-    new SetArmPosition(ArmPosition.kStartPosition).schedule();
+    // ProfiledChangeSetPoint.createWithTimeout(
+    //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
+    //                                             new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(180+45)).withControlLengths(0.25, 0.25))
+    //                                     .schedule();
   }
 
   /** This function is called periodically during operator control. */

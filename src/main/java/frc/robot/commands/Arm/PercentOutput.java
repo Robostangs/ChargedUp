@@ -16,11 +16,11 @@ public class PercentOutput extends CommandBase {
         this.elbow = elbow;
     }
 
-    @Override
-    public void initialize() {
-        // System.out.println("Shoulder: " + shoulder);
-        // System.out.println("Elbow: " + elbow);
-    }
+    // @Override
+    // public void initialize() {
+    //     // System.out.println("Shoulder: " + shoulder);
+    //     // System.out.println("Elbow: " + elbow);
+    // }
 
     @Override
     public void execute() {

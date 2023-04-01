@@ -3,6 +3,7 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -126,7 +127,7 @@ public final class Constants {
             public static final int driveMotorID = 11;
             public static final int angleMotorID = 10;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.229);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.492);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -136,7 +137,7 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.256);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(250.40);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -146,7 +147,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int canCoderID = 32;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445 );
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -164,7 +165,7 @@ public final class Constants {
         public static final class balancePID {
             public static final double kP = 0.012;
             public static final double kI = 0.00002;
-            public static final double kD = 0.001;
+            public static final double kD = 0.002;
         }
 
         public static final class Odometry {
@@ -176,9 +177,9 @@ public final class Constants {
             STATE_STANDARD_DEVS.set(1, 0, 0.2); // State y position
             STATE_STANDARD_DEVS.set(2, 0, 0.2); // State rotation
 
-            VISION_STANDARD_DEVS.set(0, 0, 50); // Vision x position
-            VISION_STANDARD_DEVS.set(1, 0, 50); // Vision y position
-            VISION_STANDARD_DEVS.set(2, 0, 50); // Vision rotation
+            VISION_STANDARD_DEVS.set(0, 0, 30); // Vision x position
+            VISION_STANDARD_DEVS.set(1, 0, 30); // Vision y position
+            VISION_STANDARD_DEVS.set(2, 0, 30); // Vision rotation
           }
 
           public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
@@ -218,8 +219,8 @@ public final class Constants {
     public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0.06;
     public static final double shoulderMotorIZone = 5000;
-    public static final double shoulderCruiseVelocity = 8000; // Degrees per second
-    public static final double shoulderAccelerationFactor = 10000; // Degrees per second squared
+    public static final double shoulderCruiseVelocity = 20000; // Degrees per second
+    public static final double shoulderAccelerationFactor = 25000; // Degrees per second squared
 
     public static final int elbowMotorID = 51;
 
@@ -229,8 +230,8 @@ public final class Constants {
     public static final double elbowMotorF = 0.06;
     public static final double elbowMotorIZone = 1000;
     public static final double elbowMaxIntegeralAccumulator = 0;
-    public static final double elbowCruiseVelocity = 10000; // Degrees per second
-    public static final double elbowAccelerationFactor = 20000; // Degrees per second squared
+    public static final double elbowCruiseVelocity = 15000; // sensorUnitsPer100ms 
+    public static final double elbowAccelerationFactor = 25000; // sensorUnitsPer100ms per second
 
     public static final double upperarmLength = 1.033; // Meters
     public static final double LimelightCenterToShoulderPivot = 0.13;//Meters
@@ -241,14 +242,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 68.6; // Degrees
-    public static final double shoulderAngleSensor = 202.588; // Degrees
+    public static final double shoulderAngleActual = 43.9; // Degrees
+    public static final double shoulderAngleSensor = 230.713; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
-    public static final double shoulderAngleForwardSoftStop = 108; // Degrees
+    public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -44.7; // Degrees
-    public static final double elbowAngleSensor = 265.078 ; // Degrees
+    public static final double elbowAngleActualDifference = -64.6; // Degrees
+    public static final double elbowAngleSensor = 243.721 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -256,8 +257,8 @@ public final class Constants {
     public static final int elbowBrakeSolenoid = 1;
     public static final int shoulderBrakeSolenoid = 2;
 
-    public static final double elbowLockThreshold = 1; // CANCoder sensor units
-    public static final double shoulderLockThreshold = 1; // CANCoder sensor units
+    public static final double elbowLockThreshold = 1; // degrees
+    public static final double shoulderLockThreshold = 1; // degrees
 
     
     public static final int smoothingFactor = 2; // Arbitrary 1-8
@@ -277,11 +278,33 @@ public final class Constants {
 
     public static final double floorHeight = -0.15;
 
+    public static class SetPoint {
+      //Scoring Positions
+      public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint coneHighPosition = new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
+      public static final PathPoint cubeMediumPosition = new PathPoint(new Translation2d(1.067, 0.781), Rotation2d.fromDegrees(-30), "cubeMediumPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint coneMediumPosition = new PathPoint(new Translation2d(1.042, 0.987), Rotation2d.fromDegrees(-30), "coneMediumPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.7, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
+
+      //Intaking Positions
+      public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.666, 1.005), Rotation2d.fromDegrees(0), "loadingZonePosition").withControlLengths(0.25, 0.25);
+
+      // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
+
+      public static final PathPoint upIntakePosition = new PathPoint(new Translation2d(0.59, 0.09), Rotation2d.fromDegrees(-90), "upIntakePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, -0.04), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
+
+      //Stowing Positions
+      public static final PathPoint stowPosition = new PathPoint(new Translation2d(0.423, 0.324), Rotation2d.fromDegrees(-90), "stowPosition");
+
+      public static final PathPoint startPosition = new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(-135), "startPosition").withControlLengths(0.25, 0.25);
+    }
+
   }
 
   public static class Hand {
     public static final int mHandSolenoidFwd = 7;
-    public static final int mHandSolenoidRev = 6;
+    public static final int mHandSolenoidRev = 5;
 
     public static final double handMass = 2.1;
 

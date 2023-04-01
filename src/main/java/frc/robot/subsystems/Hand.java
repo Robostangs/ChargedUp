@@ -1,13 +1,17 @@
 package frc.robot.subsystems;
 
+import java.io.Console;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Hand extends SubsystemBase {
 
     private static Hand mInstance;
-    private DoubleSolenoid mSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 6,7);
+    private DoubleSolenoid mSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Hand.mHandSolenoidFwd,Constants.Hand.mHandSolenoidRev);
     public boolean holdingCone = true;
     public boolean gripping = false;
 
@@ -24,6 +28,8 @@ public class Hand extends SubsystemBase {
         } else {
             mSolenoid.set(DoubleSolenoid.Value.kReverse);
         }
+        SmartDashboard.putBoolean("Gripping", gripping);
+        SmartDashboard.putBoolean("HoldingCone", holdingCone);
 
         if(holdingCone) {
         } else {
