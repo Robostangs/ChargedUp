@@ -550,7 +550,7 @@ public class Arm extends SubsystemBase {
                                                 -decorrectElbowAngle(new Vector2D(correctedElbowCanCoderPostion,correctedShoulderCanCoderPostion))
                                                 / Constants.Arm.elbowDegreesPerMotorTick
                                              );
-        DataLogManager.log("Reset Lash");
+        DataLogManager.log("***********Reset Lash At Init");
     }
 //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
@@ -560,7 +560,7 @@ public class Arm extends SubsystemBase {
                                                 decorrectElbowAngle(new Vector2D(mElbowCanCoder.getPosition(),mShoulderCanCoder.getPosition()))
                                                 / Constants.Arm.elbowDegreesPerMotorTick
                                              );
-        DataLogManager.log("Reset Lash");
+        DataLogManager.log("**********Reset Lash");
     }
 
     public ControlMode getElbowControlMode() {

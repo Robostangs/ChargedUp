@@ -2,24 +2,27 @@ package frc.robot.commands.AestheticsCMD;
 
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Aesthetics.Lighting;
 
 import java.sql.Time;
 import java.time.Duration;
 
-public class LightReqCMD extends CommandBase {
+public class LightReqCMD extends InstantCommand {
     private final Lighting mLighting = Lighting.getInstance();
     Boolean Cone;
     Boolean Cube;
     String reqPiece;
-    Timer timer  = new Timer();    
     double coneLight = 0.65;
     double cubeLight = 0.91;
-
+    private int angle;
+    public static int lastAngle;
     public LightReqCMD(int Angle) {
+        angle = Angle;
         addRequirements(Lighting.getInstance());
         if (Angle == 270) {
             Cone = true;
@@ -33,17 +36,17 @@ public class LightReqCMD extends CommandBase {
         }
     }
 
-    @Override
-    public void initialize() {
-        timer.restart();
-    }
-
+@Override
+public void initialize() {
+    // TODO Auto-generated method stub
+    lastAngle=angle;
+}
     @Override
     public void execute() {
-        if (Cone&&timer.get()*5%1>0.5) {
+        if (Cone) {
             mLighting.setLights(coneLight);
             reqPiece = "Cone";
-        } else if (Cube&&timer.get()*5%1>0.5) {
+        } else if (Cube) {
             mLighting.setLights(cubeLight);
             reqPiece = "Cube";
         } else {
@@ -51,22 +54,18 @@ public class LightReqCMD extends CommandBase {
             reqPiece = "None";
         }
     }
-    @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return (timer.get()>5);
-    }
-    @Override
-    public void end(boolean interrupted) {
-        mLighting.killLights();
-        if (Cone) {
-            mLighting.setLights(coneLight);
-            reqPiece = "Cone";
-        } else if (Cube) {
-            mLighting.setLights(cubeLight);
-            reqPiece = "Cube";
-        }
-        SmartDashboard.putString("Requested piece", reqPiece);
-        // mLighting.killLights();
-    }
+
+    // @Override
+    // public void end(boolean interrupted) {
+    //     mLighting.killLights();
+    //     if (Cone) {
+    //         mLighting.setLights(coneLight);
+    //         reqPiece = "Cone";
+    //     } else if (Cube) {
+    //         mLighting.setLights(cubeLight);
+    //         reqPiece = "Cube";
+    //     }
+    //     SmartDashboard.putString("Requested piece", reqPiece);
+    //     // mLighting.killLights();
+    // }
 }

@@ -240,14 +240,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 43.9; // Degrees
-    public static final double shoulderAngleSensor = 230.713; // Degrees
+    public static final double shoulderAngleActual = 75.8; // Degrees
+    public static final double shoulderAngleSensor = 267.451; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -64.6; // Degrees
-    public static final double elbowAngleSensor = 243.721 ; // Degrees
+    public static final double elbowAngleActualDifference = -60.1; // Degrees
+    public static final double elbowAngleSensor = 248.379; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -290,7 +290,7 @@ public final class Constants {
       // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
 
       public static final PathPoint upIntakePosition = new PathPoint(new Translation2d(0.59, 0.09), Rotation2d.fromDegrees(-90), "upIntakePosition").withControlLengths(0.25, 0.25);
-      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, -0.04), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, -0.03), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
 
       //Stowing Positions
       public static final PathPoint stowPosition = new PathPoint(new Translation2d(0.423, 0.324), Rotation2d.fromDegrees(-90), "stowPosition");
