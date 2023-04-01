@@ -42,7 +42,7 @@ public class ArmTrajectoryPlanner {
      */
 
     public static final double sampleTime = 0.02;
-    private static final boolean isDebug = true;
+    private static final boolean isDebug = false;
     private PathPoint startPoint, endPoint;
     private Vector2D maxJointSpeeds, maxJointAccelerations;
     private double targetMaxSpeed, originalTargetMaxSpeed, originalTargetMaxPosAccel, originalTargetMaxNegAccel,

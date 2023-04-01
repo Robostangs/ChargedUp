@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -87,6 +88,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
    
+    new WaitCommand(0.5).andThen(new InstantCommand(()->Arm.getInstance().resetLash())).schedule();
     // double startTime=System.nanoTime();
     // for(int i=0;i<10;i++)
     //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();

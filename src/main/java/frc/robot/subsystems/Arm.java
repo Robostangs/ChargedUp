@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase {
         return mInstance;
     }
 
-    public Arm() {
+    private Arm() {
         mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder/Motor/");
         mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow/Motor/");
 
@@ -132,22 +132,26 @@ public class Arm extends SubsystemBase {
         mElbowCanCoder = new CANCoder(Constants.Arm.elbowCanCoderID);
 
         mElbowBrakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.elbowBrakeSolenoid);
-        mElbowBrakeSolenoid.set(true);
+        setElbowLock(false);
         mShoulderBrakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.shoulderBrakeSolenoid);
-        mShoulderBrakeSolenoid.set(true);
+        setShoulderLock(false);
         mExtraSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Arm.extraSolenoid);
         mExtraSolenoid.set(false);
 
         mShoulderCanCoder.configSensorDirection(false);
         mElbowCanCoder.configSensorDirection(false);
-
+        DataLogManager.log("SHOULDER ABSOLUTE POSITION "+mShoulderCanCoder.getAbsolutePosition());
         double correctedShoulderCanCoderPostion = mShoulderCanCoder.getAbsolutePosition()
                 - Constants.Arm.shoulderAngleSensor + Constants.Arm.shoulderAngleActual;
         correctedShoulderCanCoderPostion = Utils.clampDegreeMeasurement(correctedShoulderCanCoderPostion);
+        DataLogManager.log("CORRECTED SHOULDER POSITION "+correctedShoulderCanCoderPostion);
+
+        DataLogManager.log("ELBOW ABSOLUTE POSITION "+mElbowCanCoder.getAbsolutePosition());
 
         double correctedElbowCanCoderPostion = mElbowCanCoder.getAbsolutePosition()
                 - Constants.Arm.elbowAngleSensor + Constants.Arm.elbowAngleActualDifference;
         correctedElbowCanCoderPostion = Utils.clampDegreeMeasurement(correctedElbowCanCoderPostion);
+        DataLogManager.log("CORRECTED ELBOW POSITION "+correctedElbowCanCoderPostion);
 
         mShoulderCanCoder.setPosition(correctedShoulderCanCoderPostion);
         mElbowCanCoder.setPosition(correctedElbowCanCoderPostion);
@@ -438,7 +442,7 @@ public class Arm extends SubsystemBase {
 
     //JUST CORRECTS FOR DEGREES PER MOTOR TICK, NOT COORDINATE SPACE CORRECTION
     public void setElbowPosition(double elbowPosition){
-        mElbowBrakeSolenoid.set(true);
+        setElbowLock(false);
         mElbowMotor.set(ControlMode.MotionMagic, elbowPosition/Constants.Arm.elbowDegreesPerMotorTick);
     }
 
@@ -459,7 +463,7 @@ public class Arm extends SubsystemBase {
 
 
     public void setShoulderPosition(double shoulderPosition) {
-        mShoulderBrakeSolenoid.set(true);
+        setShoulderLock(false);
         mMechanismTargetShoulder.setAngle(shoulderPosition);
         mShoulderMotor.set(ControlMode.MotionMagic, shoulderPosition/Constants.Arm.shoulderDegreesPerMotorTick);
     }
@@ -491,8 +495,8 @@ public class Arm extends SubsystemBase {
         mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
         mElbowMotor.set(ControlMode.PercentOutput, elbow);
 
-        mShoulderBrakeSolenoid.set(Math.abs(shoulder)>0.01);
-        mElbowBrakeSolenoid.set(Math.abs(elbow)>0.01);
+        setShoulderLock(Math.abs(shoulder)<0.01);
+        setElbowLock(Math.abs(elbow)<0.01);
     }
 
     public boolean getElbowLocked() {
@@ -513,10 +517,12 @@ public class Arm extends SubsystemBase {
     }
 
     public void setShoulderLock(boolean value) {
+        SmartDashboard.putBoolean("Shoulder/RequestedLock", value);
         mShoulderBrakeSolenoid.set(!value);
     }
 
     public void setElbowLock(boolean value) {
+        SmartDashboard.putBoolean("Elbow/RequestedLock", value);
         mElbowBrakeSolenoid.set(!value);
     }
 

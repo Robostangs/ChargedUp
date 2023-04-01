@@ -26,9 +26,9 @@ import frc.robot.subsystems.Arm;
 public class ProfiledChangeSetPoint extends CommandBase {
 
     private static Arm mArm = Arm.getInstance();
-    private final XboxController mManipController = new XboxController(1);
-    private final Debouncer leftButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
-    private final Debouncer rightButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
+    private static final XboxController mManipController = new XboxController(1);
+    private static final Debouncer leftButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
+    private static final Debouncer rightButtonDebouncer = new Debouncer(0.1, DebounceType.kRising);
     private ArmTrajectoryPlanner mPlanner;
     private Vector2D mSetPoint, mSetPointInAngles;
     private double uncorrectedElbowTarget;
@@ -129,7 +129,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
           ) {
-            DataLogManager.log("Change Set Point interrupted");
+            DataLogManager.log("PCSP Manual Override");
             return true;
         }
         return false;
@@ -141,9 +141,9 @@ public class ProfiledChangeSetPoint extends CommandBase {
             mArm.setShoulderPower(0);
             mArm.setElbowPower(0);
             if(interrupted)
-                DataLogManager.log("PCSP Ended Normally");
-            else
                 DataLogManager.log("PCSP Interrupted");
+            else
+                DataLogManager.log("PCSP Ended Normally");
 
     }
 
@@ -152,6 +152,10 @@ public class ProfiledChangeSetPoint extends CommandBase {
         .withTimeout(timeout)
         .andThen(new WaitCommand(0.5))
         .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
+        .until(()->{return(Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 
+            Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1) && 
+            leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
+            rightButtonDebouncer.calculate(!mManipController.getRightStickButton());})
         .withName("ProfiledChangeSetPoint");
     }
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
