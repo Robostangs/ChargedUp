@@ -1,5 +1,7 @@
 package frc.robot.commands.Arm;
 
+import java.util.function.Supplier;
+
 import javax.xml.crypto.Data;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -22,7 +24,7 @@ import frc.robot.subsystems.Arm;
 public class ChangeSetPoint extends CommandBase {
 
     private Arm mArm = Arm.getInstance();
-    private Vector2D mSetPoint, mSetPointInAngles;
+    private Vector2D mSetPointInAngles;
     private double uncorrectedElbowTarget;
     public static Vector2D mCurrentSetpoint = new Vector2D(0.4, 0.1);
     private final XboxController mManipController = new XboxController(1);
@@ -31,15 +33,17 @@ public class ChangeSetPoint extends CommandBase {
 
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 2);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 2);
+    private Supplier<Vector2D> mSetPointSupplier;
 
-    private ChangeSetPoint(Vector2D setPoint) {
-        mSetPoint = setPoint;
+    private ChangeSetPoint(Supplier<Vector2D> setPointSupplier) {
+        mSetPointSupplier = setPointSupplier;
         addRequirements(mArm);
         setName("ChangeSetPoint");
     }
 
     @Override
     public void initialize() {
+        Vector2D mSetPoint = mSetPointSupplier.get();
         DataLogManager.log("Setpoint: " + mSetPoint.x + "," + mSetPoint.y);
         SmartDashboard.putNumber("Hand/Target X", mSetPoint.x);
         SmartDashboard.putNumber("Hand/Target Y", mSetPoint.y);
@@ -110,11 +114,14 @@ public class ChangeSetPoint extends CommandBase {
         }
     }
 
-    public static ParallelRaceGroup createWithTimeout(Vector2D setPoint, double timeout) {
+    public static ParallelRaceGroup createWithTimeout(Supplier<Vector2D> setPoint, double timeout) {
         return new ChangeSetPoint(setPoint).withTimeout(timeout);
     }
     
-    public static ParallelRaceGroup createWithTimeout(Vector2D setPoint) {
+    public static ParallelRaceGroup createWithTimeout(Supplier<Vector2D>  setPoint) {
         return createWithTimeout(setPoint, 3);
+    }
+    public static ParallelRaceGroup createWithTimeout(Vector2D  setPoint) {
+        return createWithTimeout(()->setPoint, 3);
     }
 }

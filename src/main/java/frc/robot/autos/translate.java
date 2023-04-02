@@ -6,6 +6,7 @@ import frc.robot.Utils;
 import frc.robot.subsystems.Swerve;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -23,12 +24,12 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class translate extends CommandBase {
     private Swerve s_Swerve;
-    private Utils.Vector3D position;
+    private Supplier<Utils.Vector3D> positionSupplier;
     private TrajectoryConfig config;
-    public translate(Utils.Vector3D position){
+    public translate(Supplier<Utils.Vector3D> position){
         addRequirements(Swerve.getInstance());
         s_Swerve = Swerve.getInstance();
-        this.position = position;
+        this.positionSupplier = position;
         config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -38,7 +39,7 @@ public class translate extends CommandBase {
 
     @Override
     public void initialize() {
-        
+        Utils.Vector3D position = positionSupplier.get();
 
         var thetaController =
         new ProfiledPIDController(

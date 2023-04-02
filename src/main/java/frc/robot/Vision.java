@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Utils.Vector3D;
 import frc.robot.subsystems.Arm;
@@ -52,17 +53,11 @@ public class Vision {
 
     public boolean targetVisible(LimelightState limelight) {
         if (limelight.compareTo(LimelightState.leftLimelight) == 0) {
-            if (mLeftLimelight.getEntry("ta").getDouble(0) != 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return (mLeftLimelight.getEntry("ta").getDouble(0) != 0);
         } else if (limelight.compareTo(LimelightState.rightLimelight) == 0) {
-            if (mRightLimelight.getEntry("ta").getDouble(0) != 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return (mRightLimelight.getEntry("ta").getDouble(0) != 0);
+        } else if (limelight.compareTo(LimelightState.center) == 0) {
+            return (mDriverLimelight.getEntry("ta").getDouble(0) > 1.4);
         } else {
             return false;
         }
@@ -246,5 +241,29 @@ public class Vision {
                 mDriverLimelight.putValue("pipeline", NetworkTableValue.makeInteger(0));
             }
         }
+    }
+    public Vector2D calculateAndPrintGamePiecePosition(){
+        Vector2D mVector2d = Vision.getInstance().objectPosition();
+        
+        double mTargetXFromOrigin = Math.abs(((degSin(90+mVector2d.y) * Constants.Arm.upperarmLength) / degSin(90-mVector2d.y-Arm.getInstance().getShoulderPositionFromMotor())));
+        double mTargetY = (mTargetXFromOrigin * degTan(-mVector2d.x));
+        double mTargetX = mTargetXFromOrigin- (Arm.getInstance().getHandPositionX());//+0.08 ;
+
+        // Vector2D mVector2d = Vision.getInstance().objectPosition(); 
+
+        SmartDashboard.putNumber("Auto Grab/Target/X", mTargetX);
+        SmartDashboard.putNumber("Auto Grab/Target/Y", mTargetY);
+        return new Vector2D(mTargetX, mTargetY);
+    }
+    public double degSin(double value) {
+        return Math.sin(Math.toRadians(value));
+    }
+
+    public double degCos(double value) {
+        return Math.cos(Math.toRadians(value));
+    }
+
+    public double degTan(double value) {
+        return Math.tan(Math.toRadians(value));
     }
 }

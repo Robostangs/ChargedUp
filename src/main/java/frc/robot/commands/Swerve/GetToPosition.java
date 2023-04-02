@@ -107,7 +107,7 @@ public class GetToPosition extends CommandBase {
         SmartDashboard.putString("CurrentPosition", mDrivetrain.getPose().getY() + " " + mDrivetrain.getPose().getY() + " " + mDrivetrain.getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putString("Position", setPosition.x + " " + setPosition.y + " " + setPosition.z + " ");
         // setPosition = new Vector3D(1.81, 4.43, 180 );
-        new ParallelDeadlineGroup(new translate(setPosition).withTimeout(3), new InstantCommand(() -> System.out.println("I am a smart idiot"))).schedule();
+        new ParallelDeadlineGroup(new translate(() -> setPosition).withTimeout(3), new InstantCommand(() -> System.out.println("I am a smart idiot"))).schedule();
     }
 
 }

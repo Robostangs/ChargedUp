@@ -15,13 +15,11 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.autos.basicTranslate;
-<<<<<<< HEAD
 import frc.robot.autos.charlieAutoGrab;
 import frc.robot.autos.doubleAutoFromPath;
 import frc.robot.autos.rotation;
 import frc.robot.autos.translate;
-=======
->>>>>>> ArmTrajectory
+import frc.robot.autos.translatePp;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
 import frc.robot.commands.Arm.IntakingManager;
 import frc.robot.commands.Arm.PercentOutput;
@@ -37,6 +35,7 @@ import frc.robot.subsystems.Aesthetics.Lighting;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.Utils.Vector3D;
 import frc.robot.Vision.LimelightMeasurement;
+import frc.robot.autos.translatePp;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -134,14 +133,9 @@ public class RobotContainer {
         new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
         
-<<<<<<< HEAD
         // new POVButton(mDriverController, 90).onTrue(new SetArmPosition(ArmPosition.kIntakePositionGeneral).andThen(new IntakingManager().andThen(new SetArmPosition(ArmPosition.kStowPosition))));
         new POVButton(mDriverController, 90).onTrue(new charlieAutoGrab());
-        new POVButton(mDriverController, 270).onTrue(new rotation(10));
-=======
-        new POVButton(mDriverController, 90).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
-        new POVButton(mDriverController, 270).onTrue(new GetToPosition());
->>>>>>> ArmTrajectory
+        // new POVButton(mDriverController, 270).onTrue();
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
 
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));

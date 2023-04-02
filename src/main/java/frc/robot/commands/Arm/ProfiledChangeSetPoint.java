@@ -22,6 +22,7 @@ import frc.robot.Utils;
 import frc.robot.Utils.LockHysteresis;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;;
 
 public class ProfiledChangeSetPoint extends CommandBase {
 
@@ -53,11 +54,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
     public void initialize() {
         PathPoint startPoint = startPointSupplier.get().flipHeading();
         PathPoint endPoint = endPointSupplier.get();
-        if(endPoint.position.getDistance(startPoint.position)<0.2){
-            this.cancel();
-            ChangeSetPoint.createWithTimeout(new Vector2D(endPoint.position)).schedule();
-            return;
-        }
+
         mSetPoint = new Vector2D(endPoint.position);
         DataLogManager.log(String.format("ProfiledChangeSetPoint from (%3.3f,%3.3f)@%3.3f deg to (%3.3f,%3.3f)@%3.3f deg with velocity %3.3f, pos accel %3.3f, neg accel %3.3f",startPoint.position.getX(), startPoint.position.getY(),startPoint.heading.getDegrees(),endPoint.position.getX(), endPoint.position.getY(),endPoint.heading.getDegrees(), targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel));
         long preplanTime = System.nanoTime();
@@ -146,7 +143,11 @@ public class ProfiledChangeSetPoint extends CommandBase {
     }
 
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel, double timeout) {
-        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel)
+        return new ConditionalCommand(
+                new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel),
+                ChangeSetPoint.createWithTimeout(()->new Vector2D(endPointSupplier.get().position)),
+                ()->(endPointSupplier.get().position.getDistance(startPointSupplier.get().position)>0.2)
+                )
         .withTimeout(timeout)
         .andThen(new WaitCommand(0.5))
         .until(()->{return(Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 

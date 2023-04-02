@@ -24,7 +24,7 @@ public class PathPoint {
     this.heading = heading;
     this.holonomicRotation = holonomicRotation;
     this.velocityOverride = velocityOverride;
-    this.name = String.format("(%3.3f,%3.3f)@%3.3f", position.getX(), position.getY(), heading.getDegrees());
+    this.name = String.format("(%3.3f,%3.3f)by%3.3f@%3.3f", position.getX(), position.getY(), heading.getDegrees(), holonomicRotation.getDegrees());
   }
 
   public PathPoint(Translation2d position, Rotation2d heading, Rotation2d holonomicRotation) {
@@ -88,17 +88,17 @@ public class PathPoint {
         currentPose.getTranslation(), currentPose.getRotation(), currentSpeeds.vxMetersPerSecond);
   }
   public PathPoint withNewTranslation(Translation2d newTranslation){
-    PathPoint ret = new PathPoint(newTranslation,Rotation2d.fromDegrees(heading.getDegrees()),new Rotation2d(holonomicRotation.getDegrees()));
+    PathPoint ret = new PathPoint(newTranslation,Rotation2d.fromDegrees(heading.getDegrees()),Rotation2d.fromDegrees(holonomicRotation.getDegrees()));
     ret.prevControlLength = this.prevControlLength;
     ret.nextControlLength = this.prevControlLength;
     ret.name="NEAR_"+this.name+":"+ret.name;
     return ret;
   }
   public PathPoint flipHeading(){
-    PathPoint ret = new PathPoint(position,Rotation2d.fromDegrees(heading.getDegrees()-180),new Rotation2d(holonomicRotation.getDegrees()));
+    PathPoint ret = new PathPoint(position,Rotation2d.fromDegrees(heading.getDegrees()-180),Rotation2d.fromDegrees(holonomicRotation.getDegrees()));
     ret.prevControlLength = this.prevControlLength;
     ret.nextControlLength = this.prevControlLength;
-    ret.name="FLIP_"+this.name.substring(0,Math.max(this.name.lastIndexOf('@'),0))+String.format("%3.3f",ret.heading.getDegrees());
+    ret.name="FLIP_"+this.name.substring(0,Math.max(this.name.lastIndexOf('y'),0))+String.format("%3.3f",ret.heading.getDegrees());
     return ret;
   }
 }
