@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.HIDType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -19,6 +20,7 @@ import frc.robot.autos.doubleAutoFromPath;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
+import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Lights.LightReqCMD;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -51,9 +53,11 @@ public class RobotContainer {
     private final Hand s_Hand = Hand.getInstance();
     private final Vision s_Vision = Vision.getInstance();
     private final Lighting s_Lighting = Lighting.getInstance();
-
+    
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(new LightReqCMD(270));
+
         configureButtonBindings();
     }
 

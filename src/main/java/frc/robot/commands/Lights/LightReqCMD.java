@@ -2,14 +2,10 @@ package frc.robot.commands.Lights;
 
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Lighting;
 
-public class LightReqCMD extends SequentialCommandGroup {
+public class LightReqCMD extends CommandBase {
     private final Lighting mLighting = Lighting.getInstance();
     Boolean Cone;
     Boolean Cube;
@@ -17,64 +13,39 @@ public class LightReqCMD extends SequentialCommandGroup {
     
     double PWMVal;
     Timer timer;
+    double loopSpeed = 10.0;
+    int angle;
 
+    
     public LightReqCMD(int angle) {
+        this.angle = angle; 
+        addRequirements(mLighting);
+        timer = new Timer(); 
+    }
+    
+    @Override
+    public void initialize() {
+        timer.restart();
         if (angle == 270) {
-            // Cone = true;
-            // Cube = false;
-            PWMVal = mLighting.coneLight;
+            Lighting.lastLight = Lighting.kConeStatic;
+            mLighting.setLights(Lighting.kConeBlink);
             this.setName("Requesting Piece: Cone");
         } if (angle == 90) {
-            // Cone = false;
-            // Cube = true;
-            PWMVal = mLighting.cubeLight;
+            Lighting.lastLight = Lighting.kCubeStatic;
+            mLighting.setLights(Lighting.kCubeBlink);
             this.setName("Requesting Piece: Cube");
         }
-        
-        this.addRequirements(mLighting);
-        timer = new Timer();
-        this.addCommands(
-            new RepeatCommand(
-                new LightCMD(PWMVal).andThen(
-                    new WaitCommand(0.5)).andThen(
-                        new LightCMD(mLighting.killLights).andThen(
-                            new WaitCommand(0.5)
-                        )
-                    )
-            ).until(() -> timer.get() >= 10)
-        );
-
-        // Another Idea:
-        /*
-        this.addCommands(
-            new RepeatCommand(
-                new LightCMD(PWMVal).andThen(
-                    new WaitCommand(0.5)).andThen(
-                        new LightCMD(mLighting.killLights).andThen(
-                            new WaitCommand(0.5)
-                        )
-                    )
-            ).alongWith(new WaitCommand(10))
-        );
-        */
     }
 
-    // @Override
-    // public void execute() {
-    //     if (Cone) {
-    //         mLighting.setLights(coneLight);
-    //         reqPiece = "Cone";
-    //     } else if (Cube) {
-    //         mLighting.setLights(cubeLight);
-    //         reqPiece = "Cube";
-    //     } else {
-    //         mLighting.killLights();
-    //         reqPiece = "None";
-    //     }
-    // }
+    @Override
+    public void execute() {
+        if (timer.hasElapsed(loopSpeed)) {
+            new LightCMD(Lighting.lastLight).schedule();
+        }
+    }
 
-    public void end() {
-        SmartDashboard.putString("Requested piece", reqPiece);
-        mLighting.setLights(PWMVal);
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println("Lights set");
     }
 }

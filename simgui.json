@@ -23,6 +23,9 @@
       "3.3V Rail": {
         "open": true
       },
+      "RoboRIO Input": {
+        "open": true
+      },
       "window": {
         "visible": true
       }
@@ -69,10 +72,10 @@
       "/SmartDashboard/ArmCommand": "Subsystem",
       "/SmartDashboard/ArmMechanism/Actual": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
+      "/SmartDashboard/ArmMechanism/Profile": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
       "/SmartDashboard/field": "Field2d",
       "/SmartDashboard/jefy": "String Chooser",
-      "/SmartDashboard/ArmMechanism/Profile": "Mechanism2d",
       "/SmartDashboard/sim arm": "Mechanism2d"
     },
     "windows": {

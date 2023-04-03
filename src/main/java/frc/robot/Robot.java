@@ -5,37 +5,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
-import java.util.Map;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
-import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Lighting;
-import frc.robot.subsystems.Arm.ArmPosition;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
-import frc.LoggyThings.LoggyThingManager;
-import frc.robot.commands.Arm.ProfiledChangeSetPoint;
+import frc.robot.commands.Lights.LightCMD;
+// import frc.robot.commands.Lights.LightReqCMD;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Arm.ArmPosition;
-import com.pathplanner.lib.PathPoint;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -50,13 +31,6 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   //public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
-
-  /*
-  public static SendableChooser<Command> test;
-  ShuffleboardTab testTab = Shuffleboard.getTab("PIT Test");
-  DoubleSupplier testSpeedSupplier;
-  static Boolean testsAdded;
-  */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -158,7 +132,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Lighting.getInstance().lightsOff();
+    new LightCMD(Lighting.kKillLights);
+
     // ProfiledChangeSetPoint.createWithTimeout(
     //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
     //                                             new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(180+45)).withControlLengths(0.25, 0.25))
@@ -171,64 +146,9 @@ public class Robot extends TimedRobot {
     Vision.getInstance().getTargetHandX();
   }
 
+  @Override
+  public void testInit() {}
 
-//   @Override
-//   public void testInit() {
-//     CommandScheduler.getInstance().close();
-//     CommandScheduler.getInstance().enable();
-//     System.out.println("PITTEST");
-//     Shuffleboard.selectTab(testTab.getTitle());
-//     if (testsAdded == false) {
-//       testTab.add("Test Select", test).withWidget(BuiltInWidgets.kComboBoxChooser);
-
-//       testTab.add("Testing Speed", SmartDashboard.getNumber("Test Speed", 0))
-//       .withWidget(BuiltInWidgets.kDial).withProperties(Map.of("min", 0, "max", 1));
-
-//       testTab.add("Increase Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed + 0.1;})
-//       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
-//       .withWidget(BuiltInWidgets.kCommand);
-
-//       testTab.add("Decrease Speed", new InstantCommand(() -> {Constants.Swerve.testSpeed = Constants.Swerve.testSpeed - 0.1;})
-//       .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("Test Speed", Constants.Swerve.testSpeed);})))
-//       .withWidget(BuiltInWidgets.kCommand);
-//       testsAdded = true;
-
-
-//       // SmartDashboard.putString("pitStat", "null");
-//       testTab.add("PIT Test Status", SmartDashboard.getString("pitStat", "null")).withWidget(BuiltInWidgets.kTextView);
-
-//       /* PDH */
-//       PITTest.init();
-//       // new PITTest().until(() -> !isTest()).alongWith(new InstantCommand(() -> {SmartDashboard.putString("PIT Test PDH Stat", "Running");}));
-//     }
-
-
-//     // testTab.add("Test Speed", testSpeedSupplier.getAsDouble()).withWidget(BuiltInWidgets.k);
-//     // SmartDashboard.putNumber("Test Speed", testSpeedSupplier.getAsDouble());
-//     // testTab.add("Test Speed", testSpeedSupplier);
-//     // testSpeedSupplier = () -> 0.2;
-//     // SmartDashboard.putData("Test", test);
-//     // testTab.addDouble("Test Speed", testSpeedSupplier).withWidget(BuiltInWidgets.kNumberSlider);
-
-//     // NetworkTableEntry testSpeedEntry = testTab.add("Test Speed", 0.2).getEntry();
-//   }
-
-//   /** This function is called periodically during test mode. */
-//   @Override
-//   public void testPeriodic() {
-//     PITTest.PDH();
-//     Command newCMD = test.getSelected();
-//     if (newCMD.getName() == "Nothing") {
-//       new TeleopSwerve(() -> 0, () -> 0, () -> 0, () -> false, () -> false).schedule();
-//     } else if (!CommandScheduler.getInstance().isScheduled(newCMD)) {
-//       newCMD.schedule();
-//     }
-//     SmartDashboard.putString("Pit Status", newCMD.getName());
-//   }
-
-//   @Override
-//   public void testExit() {
-//     CommandScheduler.getInstance().cancelAll();
-//     Shuffleboard.selectTab("SmartDashboard");
-//   }
+  @Override
+  public void testPeriodic() {}
 }
