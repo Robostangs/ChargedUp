@@ -52,12 +52,9 @@ public class RobotContainer {
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
     private final Vision s_Vision = Vision.getInstance();
-    private final Lighting s_Lighting = Lighting.getInstance();
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(new LightReqCMD(270));
-
         configureButtonBindings();
     }
 
@@ -133,15 +130,6 @@ public class RobotContainer {
         // new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
         new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
         new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
-
-                // if (Robot.isSimulation()) {
-        //     final GenericHID keyboard = new GenericHID(16);
-        //     DriverStation.silenceJoystickConnectionWarning(true);
-        //     new POVButton(keyboard, 90).onTrue(new LightReqCMD(90));
-        //     new POVButton(keyboard, 270).onTrue(new LightReqCMD(270));
-        // }
-
-        
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
         
         new POVButton(mDriverController, 90).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));

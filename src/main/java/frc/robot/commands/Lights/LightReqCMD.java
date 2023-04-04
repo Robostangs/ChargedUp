@@ -3,6 +3,7 @@ package frc.robot.commands.Lights;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.Lights;
 import frc.robot.subsystems.Lighting;
 
 public class LightReqCMD extends CommandBase {
@@ -13,7 +14,7 @@ public class LightReqCMD extends CommandBase {
     
     double PWMVal;
     Timer timer;
-    double loopSpeed = 10.0;
+    double blinkTime = 7.5;
     int angle;
 
     
@@ -27,19 +28,19 @@ public class LightReqCMD extends CommandBase {
     public void initialize() {
         timer.restart();
         if (angle == 270) {
-            Lighting.lastLight = Lighting.kConeStatic;
-            mLighting.setLights(Lighting.kConeBlink);
+            Lighting.lastLight = Lights.kConeStatic;
+            mLighting.setLights(Lights.kConeBlink);
             this.setName("Requesting Piece: Cone");
         } if (angle == 90) {
-            Lighting.lastLight = Lighting.kCubeStatic;
-            mLighting.setLights(Lighting.kCubeBlink);
+            Lighting.lastLight = Lights.kCubeStatic;
+            mLighting.setLights(Lights.kCubeBlink);
             this.setName("Requesting Piece: Cube");
         }
     }
 
     @Override
     public void execute() {
-        if (timer.hasElapsed(loopSpeed)) {
+        if (timer.hasElapsed(blinkTime)) {
             new LightCMD(Lighting.lastLight).schedule();
         }
     }

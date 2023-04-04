@@ -267,8 +267,6 @@ public final class Constants {
     
     public static final double allowableError = 10;
     
-    public static final int blinkenPWM_ID = 0;
-
     public static final double shoulderGearRatio = 54.0/9.0*76.0/20.0*76.0/20.0*40.0/15.0;
     public static final double shoulderDegreesPerMotorTick = 360.0/2048.0 / shoulderGearRatio;
 
@@ -309,5 +307,16 @@ public final class Constants {
     public static final double handMass = 2.1;
 
     public static final Utils.Vector2D maxFrameExtension = new Utils.Vector2D((48+15-5) / 39.37, (78-5)/39.37);
+  }
+
+  public static class Lights {
+    public static final int blinkinPWM_ID = 0;
+    public static final double kConeStatic = 0.1;
+    public static final double kConeBlink = 0.15;
+    public static final double kCubeStatic = 0.2;
+    public static final double kCubeBlink = 0.25;
+    public static final double kFireTwinkle = -0.49;
+    public static final double kRobostangs = 0.63;
+    public static final double kKillLights = 0.99;
   }
 }

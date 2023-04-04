@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.subsystems.Lighting;
+import frc.robot.Constants.Lights;
 import frc.robot.commands.Lights.LightCMD;
 // import frc.robot.commands.Lights.LightReqCMD;
 import frc.robot.subsystems.Arm;
@@ -75,6 +76,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
    
     new WaitCommand(0.5).andThen(new InstantCommand(()->Arm.getInstance().resetLash())).schedule();
+    new LightCMD(-0.49).schedule();
     // double startTime=System.nanoTime();
     // for(int i=0;i<10;i++)
     //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
@@ -132,7 +134,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    new LightCMD(Lighting.kKillLights);
+    new LightCMD(Lights.kFireTwinkle);
 
     // ProfiledChangeSetPoint.createWithTimeout(
     //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
