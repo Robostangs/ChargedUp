@@ -285,7 +285,7 @@ public final class Constants {
       public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.7, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
 
       //Intaking Positions
-      public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.666, 1.005), Rotation2d.fromDegrees(0), "loadingZonePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.606, 1.005), Rotation2d.fromDegrees(0), "loadingZonePosition").withControlLengths(0.25, 0.25);
 
       // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
 
