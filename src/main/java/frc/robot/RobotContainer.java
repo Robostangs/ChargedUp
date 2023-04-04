@@ -69,8 +69,8 @@ public class RobotContainer {
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
-        new POVButton(mDriverController, 90).onTrue(new charlieAutoGrab());
-        new POVButton(mDriverController, 270).onTrue(new GetToPosition());
+        // new POVButton(mDriverController, 90).onTrue(new charlieAutoGrab());
+        // new POVButton(mDriverController, 270).onTrue(new GetToPosition());
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));

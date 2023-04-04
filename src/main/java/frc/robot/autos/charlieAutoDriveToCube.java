@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Utils.Vector2D;
@@ -13,14 +14,15 @@ import frc.robot.Vision.LimelightState;
 import frc.robot.Vision;
 import frc.robot.subsystems.Swerve;
 
-public class charlieAutoDriveToCube extends CommandBase {
-    boolean isFinished = false;
-    @Override
-    public void initialize() {
-        if (!Vision.getInstance().targetVisible(LimelightState.center)) {
-            DataLogManager.log("NO THING TO GRABBBB!!!!");
-            isFinished = true;
-        } else {
+public class charlieAutoDriveToCube{
+    
+    public Command getCommand() {
+        return translatePp.getTheThing(getPathPoint());
+    }
+
+
+    public PathPoint getPathPoint() {
+        
             Vector2D robotSpacePiecePos = Vision.getInstance().calculateAndPrintGamePiecePosition();
             Vector2D fieldSpacePieceDist = robotSpacePiecePos
                     .getRotatedBy(Swerve.getInstance().getPose().getRotation().getRadians());
@@ -32,15 +34,8 @@ public class charlieAutoDriveToCube extends CommandBase {
             SmartDashboard.putNumber("Auto Grab/Final/Y", fieldSpacePieceDist.y);
 
             Translation2d fieldSpacePieceDistT2d = fieldSpacePieceDist.toTranslation2d();
-            Rotation2d finalAngle = fieldSpacePieceDistT2d.getAngle();// .plus(Swerve.getInstance().getPose().getRotation());
-
-            translatePp.getTheThing(new PathPoint(fieldSpacePieceDistT2d, finalAngle, finalAngle)).andThen(new InstantCommand(() -> isFinished = true)).schedule();
-        }
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isFinished;
+            Rotation2d finalAngle = fieldSpacePieceDistT2d.getAngle();
+            return new PathPoint(fieldSpacePieceDistT2d, finalAngle, finalAngle);
     }
 
 }

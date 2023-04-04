@@ -8,25 +8,13 @@ import frc.robot.Constants;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 
-public class charlieAutoGrab extends CommandBase {
-    private boolean isFinished = false;
-    public charlieAutoGrab() {     
-        
-    }
-
-    @Override
-    public void initialize() {
-        new SequentialCommandGroup(
+public class charlieAutoGrab{
+    public SequentialCommandGroup getCommand() {
+        return new SequentialCommandGroup(
             ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition).alongWith(new LoggyPrintCommand("First Part")),
             // new WaitCommand(1),
-            new charlieAutoDriveToCube().deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart")),
-            ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part")), 
-            new InstantCommand(() -> isFinished = true)).schedule();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return isFinished;
+            new charlieAutoDriveToCube().getCommand().deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart")),
+            ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part")));
     }
 }
 

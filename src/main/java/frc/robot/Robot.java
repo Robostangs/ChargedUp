@@ -161,29 +161,29 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
-    final Joystick xDrive = new Joystick(3);
-    final Swerve s_Swerve = Swerve.getInstance();
-    final Arm s_Arm = Arm.getInstance();
-    final Hand s_Hand = Hand.getInstance();
-    s_Swerve.removeDefaultCommand();
-    s_Arm.removeDefaultCommand();
-    s_Hand.removeDefaultCommand();
-    s_Swerve.setDefaultCommand(
-      new TeleopSwerve(
-          () -> -xDrive.getRawAxis(1), 
-          () -> -xDrive.getRawAxis(0), 
-          () -> -xDrive.getRawAxis(2), 
-          () ->  xDrive.getRawButton(0),
-          () ->  xDrive.getRawButton(1)
-      )
-  );
+  //   final Joystick xDrive = new Joystick(3);
+  //   final Swerve s_Swerve = Swerve.getInstance();
+  //   final Arm s_Arm = Arm.getInstance();
+  //   final Hand s_Hand = Hand.getInstance();
+  //   s_Swerve.removeDefaultCommand();
+  //   s_Arm.removeDefaultCommand();
+  //   s_Hand.removeDefaultCommand();
+  //   s_Swerve.setDefaultCommand(
+  //     new TeleopSwerve(
+  //         () -> -xDrive.getRawAxis(1), 
+  //         () -> -xDrive.getRawAxis(0), 
+  //         () -> -xDrive.getRawAxis(2), 
+  //         () ->  xDrive.getRawButton(0),
+  //         () ->  xDrive.getRawButton(1)
+  //     )
+  // );
 
-  s_Arm.setDefaultCommand(
-    new PercentOutput(
-        () -> Utils.customDeadzone(-xDrive.getRawAxis(3)),
-        () -> Utils.customDeadzone(-xDrive.getRawAxis(4))
-    )
-);
+  // s_Arm.setDefaultCommand(
+  //   new PercentOutput(
+  //       () -> Utils.customDeadzone(-xDrive.getRawAxis(3)),
+  //       () -> Utils.customDeadzone(-xDrive.getRawAxis(4))
+  //   )
+// );
   }
 
   @Override
