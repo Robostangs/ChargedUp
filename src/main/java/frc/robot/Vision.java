@@ -246,7 +246,7 @@ public class Vision {
         Vector2D mVector2d = Vision.getInstance().objectPosition();
         
         double mTargetXFromOrigin = Math.abs(((degSin(90+mVector2d.y) * Constants.Arm.upperarmLength) / degSin(90-mVector2d.y-Arm.getInstance().getShoulderPositionFromMotor())));
-        double mTargetY = (mTargetXFromOrigin * degTan(-mVector2d.x));
+        double mTargetY = (mTargetXFromOrigin * degTan(-mVector2d.x)) - 0.28;
         double mTargetX = mTargetXFromOrigin- (Arm.getInstance().getHandPositionX())+0.08 ;
 
         // Vector2D mVector2d = Vision.getInstance().objectPosition(); 

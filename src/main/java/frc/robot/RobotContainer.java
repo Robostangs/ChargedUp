@@ -101,15 +101,14 @@ public class RobotContainer {
         // Trigger clawGripToggle = new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value);
         // clawGripToggle.whileTrue(new SetGrip());
         
-        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new SetGrip()); 
         new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneHighPosition:Constants.Arm.SetPoint.cubeHighPosition));
         new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneMediumPosition:Constants.Arm.SetPoint.cubeMediumPosition));
         new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.lowPosition));
         new JoystickButton(mManipController, XboxController.Button.kX.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition));
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.loadingZonePosition));
+        new JoystickButton(mManipController, XboxController.Button.kRightStick.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.loadingZonePosition));
         new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.startPosition));
-
         Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
         new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
             .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
@@ -145,7 +144,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new autoFromPath();
+        return new TripleAuto();
     }
 
     //tbd if needed for the override in changeSetPoint    

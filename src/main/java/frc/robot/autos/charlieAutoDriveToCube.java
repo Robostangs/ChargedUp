@@ -1,5 +1,7 @@
 package frc.robot.autos;
 
+import java.time.Instant;
+
 import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,26 +22,34 @@ import frc.robot.Vision;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 
-public class charlieAutoDriveToCube {
-    public static Command getCommand() {
-        if(!Vision.getInstance().targetVisible(LimelightState.center)){
+public class charlieAutoDriveToCube extends CommandBase {
+    boolean finished = false;
+    @Override
+    public void initialize() {
+        if (!Vision.getInstance().targetVisible(LimelightState.center)) {
             DataLogManager.log("NO THING TO GRABBBB!!!!");
-            return new InstantCommand();
+            finished = true;
+        } else {
+            Vector2D robotSpacePiecePos = Vision.getInstance().calculateAndPrintGamePiecePosition();
+            Vector2D fieldSpacePieceDist = robotSpacePiecePos
+                    .getRotatedBy(Swerve.getInstance().getPose().getRotation().getRadians());
+            // Vector2D mVector2d = Vision.getInstance().objectPosition();
+
+            SmartDashboard.putNumber("Auto Grab/Target/X", robotSpacePiecePos.x);
+            SmartDashboard.putNumber("Auto Grab/Target/Y", robotSpacePiecePos.y);
+            SmartDashboard.putNumber("Auto Grab/Final/X", fieldSpacePieceDist.x);
+            SmartDashboard.putNumber("Auto Grab/Final/Y", fieldSpacePieceDist.y);
+
+            Translation2d fieldSpacePieceDistT2d = fieldSpacePieceDist.toTranslation2d();
+            Rotation2d finalAngle = fieldSpacePieceDistT2d.getAngle();// .plus(Swerve.getInstance().getPose().getRotation());
+
+            translatePp.getTheThing(new PathPoint(fieldSpacePieceDistT2d, finalAngle, finalAngle)).andThen(new InstantCommand(() -> finished = true)).schedule();
         }
-        Vector2D robotSpacePiecePos = Vision.getInstance().calculateAndPrintGamePiecePosition();
-        Vector2D fieldSpacePieceDist = robotSpacePiecePos.getRotatedBy(Swerve.getInstance().getPose().getRotation().getRadians());
-        // Vector2D mVector2d = Vision.getInstance().objectPosition(); 
-
-        SmartDashboard.putNumber("Auto Grab/Target/X", robotSpacePiecePos.x);
-        SmartDashboard.putNumber("Auto Grab/Target/Y", robotSpacePiecePos.y);
-        SmartDashboard.putNumber("Auto Grab/Final/X", fieldSpacePieceDist.x);
-        SmartDashboard.putNumber("Auto Grab/Final/Y", fieldSpacePieceDist.y);
-
-        Translation2d fieldSpacePieceDistT2d = fieldSpacePieceDist.toTranslation2d();
-        Rotation2d finalAngle=fieldSpacePieceDistT2d.getAngle();//.plus(Swerve.getInstance().getPose().getRotation());
-
-        return translatePp.getTheThing(new PathPoint(fieldSpacePieceDistT2d,  finalAngle, finalAngle));
     }
+
+    @Override
+    public boolean isFinished() {
+        return finished;
+    }
+
 }
-
-
