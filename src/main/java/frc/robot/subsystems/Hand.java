@@ -26,8 +26,8 @@ public class Hand extends SubsystemBase {
         } else {
             mSolenoid.set(DoubleSolenoid.Value.kReverse);
         }
-        SmartDashboard.putBoolean("Gripping", gripping);
-        SmartDashboard.putBoolean("HoldingCone", holdingCone);
+        SmartDashboard.putBoolean("/Hand/Gripping", gripping);
+        SmartDashboard.putBoolean("/Hand/HoldingCone", holdingCone);
 
         if(holdingCone) {
         } else {

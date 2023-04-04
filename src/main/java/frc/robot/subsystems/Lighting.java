@@ -22,7 +22,6 @@ public class Lighting extends SubsystemBase {
         blinkin = new Spark(Lights.blinkinPWM_ID);
     }
 
-
     public void setLights(double PWMVal) {
         blinkin.set(PWMVal);
     }

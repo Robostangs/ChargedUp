@@ -1,11 +1,13 @@
 package frc.robot.commands.Arm;
 
+import java.util.EnumSet;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,12 +16,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
 import frc.robot.Utils.LockHysteresis;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;;
 
 public class ProfiledChangeSetPoint extends CommandBase {
 
@@ -60,17 +64,13 @@ public class ProfiledChangeSetPoint extends CommandBase {
     public void initialize() {
         PathPoint startPoint = startPointSupplier.get().flipHeading();
         PathPoint endPoint = endPointSupplier.get();
-        if(endPoint.position.getDistance(startPoint.position)<0.2){
-            this.cancel();
-            ChangeSetPoint.createWithTimeout(new Vector2D(endPoint.position)).schedule();
-            return;
-        }
+
         mSetPoint = new Vector2D(endPoint.position);
         DataLogManager.log(String.format("ProfiledChangeSetPoint from (%3.3f,%3.3f)@%3.3f deg to (%3.3f,%3.3f)@%3.3f deg with velocity %3.3f, pos accel %3.3f, neg accel %3.3f",startPoint.position.getX(), startPoint.position.getY(),startPoint.heading.getDegrees(),endPoint.position.getX(), endPoint.position.getY(),endPoint.heading.getDegrees(), targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel));
         long preplanTime = System.nanoTime();
         mPlanner = new ArmTrajectoryPlanner(startPoint, endPoint, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel);
         mPlanner.plan();
-        DataLogManager.log("~~~~~~~~~~~Trajectory planning took "+((double)(System.nanoTime()-preplanTime)/1000000)+"ms~~~~~~~~~~~~~~~");
+        SmartDashboard.putNumber("ArmPlanner/Planning Time (ms)",((double)(System.nanoTime()-preplanTime)/1000000));
         if(Robot.isSimulation()){
             mPlanner.simulateToLogInOtherThread();
         }
@@ -131,26 +131,24 @@ public class ProfiledChangeSetPoint extends CommandBase {
             && mArm.getShoulderMotionProfileFinished()) {
             return true;
         }
-        if((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 
-            Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1) && 
-            leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
-            rightButtonDebouncer.calculate(!mManipController.getRightStickButton())
-          ) {
-            DataLogManager.log("PCSP Manual Override");
-            return true;
-        }
         return false;
     }
 
     public static void laterEnd(boolean interrupted) {
-            mArm.setElbowLock(true);
-            mArm.setShoulderLock(true);
-            mArm.setShoulderPower(0);
-            mArm.setElbowPower(0);
-            if(interrupted)
+        mArm.setElbowLock(true);
+        mArm.setShoulderLock(true);
+        mArm.setShoulderPower(0);
+        mArm.setElbowPower(0);
+        if (interrupted) {
+            if ((Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 ||
+                    Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1)) {
+                DataLogManager.log("PCSP Probably Manual Override");
+            }else{
                 DataLogManager.log("PCSP Interrupted");
-            else
-                DataLogManager.log("PCSP Ended Normally");
+            }
+
+        } else
+            DataLogManager.log("PCSP Ended Normally");
 
     }
 
@@ -165,15 +163,19 @@ public class ProfiledChangeSetPoint extends CommandBase {
      */
 
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel, double timeout) {
-        return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel)
+        return new ConditionalCommand(
+                new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel),
+                ChangeSetPoint.createWithTimeout(()->new Vector2D(endPointSupplier.get().position)).beforeStarting(new LoggyPrintCommand("DISTANCE IS "+(endPointSupplier.get().position.getDistance(startPointSupplier.get().position))+", USING CHANGE SETPOINT INSTEAD")),
+                ()->(endPointSupplier.get().position.getDistance(startPointSupplier.get().position)>0.2)
+                )
         .withTimeout(timeout)
         .andThen(new WaitCommand(0.5))
-        .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
         .until(()->{return(Math.abs(Utils.customDeadzone(mManipController.getLeftY())) > 0.1 || 
             Math.abs(Utils.customDeadzone(mManipController.getRightY())) > 0.1) && 
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton());})
-        .withName("ProfiledChangeSetPoint");
+        .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
+        .withName("ProfiledChangeSetPointAttempt");
     }
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
         return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,3,4);

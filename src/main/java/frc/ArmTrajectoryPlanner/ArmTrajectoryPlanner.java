@@ -1,6 +1,7 @@
 package frc.ArmTrajectoryPlanner;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.pathplanner.lib.PathConstraints;
@@ -9,6 +10,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -79,6 +81,7 @@ public class ArmTrajectoryPlanner {
 
         this.startPoint = startPoint;
         this.endPoint = endPoint;
+        
     }
 
     public void plan() {
@@ -93,6 +96,23 @@ public class ArmTrajectoryPlanner {
         pathAngles = new ArrayList<>();
         pathAngularVelocities = new ArrayList<>();
         timestamps = new ArrayList<>();
+
+
+        EnumSet<Arm.ViolationType> startPointViolations = Arm.checkArmPointViolation(new Vector2D(startPoint.position), EnumSet.noneOf(Arm.ViolationType.class)).violation;
+        if(startPointViolations.contains(Arm.ViolationType.X_LEGAL)){
+            startPoint=startPoint.withNewHeading(Rotation2d.fromDegrees(-180));
+            DataLogManager.log("UPDATED START HEADING TO -180 FOR X LEGAL LIMIT");
+        }
+
+        if(startPointViolations.contains(Arm.ViolationType.Y_LEGAL)){
+            startPoint=startPoint.withNewHeading(Rotation2d.fromDegrees(-90));
+            DataLogManager.log("UPDATED START HEADING TO -90 FOR Y LEGAL LIMIT");
+        }
+        if(startPointViolations.contains(Arm.ViolationType.FLOOR)){
+            startPoint=startPoint.withNewHeading(Rotation2d.fromDegrees(90));
+            DataLogManager.log("UPDATED START HEADING TO 90 FOR FLOOR");
+        }
+
 
         // needs to be here for speed/accel foldback regeneration
         PathPlannerTrajectory path = PathPlanner.generatePath(
@@ -122,8 +142,8 @@ public class ArmTrajectoryPlanner {
 
         pathAngularVelocities.add(new Vector2D());
         timestamps.add(0.0);
-        Vector2D lastAngles = Arm.calculateArmAngles(startV2D);
-        pathAngles.add(Arm.calculateArmAngles(startV2D));//NOT lastAngles cuz pass by reference
+        Vector2D lastAngles = Arm.calculateArmAnglesUnsafe(startV2D);
+        pathAngles.add(lastAngles.clone());//NOT lastAngles cuz pass by reference
 
         Vector2D lastAngularVelocities = new Vector2D();
         Vector2D lastAngularAccelerations = new Vector2D();
@@ -146,7 +166,7 @@ public class ArmTrajectoryPlanner {
             Vector2D currentPosition = new Vector2D(state.poseMeters.getX(), state.poseMeters.getY());
 
             // filter angle and angular velocity together so they are synchronized
-            Vector2D currentArmAngles = Arm.calculateArmAngles(currentPosition);
+            Vector2D currentArmAngles = Arm.calculateArmAnglesWithDisabledViolations(currentPosition, startPointViolations);
             currentArmAngles.exponentialFilter(lastAngles, 0.3);
             Vector2D currentAngularVelocities = currentArmAngles.getDerivative(lastAngles,sampleTime);
             // currentAngularVelocities = currentAngularVelocities.getMultiplied(0.3)

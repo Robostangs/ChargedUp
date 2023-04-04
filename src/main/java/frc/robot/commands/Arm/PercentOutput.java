@@ -30,6 +30,6 @@ public class PercentOutput extends CommandBase {
 
     @Override
     public void execute() {
-        mArm.setPower(shoulder.getAsDouble(), elbow.getAsDouble());
+        mArm.setPower(-shoulder.getAsDouble(), elbow.getAsDouble());
     }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.EnumSet;
+
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
+import frc.LoggyThings.ILoggyMotor;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.robot.Constants;
 import frc.robot.Utils;
@@ -64,7 +67,7 @@ public class Arm extends SubsystemBase {
     private MechanismLigament2d mMechanismMotorShoulder;
     private MechanismLigament2d mMechanismMotorElbow;
 
-    private Vector2D handPosFromMotors;
+    private Vector2D handPosFromMotors = new Vector2D();
     private Vector2D handPos = new Vector2D();
 
     public Vector2D getHandPos() {
@@ -97,8 +100,10 @@ public class Arm extends SubsystemBase {
     }
 
     private Arm() {
-        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder/Motor/");
-        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow/Motor/");
+        mShoulderMotor = new LoggyWPI_TalonFX(Constants.Arm.shoulderMotorID, "/Shoulder Motor/", ILoggyMotor.LogItem.LOGLEVEL_PID);
+        mShoulderMotor.setMinimumLogPeriod(0.02);
+        mElbowMotor = new LoggyWPI_TalonFX(Constants.Arm.elbowMotorID, "/Elbow Motor/", ILoggyMotor.LogItem.LOGLEVEL_PID);
+        mShoulderMotor.setMinimumLogPeriod(0.02);
 
         mShoulderMotor.configVoltageCompSaturation(10);
         mShoulderMotor.enableVoltageCompensation(true);
@@ -208,32 +213,53 @@ public class Arm extends SubsystemBase {
                 new MechanismLigament2d("Elbow", Constants.Arm.forearmLength, 0, 2, new Color8Bit(Color.kWhite)));
 
     }
-
-    // Not needed if we use normal pid for predefined positions
-    public static Utils.Vector2D calculateArmAngles(Utils.Vector2D targetPos) {
-        double targetDist = Math.sqrt(targetPos.x * targetPos.x + targetPos.y * targetPos.y);
-        if (targetDist > Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05) {
-            double targetAngle = Math.atan2(targetPos.y, targetPos.x);
-            targetPos.y = Math.sin(targetAngle) * (Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05);
-            targetPos.x = Math.cos(targetAngle) * (Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05);
+    public static enum ViolationType{
+        ARM_REACH,X_LEGAL, Y_LEGAL, FLOOR
+    }
+    public static class ViolationCheckResult{
+        public Vector2D updatedPos;
+        public EnumSet<ViolationType> violation = EnumSet.noneOf(ViolationType.class);
+    }
+    public static ViolationCheckResult checkArmPointViolation(Utils.Vector2D targetPos, EnumSet<ViolationType> disabledViolations){
+        ViolationCheckResult ret = new ViolationCheckResult();
+        Vector2D retPos = targetPos.clone();
+        double targetDist = Math.sqrt(retPos.x * retPos.x + retPos.y * retPos.y);
+        if (!disabledViolations.contains(ViolationType.ARM_REACH) && targetDist > Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05) {
+            double targetAngle = Math.atan2(retPos.y, retPos.x);
+            retPos.y = Math.sin(targetAngle) * (Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05);
+            retPos.x = Math.cos(targetAngle) * (Constants.Arm.forearmLength + Constants.Arm.upperarmLength - 0.05);
             DataLogManager.log("SETPOINT LIMITED BY ARM REACH");
+            ret.violation.add(ViolationType.ARM_REACH);
         }
-        if (Math.abs(targetPos.x) > Constants.Hand.maxFrameExtension.x) {
-            targetPos.x = Math.signum(targetPos.x) * Constants.Hand.maxFrameExtension.x;
+        if (!disabledViolations.contains(ViolationType.X_LEGAL) &&Math.abs(retPos.x) > Constants.Hand.maxFrameExtension.x) {
+            retPos.x = Math.signum(targetPos.x) * Constants.Hand.maxFrameExtension.x;
             DataLogManager.log("SETPOINT LIMITED BY X LEGAL LIMIT");
-
+            ret.violation.add(ViolationType.X_LEGAL);
         }
 
-        if (targetPos.y > Constants.Hand.maxFrameExtension.y) {
-            targetPos.y = Constants.Hand.maxFrameExtension.y;
+        if (!disabledViolations.contains(ViolationType.Y_LEGAL) &&retPos.y > Constants.Hand.maxFrameExtension.y) {
+            retPos.y = Constants.Hand.maxFrameExtension.y;
             DataLogManager.log("SETPOINT LIMITED BY Y LEGAL LIMIT");
+            ret.violation.add(ViolationType.Y_LEGAL);
 
         }
-        if (targetPos.y < Constants.Arm.floorHeight) {
-            targetPos.y = Constants.Arm.floorHeight;
+        if (!disabledViolations.contains(ViolationType.FLOOR) &&retPos.y < Constants.Arm.floorHeight) {
+            retPos.y = Constants.Arm.floorHeight;
             DataLogManager.log("SETPOINT LIMITED BY FLOOR");
+            ret.violation.add(ViolationType.FLOOR);
 
         }
+        ret.updatedPos = retPos;
+        return ret;
+    }
+    // Not needed if we use normal pid for predefined positions
+    public static Utils.Vector2D calculateArmAngles(Utils.Vector2D targetPos){
+        return calculateArmAnglesUnsafe(checkArmPointViolation(targetPos, EnumSet.noneOf(ViolationType.class)).updatedPos);
+    }
+    public static Utils.Vector2D calculateArmAnglesWithDisabledViolations(Utils.Vector2D targetPos, EnumSet<ViolationType> disabledViolations){
+        return calculateArmAnglesUnsafe(checkArmPointViolation(targetPos, disabledViolations).updatedPos);
+    }
+    public static Utils.Vector2D calculateArmAnglesUnsafe(Utils.Vector2D targetPos) {
 
         double q2 = -Math.acos((Math.pow(targetPos.x, 2) + Math.pow(targetPos.y, 2)
                 - Math.pow(Constants.Arm.upperarmLength, 2) - Math.pow(Constants.Arm.forearmLength, 2))
@@ -374,6 +400,9 @@ public class Arm extends SubsystemBase {
         handPosFromMotors  = calculateHandPosition(new Utils.Vector2D(getElbowPositionFromMotor(), getShoulderPositionFromMotor()));
          SmartDashboard.putNumber("Hand/Motor X", handPosFromMotors.x);
          SmartDashboard.putNumber("Hand/Motor Y", handPosFromMotors.y);;
+
+         SmartDashboard.putNumber("Shoulder/Motor Pos Error", getShoulderPositionFromMotor()-shoulderAngleActual);
+         SmartDashboard.putNumber("Elbow/Motor Pos Error", getElbowPositionFromMotor()-elbowAngleActual);
 
         // SmartDashboard.putNumber("SetPoint Hand X", mCurrentSetpoint.x);
         // SmartDashboard.putNumber("SetPoint Hand Y", mCurrentSetpoint.y);
@@ -546,7 +575,7 @@ public class Arm extends SubsystemBase {
                                                 -decorrectElbowAngle(new Vector2D(correctedElbowCanCoderPostion,correctedShoulderCanCoderPostion))
                                                 / Constants.Arm.elbowDegreesPerMotorTick
                                              );
-        DataLogManager.log("Reset Lash");
+        DataLogManager.log("***********Reset Lash At Init");
     }
 //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
@@ -556,7 +585,7 @@ public class Arm extends SubsystemBase {
                                                 decorrectElbowAngle(new Vector2D(mElbowCanCoder.getPosition(),mShoulderCanCoder.getPosition()))
                                                 / Constants.Arm.elbowDegreesPerMotorTick
                                              );
-        DataLogManager.log("Reset Lash");
+        DataLogManager.log("**********Reset Lash");
     }
 
     public ControlMode getElbowControlMode() {

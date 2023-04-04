@@ -3,7 +3,6 @@ package frc.robot.commands.Arm;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Constants;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector2D;
@@ -22,7 +21,7 @@ public class IntakingManager extends CommandBase {
 
     private double mTX, mTY;
     private Vector2D mVector2d;
-    private double mTargetX, mTargetY;
+    private double mTargetX, mTargetY, mFinalX, mFinalY;
 
     /**
      * Not Currently in use
@@ -61,18 +60,25 @@ public class IntakingManager extends CommandBase {
         mTX = -mVector2d.x;
         mTY = -mVector2d.y;
 
-        mTargetX = Math.abs(((sin(90-mTY) * Constants.Arm.upperarmLength) / sin(90+mTY-mArm.getShoulderPositionFromMotor())) - (mArm.getHandPositionX() + 0.06));
-        mTargetY = (mTargetX * tan(mTX)) -0.11;
+        mTargetX = Math.abs(((sin(90-mTY) * Constants.Arm.upperarmLength) / sin(90+mTY-mArm.getShoulderPositionFromMotor())))- (mArm.getHandPositionX() -0.2) + 0.05;
+        mTargetY = (mTargetX * tan(mTX)) - 0.11 -0.2;
+
+        mFinalX = cos(mDrivetrain.getRawGyroAngle() - Math.toDegrees(Math.atan2(mTargetY, mTargetX))) * Math.sqrt(Math.pow(mTargetX, 2) + Math.pow(mTargetY, 2));
+        mFinalY = (sin(mDrivetrain.getRawGyroAngle() - Math.toDegrees(Math.atan2(mTargetY, mTargetX))) * Math.sqrt(Math.pow(mTargetX, 2) + Math.pow(mTargetY, 2)));
+
+        
 
         DataLogManager.log(
                         "Intaking Manager info" + 
-                        "Limelight TX: " + mVector2d.x + "," +
-                        "Limelight TY: " + mVector2d.y + "," +
-                        "Code TX: " + mTX + "," +
-                        "Code TY: " + mTY + "," +
-                        "Theta 1: " + mArm.getShoulderPositionFromMotor() + "," +
-                        "Target X: " + mTargetX + "," +
-                        "Target Y: " + mTargetY + "," 
+                        "Limelight TX: " + mVector2d.x + ",\n" +
+                        "Limelight TY: " + mVector2d.y + ",\n" +
+                        "Code TX: " + mTX + ",\n" +
+                        "Code TY: " + mTY + ",\n" +
+                        "Theta 1: " + mArm.getShoulderPositionFromMotor() + ",\n" +
+                        "Target X: " + mTargetX + ",\n" +
+                        "Target Y: " + mTargetY + ",\n" +            
+                        "Final X: " + mFinalX + ",\n" +
+                        "Final Y: " + mFinalY + ",\n" 
                     );
 
         SmartDashboard.putString("Intaking Manager Info", 
@@ -83,12 +89,13 @@ public class IntakingManager extends CommandBase {
             "Code TY: " + mTY + "," +
             "Theta 1: " + mArm.getShoulderPositionFromMotor() + "," +
             "Target X: " + mTargetX + "," +
-            "Target Y: " + mTargetY + "," 
+            "Target Y: " + mTargetY + "," +            
+            "Target X: " + mFinalX + "," +
+            "Target Y: " + mFinalY + "," 
         );
     
-            new ParallelDeadlineGroup(
-                new basicTranslate(mDrivetrain, new Vector3D(mTargetX, mTargetY, 0)), 
-                new SetGrip().withTimeout(2.5)).schedule();
+        new SetGrip().withTimeout(2.5).schedule();
+        new basicTranslate(mDrivetrain, new Vector3D(-mFinalX, -mFinalY, 0)).schedule();
     }
     
 
