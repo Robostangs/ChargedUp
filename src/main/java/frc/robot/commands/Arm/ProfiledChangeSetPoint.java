@@ -1,11 +1,13 @@
 package frc.robot.commands.Arm;
 
+import java.util.EnumSet;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
@@ -145,7 +148,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel, double timeout) {
         return new ConditionalCommand(
                 new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel),
-                ChangeSetPoint.createWithTimeout(()->new Vector2D(endPointSupplier.get().position)),
+                ChangeSetPoint.createWithTimeout(()->new Vector2D(endPointSupplier.get().position)).beforeStarting(new LoggyPrintCommand("DISTANCE IS "+(endPointSupplier.get().position.getDistance(startPointSupplier.get().position))+", USING CHANGE SETPOINT INSTEAD")),
                 ()->(endPointSupplier.get().position.getDistance(startPointSupplier.get().position)>0.2)
                 )
         .withTimeout(timeout)
@@ -155,7 +158,7 @@ public class ProfiledChangeSetPoint extends CommandBase {
             leftButtonDebouncer.calculate(!mManipController.getLeftStickButton()) && 
             rightButtonDebouncer.calculate(!mManipController.getRightStickButton());})
         .finallyDo((interrupted)->ProfiledChangeSetPoint.laterEnd(interrupted))//after wait or interrupted
-        .withName("ProfiledChangeSetPoint");
+        .withName("ProfiledChangeSetPointAttempt");
     }
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
         return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,3,4);

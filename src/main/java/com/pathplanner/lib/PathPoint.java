@@ -101,4 +101,12 @@ public class PathPoint {
     ret.name="FLIP_"+this.name.substring(0,Math.max(this.name.lastIndexOf('y'),0))+String.format("%3.3f",ret.heading.getDegrees());
     return ret;
   }
+
+public PathPoint withNewHeading(Rotation2d newHeading) {
+  PathPoint ret = new PathPoint(position,newHeading,Rotation2d.fromDegrees(holonomicRotation.getDegrees()));
+  ret.prevControlLength = this.prevControlLength;
+  ret.nextControlLength = this.prevControlLength;
+  ret.name="NEW_HEADING_"+this.name.substring(0,Math.max(this.name.lastIndexOf('y'),0))+String.format("%3.3f",ret.heading.getDegrees());
+  return ret;
+}
 }
