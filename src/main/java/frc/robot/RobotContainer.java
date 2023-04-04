@@ -4,20 +4,15 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.LoggyThings.LoggyPrintCommand;
-import frc.robot.autos.autoFromPath;
+import frc.robot.autos.TripleAuto;
 import frc.robot.autos.charlieAutoGrab;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Hand.SetGrip;
-import frc.robot.commands.Hand.ToggleHolding;
-import frc.robot.commands.Lights.LightReqCMD;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Swerve.GetToPosition;
 import frc.robot.commands.Swerve.TeleopSwerve;
@@ -104,13 +99,8 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.lowPosition));
         new JoystickButton(mManipController, XboxController.Button.kX.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition));
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
-        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.loadingZonePosition));
+        new JoystickButton(mManipController, XboxController.Button.kRightStick.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.loadingZonePosition));
         new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.startPosition));
-        new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value).onTrue(new InstantCommand(() -> s_Arm.resetLash()));
-        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), ()-> Lighting.lastLight > 0.2));
-        new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
-        new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
-        // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
         
         new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
@@ -121,6 +111,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new autoFromPath();
+        return new TripleAuto();
     }
 }
