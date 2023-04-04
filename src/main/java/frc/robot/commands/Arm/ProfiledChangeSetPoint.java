@@ -1,13 +1,11 @@
 package frc.robot.commands.Arm;
 
-import java.util.EnumSet;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;

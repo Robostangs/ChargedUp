@@ -17,7 +17,10 @@ public class LightReqCMD extends CommandBase {
     double blinkTime = 7.5;
     int angle;
 
-    
+    /**
+     * 90 for Cone, 270 for Cube
+     * @param angle POV Angle
+     */
     public LightReqCMD(int angle) {
         this.angle = angle; 
         addRequirements(mLighting);
@@ -27,11 +30,11 @@ public class LightReqCMD extends CommandBase {
     @Override
     public void initialize() {
         timer.restart();
-        if (angle == 270) {
+        if (angle == 90) {
             Lighting.lastLight = Lights.kConeStatic;
             mLighting.setLights(Lights.kConeBlink);
             this.setName("Requesting Piece: Cone");
-        } if (angle == 90) {
+        } if (angle == 270) {
             Lighting.lastLight = Lights.kCubeStatic;
             mLighting.setLights(Lights.kCubeBlink);
             this.setName("Requesting Piece: Cube");
