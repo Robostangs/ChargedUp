@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.pathplanner.lib.PathPoint;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,6 +20,7 @@ import frc.robot.Vision;
 import frc.robot.Utils.Vector3D;
 import frc.robot.Vision.LimelightState;
 import frc.robot.autos.translate;
+import frc.robot.autos.translatePp;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Utils;
@@ -107,6 +111,7 @@ public class GetToPosition extends CommandBase {
         SmartDashboard.putString("CurrentPosition", mDrivetrain.getPose().getY() + " " + mDrivetrain.getPose().getY() + " " + mDrivetrain.getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putString("Position", setPosition.x + " " + setPosition.y + " " + setPosition.z + " ");
         // setPosition = new Vector3D(1.81, 4.43, 180 );
+        // translatePp.getTheThing(new PathPoint(new Translation2d(setPosition.x, setPosition.y),  Rotation2d.fromDegrees(setPosition.z), Rotation2d.fromDegrees(setPosition.z))).schedule();
         new ParallelDeadlineGroup(new translate(() -> setPosition).withTimeout(3), new InstantCommand(() -> System.out.println("I am a smart idiot"))).schedule();
     }
 
