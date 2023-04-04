@@ -171,7 +171,7 @@ public class Vision {
             return Optional.empty();
         }
         double timestamp = delayToTime(positions[6]);
-        if ((timestamp - lastRightMeasurementTimestamp) < Constants.Swerve.Odometry.MIN_TIME_BETWEEN_LL_UPDATES_MS) {
+        if ((timestamp - lastLeftMeasurementTimestamp) < Constants.Swerve.Odometry.MIN_TIME_BETWEEN_LL_UPDATES_MS) {
             return Optional.empty();
         }
         lastLeftMeasurementTimestamp = timestamp;
