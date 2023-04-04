@@ -46,7 +46,5 @@ public class LightReqCMD extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        System.out.println("Lights set");
-    }
+    public void end(boolean interrupted) {}
 }
