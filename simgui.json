@@ -7,6 +7,11 @@
         }
       }
     },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
     "PowerDistributions": {
       "1": {
         "PowerDistribution[1]": {
@@ -16,6 +21,9 @@
     },
     "RoboRIO": {
       "3.3V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
         "open": true
       },
       "window": {
@@ -67,9 +75,11 @@
       "/SmartDashboard/ArmCommand": "Subsystem",
       "/SmartDashboard/ArmMechanism/Actual": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
+      "/SmartDashboard/ArmMechanism/Profile": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
       "/SmartDashboard/field": "Field2d",
-      "/SmartDashboard/jefy": "String Chooser"
+      "/SmartDashboard/jefy": "String Chooser",
+      "/SmartDashboard/sim arm": "Mechanism2d"
     },
     "windows": {
       "/FMSInfo": {

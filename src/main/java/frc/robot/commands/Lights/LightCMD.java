@@ -1,6 +1,5 @@
 package frc.robot.commands.Lights;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Lighting;;
 
@@ -12,17 +11,15 @@ public class LightCMD extends InstantCommand {
     public LightCMD(double color) {
         addRequirements(mLighting);
         PWMVal = color;
+        addRequirements(mLighting);
     }
 
     @Override
-    public void initialize() {}
-
+    public void initialize() {
+    }
+    
     @Override
     public void execute() {
         mLighting.setLights(PWMVal);
-    }
-
-    public void end() {
-        SmartDashboard.putString("Music Player", "Deactivated");
     }
 }
