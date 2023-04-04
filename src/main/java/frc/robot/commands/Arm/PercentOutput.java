@@ -9,6 +9,12 @@ public class PercentOutput extends CommandBase {
     DoubleSupplier shoulder, elbow;
     private Arm mArm = Arm.getInstance();
 
+    /**
+     * Manually adjust the {@link Arm}
+     * @param shoulder DoubleSupplier for shoulder movement
+     * @param elbow DoubleSupplier for elbow movement
+     */
+
     public PercentOutput(DoubleSupplier shoulder, DoubleSupplier elbow) {
         addRequirements(mArm);
         setName("PercentOutput");

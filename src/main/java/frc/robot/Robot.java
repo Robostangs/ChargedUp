@@ -5,19 +5,23 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
-import frc.robot.subsystems.Lighting;
 import frc.robot.Constants.Lights;
+import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Lights.LightCMD;
-// import frc.robot.commands.Lights.LightReqCMD;
+import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Swerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -76,7 +80,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
    
     new WaitCommand(0.5).andThen(new InstantCommand(()->Arm.getInstance().resetLash())).schedule();
-    new LightCMD(-0.49).schedule();
     // double startTime=System.nanoTime();
     // for(int i=0;i<10;i++)
     //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
@@ -110,6 +113,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    new LightCMD(Lights.kRobostangs).schedule();
     
     m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
@@ -124,6 +128,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    new LightCMD(Lights.kFireTwinkle).schedule();
     //ArmTrajectoryPlannerTest.main(null);
 
     // This makes sure that the autonomous stops running when
@@ -134,7 +139,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    new LightCMD(Lights.kFireTwinkle);
 
     // ProfiledChangeSetPoint.createWithTimeout(
     //                                             new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(180)).withControlLengths(0.5, 0.5),
@@ -153,4 +157,34 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void simulationInit() {
+    final Joystick xDrive = new Joystick(3);
+    final Swerve s_Swerve = Swerve.getInstance();
+    final Arm s_Arm = Arm.getInstance();
+    final Hand s_Hand = Hand.getInstance();
+    s_Swerve.removeDefaultCommand();
+    s_Arm.removeDefaultCommand();
+    s_Hand.removeDefaultCommand();
+    s_Swerve.setDefaultCommand(
+      new TeleopSwerve(
+          () -> -xDrive.getRawAxis(1), 
+          () -> -xDrive.getRawAxis(0), 
+          () -> -xDrive.getRawAxis(2), 
+          () ->  xDrive.getRawButton(0),
+          () ->  xDrive.getRawButton(1)
+      )
+  );
+
+  s_Arm.setDefaultCommand(
+    new PercentOutput(
+        () -> Utils.customDeadzone(-xDrive.getRawAxis(3)),
+        () -> Utils.customDeadzone(-xDrive.getRawAxis(4))
+    )
+);
+  }
+
+  @Override
+  public void simulationPeriodic() {}
 }

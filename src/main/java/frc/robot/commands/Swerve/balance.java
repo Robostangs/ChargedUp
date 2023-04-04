@@ -10,6 +10,9 @@ public class balance extends CommandBase {
     private static final Swerve mDrivetrain = Swerve.getInstance();
     private static final PIDController balancePID = new PIDController(Constants.Swerve.balancePID.kP, Constants.Swerve.balancePID.kI, Constants.Swerve.balancePID.kD);
 
+    /**
+     * Receive input from Gyro and Maintain Robot Level at 0
+     */
     public balance() {
         addRequirements(mDrivetrain);
         setName("Balance");

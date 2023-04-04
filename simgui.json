@@ -5,6 +5,16 @@
         "header": {
           "open": true
         }
+      },
+      "Talon FX[10]/Fwd Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[10]/Integrated Sensor": {
+        "header": {
+          "open": true
+        }
       }
     },
     "PWM Outputs": {
@@ -110,6 +120,11 @@
         }
       },
       "/SmartDashboard/field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/sim arm": {
         "window": {
           "visible": true
         }

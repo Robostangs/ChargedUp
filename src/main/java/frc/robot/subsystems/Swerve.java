@@ -122,6 +122,9 @@ public class Swerve extends SubsystemBase {
         return positions;
     }
 
+    /**
+     * Reset Gryo to 0 degrees
+     */
     public void zeroGyro() {
         mGyro.setYaw(0);
     }
@@ -162,6 +165,9 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.resetPosition(Rotation2d.fromDegrees(getGyroAngle()), getModulePositions(), new Pose2d(x, y, Rotation2d.fromDegrees(angle)));
     }
 
+    /**
+     * Turn all wheels diagonal so Swerve is locked
+     */
     public void lockPosition() {
         SwerveModuleState[] lockStates = {
             new SwerveModuleState(0, Rotation2d.fromDegrees(45)),

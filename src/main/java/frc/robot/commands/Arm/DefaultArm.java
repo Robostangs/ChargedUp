@@ -18,9 +18,7 @@ public class DefaultArm extends CommandBase {
     }
 
     public void setArmPosition(Vector2D positionInHandCoordinates) {
-        targetPositionAngles = mArm.calculateHandPosition(positionInHandCoordinates);
-    
-        
+        targetPositionAngles = mArm.calculateHandPosition(positionInHandCoordinates);    
     }
 
     public Vector2D getCurrentHandPosition() {

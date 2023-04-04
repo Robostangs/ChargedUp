@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.ArmTrajectoryPlanner.ArmTrajectoryPlanner;
 import frc.robot.Constants;
@@ -38,6 +36,15 @@ public class ProfiledChangeSetPoint extends CommandBase {
     private Supplier<PathPoint> endPointSupplier;
     private double targetMaxSpeed;
     private double targetMaxPosAccel,targetMaxNegAccel;
+
+    /**
+     * Use for Sending {@link Arm} to Set Point
+     * @param startPointSupplier (Supplier) Beginning Arm Position
+     * @param endPointSupplier (Supplier) Target Arm Position
+     * @param targetMaxSpeed (double) Max Speed Allowed for Arm Transition
+     * @param targetMaxPosAccel (double) Max Acceleration Constant allowed for Arm Transition
+     * @param targetMaxNegAccel (double) Max Decceleration Constant allowed for Arm Transition
+     */
 
     private ProfiledChangeSetPoint(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel) {
         this.startPointSupplier = startPointSupplier;
@@ -147,6 +154,16 @@ public class ProfiledChangeSetPoint extends CommandBase {
 
     }
 
+    /**
+     * Use for Sending {@link Arm} to Set Point
+     * @param startPointSupplier (Supplier) Beginning Arm Position
+     * @param endPointSupplier (Supplier) Target Arm Position
+     * @param targetMaxSpeed (double) Max Speed Allowed for Arm Transition
+     * @param targetMaxPosAccel (double) Max Acceleration Constant allowed for Arm Transition
+     * @param targetMaxNegAccel (double) Max Decceleration Constant allowed for Arm Transition
+     * @param timeout (double) Timeout in seconds
+     */
+
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier, double targetMaxSpeed, double targetMaxPosAccel, double targetMaxNegAccel, double timeout) {
         return new ProfiledChangeSetPoint(startPointSupplier, endPointSupplier, targetMaxSpeed, targetMaxPosAccel, targetMaxNegAccel)
         .withTimeout(timeout)
@@ -161,6 +178,11 @@ public class ProfiledChangeSetPoint extends CommandBase {
     public static Command createWithTimeout(Supplier<PathPoint> startPointSupplier, Supplier<PathPoint> endPointSupplier) {
         return createWithTimeout(startPointSupplier, endPointSupplier, 7, 3,3,4);
     }
+
+    /**
+     * Create a new {@link Arm} Path
+     * @param endPointSupplier (PathPoint) Target Position from {@link Constants.Arm.SetPoint}
+     */
     public static Command createWithTimeout(Supplier<PathPoint> endPointSupplier) {
         return createWithTimeout(()->getClosestPathPoint(), endPointSupplier);
     }

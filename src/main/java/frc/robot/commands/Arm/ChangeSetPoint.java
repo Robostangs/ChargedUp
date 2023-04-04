@@ -1,17 +1,13 @@
 package frc.robot.commands.Arm;
 
-import javax.xml.crypto.Data;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.Constants;
 import frc.robot.Utils;
@@ -32,6 +28,11 @@ public class ChangeSetPoint extends CommandBase {
     LockHysteresis mElbowHysteresis = new LockHysteresis(Constants.Arm.elbowLockThreshold, Constants.Arm.elbowLockThreshold * 2);
     LockHysteresis mShoulderHysteresis = new LockHysteresis(Constants.Arm.shoulderLockThreshold, Constants.Arm.shoulderLockThreshold * 2);
 
+
+    /**
+     * Don't use, instead use {@link ProfiledChangeSetPoint}
+     * @param setPoint Vector2D of target position
+     */
     private ChangeSetPoint(Vector2D setPoint) {
         mSetPoint = setPoint;
         addRequirements(mArm);
@@ -45,7 +46,7 @@ public class ChangeSetPoint extends CommandBase {
         SmartDashboard.putNumber("Hand/Target Y", mSetPoint.y);
 
 
-        mSetPointInAngles = mArm.calculateArmAngles(mSetPoint);
+        mSetPointInAngles = Arm.calculateArmAngles(mSetPoint);
 
         uncorrectedElbowTarget=mArm.setElbowPosition(mSetPointInAngles);
         mArm.setShoulderPosition(mSetPointInAngles.y);

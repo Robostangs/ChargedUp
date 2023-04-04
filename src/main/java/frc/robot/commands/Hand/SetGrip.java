@@ -7,6 +7,9 @@ public class SetGrip extends CommandBase{
 
     private Hand mHand = Hand.getInstance();
     
+    /**
+     * Will Close the Claw, and then Open the claw in end() function
+     */
     public SetGrip() {
         addRequirements(mHand);
     }

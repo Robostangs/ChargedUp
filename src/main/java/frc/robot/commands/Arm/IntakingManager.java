@@ -1,27 +1,18 @@
 package frc.robot.commands.Arm;
 
-import java.io.Console;
-
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Vision;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Utils.Vector3D;
 import frc.robot.autos.basicTranslate;
-import frc.robot.autos.exampleAuto;
-import frc.robot.autos.rotation;
 import frc.robot.commands.Hand.SetGrip;
-import frc.robot.commands.Swerve.Flatten;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Arm.ArmPosition;
 
 public class IntakingManager extends CommandBase {
     private static final Arm mArm = Arm.getInstance();
@@ -33,6 +24,9 @@ public class IntakingManager extends CommandBase {
     private Vector2D mVector2d;
     private double mTargetX, mTargetY;
 
+    /**
+     * Not Currently in use
+     */
     public IntakingManager() {
         setName("intaking Manager");
         addRequirements(mDrivetrain, mArm, mHand);

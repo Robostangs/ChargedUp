@@ -12,7 +12,6 @@ import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Utils.Vector3D;
-import frc.robot.subsystems.Arm;
 
 public class Vision {
 

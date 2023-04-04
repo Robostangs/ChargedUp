@@ -19,6 +19,14 @@ public class TeleopSwerve extends CommandBase {
     private BooleanSupplier robotCentricSup;
     private BooleanSupplier mSlowDown;
 
+    /**
+     * Default Swerve Code
+     * @param translationSup (DoubleSupplier) Forward & Backwards
+     * @param strafeSup (DoubleSupplier) Left & Right
+     * @param rotationSup (DoubleSupplier) Turning angle
+     * @param robotCentricSup (BooleanSupplier) Whether or not the robot drives from its own POV
+     * @param slowDown (BooleanSupplier) Decrease speed for sensitive tasks
+     */
     public TeleopSwerve(DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier slowDown) {
         addRequirements(s_Swerve);
 

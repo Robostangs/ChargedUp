@@ -2,41 +2,24 @@ package frc.robot.autos;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.Utils;
-import frc.robot.commands.Hand.SetGrip;
-import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Arm.ArmPosition;
 
 public class justAuto extends SequentialCommandGroup {
         public justAuto() {
