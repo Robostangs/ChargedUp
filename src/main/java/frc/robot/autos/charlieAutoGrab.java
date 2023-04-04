@@ -9,11 +9,12 @@ import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 
 public class charlieAutoGrab{
-    public SequentialCommandGroup getCommand() {
+    public static SequentialCommandGroup getCommand() {
+        new charlieAutoDriveToCube();
         return new SequentialCommandGroup(
             ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition).alongWith(new LoggyPrintCommand("First Part")),
             // new WaitCommand(1),
-            new charlieAutoDriveToCube().getCommand().deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart")),
+            charlieAutoDriveToCube.getCommand().deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart")),
             ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part")));
     }
 }

@@ -4,6 +4,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -30,10 +31,10 @@ public class translatePp {
         Swerve.getInstance() // The drive subsystem. Used to properly set the requirements of path following commands
     );
 
-    public static Command getTheThing(PathPoint notSaket) {
+    public static Command getTheThing(Supplier<PathPoint> notSaket) {
         
         PathPoint startPoint = new PathPoint(Swerve.getInstance().getPose().getTranslation(), Swerve.getInstance().getPose().getRotation(), Swerve.getInstance().getPose().getRotation());
-        PathPoint endPoint = notSaket.withNewTranslation(notSaket.position.plus(Swerve.getInstance().getPose().getTranslation()));
+        PathPoint endPoint = notSaket.withNewTranslation(mNotSaket.position.plus(Swerve.getInstance().getPose().getTranslation()));
 
         SmartDashboard.putString("Auto Grab/Start Point", startPoint.name);
         SmartDashboard.putString("Auto Grab/End Point", endPoint.name);

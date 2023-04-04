@@ -100,8 +100,7 @@ public class TripleAuto extends SequentialCommandGroup {
                     thetaController,
                     s_Swerve::setModuleStates,
                     s_Swerve);
-
-            new translatePp();
+        new charlieAutoGrab();
         addCommands(
                 // ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                 // new WaitCommand(0.2),
@@ -123,7 +122,7 @@ public class TripleAuto extends SequentialCommandGroup {
                 // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
 
                 translatePpNotRelative.getTheThing(new PathPoint(new Translation2d(5.59, 4.361), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose().getRotation().getDegrees() - 180))),
-                new charlieAutoGrab().getCommand().withTimeout(2.5).andThen(new LoggyPrintCommand("exited")),
+                charlieAutoGrab.getCommand().withTimeout(2.5).andThen(new LoggyPrintCommand("exited")),
                 // new LoggyPrintCommand("exited2"),
                     
                 translatePpNotRelative.getTheThing(new PathPoint(new Translation2d(1.836, 4.473), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))).andThen(new LoggyPrintCommand("Continued")),

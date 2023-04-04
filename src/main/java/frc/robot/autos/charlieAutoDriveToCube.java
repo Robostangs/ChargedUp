@@ -1,5 +1,7 @@
 package frc.robot.autos;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,13 +18,12 @@ import frc.robot.subsystems.Swerve;
 
 public class charlieAutoDriveToCube{
     
-    public Command getCommand() {
+    public static Command getCommand() {
         return translatePp.getTheThing(getPathPoint());
     }
 
 
-    public PathPoint getPathPoint() {
-        
+    public static Supplier<PathPoint> getPathPoint() {
             Vector2D robotSpacePiecePos = Vision.getInstance().calculateAndPrintGamePiecePosition();
             Vector2D fieldSpacePieceDist = robotSpacePiecePos
                     .getRotatedBy(Swerve.getInstance().getPose().getRotation().getRadians());
@@ -35,7 +36,7 @@ public class charlieAutoDriveToCube{
 
             Translation2d fieldSpacePieceDistT2d = fieldSpacePieceDist.toTranslation2d();
             Rotation2d finalAngle = fieldSpacePieceDistT2d.getAngle();
-            return new PathPoint(fieldSpacePieceDistT2d, finalAngle, finalAngle);
+            return ()-> new PathPoint(fieldSpacePieceDistT2d, finalAngle, finalAngle);
     }
 
 }
