@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Arm.PercentOutput;
-import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Lights.LightCMD;
 import frc.robot.subsystems.Arm;
@@ -51,11 +50,12 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  //public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+  public static PowerDistribution mPowerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   public static SendableChooser<String> chooser;
   public static SendableChooser<Command> test;
   ShuffleboardTab testTab;
   static Boolean testsAdded;
+  private static PITTest mPitTest;
   
 
   /**
@@ -114,8 +114,8 @@ public class Robot extends TimedRobot {
     for (int x = 0; x < PITTest.cmdList.length; x++) {
       PITTest.commandList[x].setName(PITTest.cmdList[x]);
       test.addOption(PITTest.commandList[x].getName(), PITTest.commandList[x]);
-      // System.out.println("Added Command: " + PITTest.commandList[x].getName());
     }
+    mPitTest = new PITTest();
    
     new WaitCommand(0.5).andThen(new InstantCommand(()->Arm.getInstance().resetLash())).schedule();
     // double startTime=System.nanoTime();
@@ -210,10 +210,10 @@ public class Robot extends TimedRobot {
       testTab.addDouble("Testing Speed",() -> SmartDashboard.getNumber("Test Speed", 0))
       .withWidget(BuiltInWidgets.kNumberBar).withPosition(4, 0).withSize(4, 1);
       
-      testTab.add("Increase Speed", new InstantCommand(() -> {PITTest.speedPlus();}).withName("Increase Speed"))
+      testTab.add("Increase Speed", new InstantCommand(() -> {mPitTest.speedPlus();}).withName("Increase Speed"))
       .withWidget(BuiltInWidgets.kCommand).withPosition(6, 2).withSize(2, 1);
       
-      testTab.add("Decrease Speed", new InstantCommand(() -> {PITTest.speedMinus();}).withName("Decrease Speed"))
+      testTab.add("Decrease Speed", new InstantCommand(() -> {mPitTest.speedMinus();}).withName("Decrease Speed"))
       .withWidget(BuiltInWidgets.kCommand).withPosition(4, 2).withSize(2, 1);
       
       testTab.addString("PIT Test Status", () -> SmartDashboard.getString("pitStat", "null"))
