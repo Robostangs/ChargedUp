@@ -14,7 +14,6 @@ public class PercentOutput extends CommandBase {
      * @param shoulder DoubleSupplier for shoulder movement
      * @param elbow DoubleSupplier for elbow movement
      */
-
     public PercentOutput(DoubleSupplier shoulder, DoubleSupplier elbow) {
         addRequirements(mArm);
         setName("PercentOutput");

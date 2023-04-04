@@ -147,7 +147,7 @@ public class Vision {
     // }
 
     public double getCenterLimelightTX() {
-         return mObjectTX.get();
+        return mObjectTX.get();
     }
 
     public Utils.Vector3D fromAT(DoubleArraySubscriber sub) {
@@ -242,19 +242,22 @@ public class Vision {
             }
         }
     }
-    public Vector2D calculateAndPrintGamePiecePosition(){
-        Vector2D mVector2d = Vision.getInstance().objectPosition();
-        
-        double mTargetXFromOrigin = Math.abs(((degSin(90+mVector2d.y) * Constants.Arm.upperarmLength) / degSin(90-mVector2d.y-Arm.getInstance().getShoulderPositionFromMotor())));
-        double mTargetY = (mTargetXFromOrigin * degTan(-mVector2d.x));
-        double mTargetX = mTargetXFromOrigin- (Arm.getInstance().getHandPositionX())+0.08 ;
 
-        // Vector2D mVector2d = Vision.getInstance().objectPosition(); 
+    public Vector2D calculateAndPrintGamePiecePosition() {
+        Vector2D mVector2d = Vision.getInstance().objectPosition();
+
+        double mTargetXFromOrigin = Math.abs(((degSin(90 + mVector2d.y) * Constants.Arm.upperarmLength)
+                / degSin(90 - mVector2d.y - Arm.getInstance().getShoulderPositionFromMotor())));
+        double mTargetY = (mTargetXFromOrigin * degTan(-mVector2d.x));
+        double mTargetX = mTargetXFromOrigin - (Arm.getInstance().getHandPositionX()) + 0.08;
+
+        // Vector2D mVector2d = Vision.getInstance().objectPosition();
 
         SmartDashboard.putNumber("Auto Grab/Target/X", mTargetX);
         SmartDashboard.putNumber("Auto Grab/Target/Y", mTargetY);
         return new Vector2D(mTargetX, mTargetY);
     }
+
     public double degSin(double value) {
         return Math.sin(Math.toRadians(value));
     }

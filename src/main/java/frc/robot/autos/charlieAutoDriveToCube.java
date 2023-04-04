@@ -7,17 +7,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightState;
-import frc.robot.commands.Arm.ProfiledChangeSetPoint;
-import frc.robot.commands.Hand.SetGrip;
 import frc.robot.Vision;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 
 public class charlieAutoDriveToCube {
