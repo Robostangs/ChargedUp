@@ -16,7 +16,7 @@ import frc.robot.subsystems.Swerve;
 public class charlieAutoDriveToCube {
     public static Command getCommand() {
         if(!Vision.getInstance().targetVisible(LimelightState.center)){
-            DataLogManager.log("NO THING TO GRABBBB!!!!");
+            DataLogManager.log("No Targets Found");
             return new InstantCommand();
         }
         Vector2D robotSpacePiecePos = Vision.getInstance().calculateAndPrintGamePiecePosition();

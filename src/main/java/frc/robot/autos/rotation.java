@@ -3,14 +3,9 @@ package frc.robot.autos;
 import frc.robot.Vision;
 import frc.robot.subsystems.Swerve;
 
-import javax.print.attribute.standard.MediaSize.Engineering;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class rotation extends CommandBase {
     Swerve mSwerve;
@@ -50,7 +45,6 @@ public class rotation extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        double gyroAngle = mSwerve.getRawGyroAngle();
         System.out.println(startAngle + "," + endAngle + "," + mSwerve.getGyroAngle());
         if (startAngle-endAngle <= 1) {
             return true;
