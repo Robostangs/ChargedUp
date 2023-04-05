@@ -288,7 +288,7 @@ public final class Constants {
       // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
 
       public static final PathPoint upIntakePosition = new PathPoint(new Translation2d(0.59, 0.09), Rotation2d.fromDegrees(-90), "upIntakePosition").withControlLengths(0.25, 0.25);
-      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, -0.03), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, 0), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
 
       //Stowing Positions
       public static final PathPoint stowPosition = new PathPoint(new Translation2d(0.423, 0.324), Rotation2d.fromDegrees(-90), "stowPosition");
