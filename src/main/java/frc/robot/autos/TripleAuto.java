@@ -27,11 +27,7 @@ public class TripleAuto extends SequentialCommandGroup {
                 Hand s_Hand = Hand.getInstance();
                 addRequirements(s_Swerve, s_Arm, s_Hand);
                 setName("Triple Auto");
-                double angleAdditionToSwitchAlliances = 0;
 
-                boolean isRed = DriverStation.getAlliance() == Alliance.Red ? true : false;
-
-                if(isRed) angleAdditionToSwitchAlliances = 180;
                 // An example trajectory to follow. All units in meters.
 
                         // if(SmartDashboard.getBoolean("isRed", false)) {

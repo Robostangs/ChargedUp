@@ -35,8 +35,9 @@ public class charlieAutoGrab {
                         new SequentialCommandGroup(
                                 translatePp.getRelativeTranslateCommand(() -> getRelativeFieldSpaceCubePoint())
                                         .deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart"))),
-                        () -> !Vision.getInstance().targetVisible(LimelightState.center)),
-                        ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part")));
+                        () -> !Vision.getInstance().targetVisible(LimelightState.center))
+                        // ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part"))
+                        );
 
     }
 

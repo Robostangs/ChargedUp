@@ -27,7 +27,7 @@ public class translatePp {
         new PIDConstants(3.2, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
         Swerve.getInstance()::setModuleStates, // Module states consumer used to output to the drive subsystem
         new HashMap<>(),
-        false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+        true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
         Swerve.getInstance() // The drive subsystem. Used to properly set the requirements of path following commands
     );
 
