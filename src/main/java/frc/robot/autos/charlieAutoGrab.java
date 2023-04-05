@@ -33,7 +33,7 @@ public class charlieAutoGrab {
                         new LoggyPrintCommand("CANT SEE CUBE"),
 
                         new SequentialCommandGroup(
-                                relativeTranslate.getCommand(() -> getRelativeFieldSpaceCubePoint())
+                                translatePp.getRelativeTranslateCommand(() -> getRelativeFieldSpaceCubePoint())
                                         .deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart"))),
                         () -> !Vision.getInstance().targetVisible(LimelightState.center)),
                         ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part")));

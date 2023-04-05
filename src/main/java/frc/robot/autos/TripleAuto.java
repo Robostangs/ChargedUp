@@ -121,11 +121,11 @@ public class TripleAuto extends SequentialCommandGroup {
                                 new SetGrip()).withTimeout(2.5),
                 // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
 
-                translatePpNotRelative.getTheThing(new PathPoint(new Translation2d(5.59, 4.361), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose().getRotation().getDegrees() - 180))),
+                translatePp.getAbsoluteTranslateCommand(()->new PathPoint(new Translation2d(5.59, 4.361), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)), ()->Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose().getRotation().getDegrees() - 180))),
                 charlieAutoGrab.getCommand().withTimeout(2.5).andThen(new LoggyPrintCommand("exited")),
                 // new LoggyPrintCommand("exited2"),
                     
-                translatePpNotRelative.getTheThing(new PathPoint(new Translation2d(1.836, 4.473), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))).andThen(new LoggyPrintCommand("Continued")),
+                translatePp.getAbsoluteTranslateCommand(()->new PathPoint(new Translation2d(1.836, 4.473), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))).andThen(new LoggyPrintCommand("Continued")),
                 
                 ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.cubeHighPosition),
                 new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
