@@ -289,6 +289,7 @@ public final class Constants {
       //Scoring Positions
       public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
       public static final PathPoint coneHighPosition = new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
+      public static final PathPoint coneHighPositionBad = new PathPoint(new Translation2d(1.39, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
       public static final PathPoint cubeMediumPosition = new PathPoint(new Translation2d(1.067, 0.781), Rotation2d.fromDegrees(-30), "cubeMediumPosition").withControlLengths(0.5, 0.5);
       public static final PathPoint coneMediumPosition = new PathPoint(new Translation2d(1.042, 0.987), Rotation2d.fromDegrees(-30), "coneMediumPosition").withControlLengths(0.5, 0.5);
       public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.7, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
