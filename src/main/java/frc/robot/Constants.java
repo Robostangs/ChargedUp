@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.EnumSet;
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathPoint;
 
@@ -9,6 +12,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.lib.util.COTSFalconSwerveConstants;
+import frc.lib.util.SwerveModuleConstants;
+import frc.robot.Utils.Vector2D;
+import frc.robot.subsystems.Arm.ViolationType;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.lib.util.COTSFalconSwerveConstants;
@@ -294,6 +305,20 @@ public final class Constants {
       public static final PathPoint stowPosition = new PathPoint(new Translation2d(0.423, 0.324), Rotation2d.fromDegrees(-90), "stowPosition");
 
       public static final PathPoint startPosition = new PathPoint(new Translation2d(0.27, 0.18), Rotation2d.fromDegrees(-135), "startPosition").withControlLengths(0.25, 0.25);
+      static{
+        for(PathPoint point: List.of(cubeHighPosition,coneHighPosition,cubeMediumPosition,coneMediumPosition,lowPosition,loadingZonePosition,upIntakePosition,generalIntakePosition,stowPosition,startPosition)){
+          EnumSet<ViolationType> violations = frc.robot.subsystems.Arm.checkArmPointViolation(new Vector2D(point.position), EnumSet.noneOf(frc.robot.subsystems.Arm.ViolationType.class)).violation;
+          
+          for(int i=0;i<10;i++){
+            if(!violations.isEmpty()){
+              DataLogManager.log("###########################SET POINT IMPOSSIBLE###########################");
+              DataLogManager.log("Set point "+point.name+" is not possible due to "+violations.toString());
+              DriverStation.reportError("Set point "+point.name+" is not possible due to "+violations.toString(), true);
+            }
+          }
+          
+        }
+      }
     }
 
   }
