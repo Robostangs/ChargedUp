@@ -16,8 +16,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class translatePp {
-            
+public class relativeTranslate {
     // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
     static SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
         Swerve.getInstance()::getPose, // Pose2d supplier
@@ -31,23 +30,22 @@ public class translatePp {
         Swerve.getInstance() // The drive subsystem. Used to properly set the requirements of path following commands
     );
 
-    public static Command getTheThing(Supplier<PathPoint> notSaket) {
-        
+    public static Command getCommand(Supplier<PathPoint> translationFieldCoords) {
+        return autoBuilder.followPath(()->getTrajectory(translationFieldCoords.get()));
+    }
+    
+    public static PathPlannerTrajectory getTrajectory(PathPoint translationFieldCoords){
         PathPoint startPoint = new PathPoint(Swerve.getInstance().getPose().getTranslation(), Swerve.getInstance().getPose().getRotation(), Swerve.getInstance().getPose().getRotation());
-        PathPoint endPoint = notSaket.withNewTranslation(mNotSaket.position.plus(Swerve.getInstance().getPose().getTranslation()));
+        PathPoint endPoint = translationFieldCoords.withNewTranslation(translationFieldCoords.position.plus(Swerve.getInstance().getPose().getTranslation()));
 
         SmartDashboard.putString("Auto Grab/Start Point", startPoint.name);
         SmartDashboard.putString("Auto Grab/End Point", endPoint.name);
 
 
-        PathPlannerTrajectory traj1 = PathPlanner.generatePath(
+        return PathPlanner.generatePath(
             new PathConstraints(4, 3), 
             startPoint, // position, heading, holoroot
             endPoint
         );
-
-        Command fullAuto = autoBuilder.fullAuto(traj1);
-        return fullAuto;
-        
     }
 }

@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 /** Custom PathPlanner version of SwerveControllerCommand */
 public class PPSwerveControllerCommand extends CommandBase {
   private final Timer timer = new Timer();
-  private final PathPlannerTrajectory trajectory;
+  private final Supplier<PathPlannerTrajectory> trajectorySupplier;
   private final Supplier<Pose2d> poseSupplier;
   private final SwerveDriveKinematics kinematics;
   private final PPHolonomicDriveController controller;
@@ -47,7 +47,7 @@ public class PPSwerveControllerCommand extends CommandBase {
    * <p>Note: The controllers will *not* set the output to zero upon completion of the path this is
    * left to the user, since it is not appropriate for paths with nonstationary endstates.
    *
-   * @param trajectory The trajectory to follow.
+   * @param trajectorySupplier The trajectory to follow.
    * @param poseSupplier A function that supplies the robot pose - use one of the odometry classes
    *     to provide this.
    * @param xController The Trajectory Tracker PID controller for the robot's x position.
@@ -60,7 +60,7 @@ public class PPSwerveControllerCommand extends CommandBase {
    * @param requirements The subsystems to require.
    */
   public PPSwerveControllerCommand(
-      PathPlannerTrajectory trajectory,
+      Supplier<PathPlannerTrajectory> trajectorySupplier,
       Supplier<Pose2d> poseSupplier,
       PIDController xController,
       PIDController yController,
@@ -68,7 +68,7 @@ public class PPSwerveControllerCommand extends CommandBase {
       Consumer<ChassisSpeeds> outputChassisSpeeds,
       boolean useAllianceColor,
       Subsystem... requirements) {
-    this.trajectory = trajectory;
+    this.trajectorySupplier = trajectorySupplier;
     this.poseSupplier = poseSupplier;
     this.controller = new PPHolonomicDriveController(xController, yController, rotationController);
     this.outputChassisSpeeds = outputChassisSpeeds;
@@ -79,13 +79,13 @@ public class PPSwerveControllerCommand extends CommandBase {
 
     addRequirements(requirements);
 
-    if (useAllianceColor && trajectory.fromGUI && trajectory.getInitialPose().getX() > 8.27) {
-      DriverStation.reportWarning(
-          "You have constructed a path following command that will automatically transform path states depending"
-              + " on the alliance color, however, it appears this path was created on the red side of the field"
-              + " instead of the blue side. This is likely an error.",
-          false);
-    }
+    // if (useAllianceColor && trajectorySupplier.fromGUI && trajectorySupplier.getInitialPose().getX() > 8.27) {
+    //   DriverStation.reportWarning(
+    //       "You have constructed a path following command that will automatically transform path states depending"
+    //           + " on the alliance color, however, it appears this path was created on the red side of the field"
+    //           + " instead of the blue side. This is likely an error.",
+    //       false);
+    // }
   }
 
   /**
@@ -114,7 +114,7 @@ public class PPSwerveControllerCommand extends CommandBase {
       Consumer<ChassisSpeeds> outputChassisSpeeds,
       Subsystem... requirements) {
     this(
-        trajectory,
+        ()->trajectory,
         poseSupplier,
         xController,
         yController,
@@ -146,7 +146,7 @@ public class PPSwerveControllerCommand extends CommandBase {
    * @param requirements The subsystems to require.
    */
   public PPSwerveControllerCommand(
-      PathPlannerTrajectory trajectory,
+      Supplier<PathPlannerTrajectory> trajectorySupplier,
       Supplier<Pose2d> poseSupplier,
       SwerveDriveKinematics kinematics,
       PIDController xController,
@@ -155,7 +155,7 @@ public class PPSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       boolean useAllianceColor,
       Subsystem... requirements) {
-    this.trajectory = trajectory;
+    this.trajectorySupplier = trajectorySupplier;
     this.poseSupplier = poseSupplier;
     this.kinematics = kinematics;
     this.controller = new PPHolonomicDriveController(xController, yController, rotationController);
@@ -166,13 +166,13 @@ public class PPSwerveControllerCommand extends CommandBase {
 
     addRequirements(requirements);
 
-    if (useAllianceColor && trajectory.fromGUI && trajectory.getInitialPose().getX() > 8.27) {
-      DriverStation.reportWarning(
-          "You have constructed a path following command that will automatically transform path states depending"
-              + " on the alliance color, however, it appears this path was created on the red side of the field"
-              + " instead of the blue side. This is likely an error.",
-          false);
-    }
+    // if (useAllianceColor && trajectory.fromGUI && trajectory.getInitialPose().getX() > 8.27) {
+    //   DriverStation.reportWarning(
+    //       "You have constructed a path following command that will automatically transform path states depending"
+    //           + " on the alliance color, however, it appears this path was created on the red side of the field"
+    //           + " instead of the blue side. This is likely an error.",
+    //       false);
+    // }
   }
 
   /**
@@ -203,7 +203,7 @@ public class PPSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       Subsystem... requirements) {
     this(
-        trajectory,
+        ()->trajectory,
         poseSupplier,
         kinematics,
         xController,
@@ -216,10 +216,11 @@ public class PPSwerveControllerCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    PathPlannerTrajectory trajectory = trajectorySupplier.get();
     if (useAllianceColor && trajectory.fromGUI) {
       transformedTrajectory =
           PathPlannerTrajectory.transformTrajectoryForAlliance(
-              trajectory, DriverStation.getAlliance());
+            trajectory, DriverStation.getAlliance());
     } else {
       transformedTrajectory = trajectory;
     }

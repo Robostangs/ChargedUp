@@ -229,4 +229,10 @@ public class RamseteAutoBuilder extends BaseAutoBuilder {
           driveRequirements);
     }
   }
+
+  @Override
+  public CommandBase followPath(Supplier<PathPlannerTrajectory> trajectorySupplier) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'followPath'");
+  }
 }

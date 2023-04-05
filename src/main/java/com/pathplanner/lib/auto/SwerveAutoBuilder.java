@@ -195,10 +195,10 @@ public class SwerveAutoBuilder extends BaseAutoBuilder {
   }
 
   @Override
-  public CommandBase followPath(PathPlannerTrajectory trajectory) {
+  public CommandBase followPath(Supplier<PathPlannerTrajectory> trajectorySupplier) {
     if (useKinematics) {
       return new PPSwerveControllerCommand(
-          trajectory,
+          trajectorySupplier,
           poseSupplier,
           kinematics,
           pidControllerFromConstants(translationConstants),
@@ -209,7 +209,7 @@ public class SwerveAutoBuilder extends BaseAutoBuilder {
           driveRequirements);
     } else {
       return new PPSwerveControllerCommand(
-          trajectory,
+          trajectorySupplier,
           poseSupplier,
           pidControllerFromConstants(translationConstants),
           pidControllerFromConstants(translationConstants),

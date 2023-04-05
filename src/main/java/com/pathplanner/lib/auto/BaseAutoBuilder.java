@@ -109,7 +109,13 @@ public abstract class BaseAutoBuilder {
    * @param trajectory The trajectory to follow
    * @return A path following command for the given trajectory
    */
-  public abstract CommandBase followPath(PathPlannerTrajectory trajectory);
+  public abstract CommandBase followPath(Supplier<PathPlannerTrajectory> trajectorySupplier);
+
+  public CommandBase followPath(PathPlannerTrajectory trajectory){
+    return followPath(()->trajectory);
+  };
+
+
 
   /**
    * Create a sequential command group that will follow each path in a path group. This will not
