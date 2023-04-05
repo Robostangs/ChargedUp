@@ -98,7 +98,7 @@ public class TripleAuto extends SequentialCommandGroup {
                                         thetaController,
                                         s_Swerve::setModuleStates,
                                         s_Swerve);
-                        new charlieAutoGrab();
+
                         addCommands(
                                         // ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                                         // new WaitCommand(0.2),
@@ -111,43 +111,38 @@ public class TripleAuto extends SequentialCommandGroup {
                                         // ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
                                         // secondController
 
-                                        ProfiledChangeSetPoint.createWithTimeout(
-                                                        () -> Constants.Arm.SetPoint.coneHighPositionBad),
-                                        new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
-                                        new SetGrip().withTimeout(0.7),
-                                        new ParallelDeadlineGroup(
-                                                        new ParallelDeadlineGroup(
-                                                                        ProfiledChangeSetPoint.createWithTimeout(
-                                                                                        () -> Constants.Arm.SetPoint.stowPosition),
-                                                                        new SetGrip()).withTimeout(2.5)),
-                                        translatePp.getAbsoluteTranslateCommand(()->new PathPoint(new Translation2d(5.59, 4.361),
-                                                        Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
-                                                        ()->Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose()
-                                                                        .getRotation().getDegrees() - 180))),
-                                        // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
+                                ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPositionBad),
 
-                                        charlieAutoGrab.getCommand().withTimeout(2.5)
-                                                        .andThen(new LoggyPrintCommand("exited")),
+                                new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
+                                new SetGrip().withTimeout(0.7),
+                                new ParallelDeadlineGroup(
+                                                new ParallelDeadlineGroup(
+                                                                ProfiledChangeSetPoint.createWithTimeout(
+                                                                                () -> Constants.Arm.SetPoint.stowPosition),
+                                                                new SetGrip()).withTimeout(2.5)),
+                                translatePp.getAbsoluteTranslateCommand(()->new PathPoint(new Translation2d(5.51, 4.4),
+                                                Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
+                                                ()->Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose()
+                                                                .getRotation().getDegrees() - 180))),
+                                // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
+
+                                charlieAutoGrab.getCommand().withTimeout(5).andThen(new LoggyPrintCommand("exited")),
                                         // new LoggyPrintCommand("exited2"),
 
-                                        new ParallelDeadlineGroup(new SequentialCommandGroup(
+                                translatePp.getAbsoluteTranslateCommand(()->new PathPoint(
+                                                                                        new Translation2d(1.536, 4.05),
+                                                                                        Rotation2d.fromDegrees(0),
+                                                                                        Rotation2d.fromDegrees(180))),
+
+        
                                                         ProfiledChangeSetPoint.createWithTimeout(
                                                                         () -> Constants.Arm.SetPoint.cubeHighPosition),
                                                         new WaitCommand(0.5),
-                                                        new InstantCommand(() -> s_Arm.resetLash()),
                                                         new SetGrip().withTimeout(0.7),
                                                         new ParallelDeadlineGroup(
-                                                                        ProfiledChangeSetPoint.createWithTimeout(
-                                                                                        () -> Constants.Arm.SetPoint.stowPosition),
-                                                                        new SetGrip()).withTimeout(2.5)),
-                                                        translatePp
-                                                                        .getAbsoluteTranslateCommand(()->new PathPoint(
-                                                                                        new Translation2d(1.836, 4.473),
-                                                                                        Rotation2d.fromDegrees(0),
-                                                                                        Rotation2d.fromDegrees(180)))
-                                                                        .andThen(new LoggyPrintCommand("Continued")))
-
-                        );
+                                                                ProfiledChangeSetPoint.createWithTimeout(
+                                                                                () -> Constants.Arm.SetPoint.stowPosition),
+                                                                new SetGrip()).withTimeout(2.5));
                 } catch (IOException ex) {
 
                         DriverStation.reportError("Unable to Open Trajectory" + Filesystem.getDeployDirectory(),
