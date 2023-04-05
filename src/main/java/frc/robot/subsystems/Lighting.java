@@ -7,7 +7,7 @@ import frc.robot.Constants.Lights;
 public class Lighting extends SubsystemBase {
     private static Lighting mLighting;
     
-    private Spark blinkin;
+    private static Spark blinkin;
 
     public static double lastLight;
 
@@ -30,7 +30,7 @@ public class Lighting extends SubsystemBase {
         blinkin.set(Lights.kKillLights);
     }
 
-    public double getPWM() {
+    public static double getPWM() {
         return blinkin.get();
     }
 }

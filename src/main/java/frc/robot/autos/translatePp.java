@@ -41,6 +41,10 @@ public class translatePp {
     public static Command getAbsoluteTranslateCommand(Supplier<PathPoint> endPointSupplier, Supplier<Rotation2d> startHeadingSupplier) {
         return autoBuilder.followPath(()->getTrajectory(endPointSupplier.get(), startHeadingSupplier.get()));
     }
+
+    public static Command getCompleteTranslateCommand(Supplier<PathPoint> startPoint, Supplier<PathPoint> endPoint) {
+        return autoBuilder.followPath(()-> getTrajectory(startPoint.get(), endPoint.get()));
+    }
     
     public static PathPlannerTrajectory getTrajectory(PathPoint endPoint){
         return getTrajectory(endPoint, Swerve.getInstance().getPose().getRotation());
@@ -49,6 +53,18 @@ public class translatePp {
     public static PathPlannerTrajectory getTrajectory(PathPoint endPoint, Rotation2d startHeading){
         PathPoint startPoint = new PathPoint(Swerve.getInstance().getPose().getTranslation(), startHeading, Swerve.getInstance().getPose().getRotation());
 
+        SmartDashboard.putString("TranslatePp/Start Point", startPoint.name);
+        SmartDashboard.putString("TranslatePp/End Point", endPoint.name);
+
+
+        return PathPlanner.generatePath(
+            new PathConstraints(4, 3), 
+            startPoint, // position, heading, holoroot
+            endPoint
+        );
+    }
+
+    public static PathPlannerTrajectory getTrajectory(PathPoint startPoint, PathPoint endPoint) {
         SmartDashboard.putString("TranslatePp/Start Point", startPoint.name);
         SmartDashboard.putString("TranslatePp/End Point", endPoint.name);
 

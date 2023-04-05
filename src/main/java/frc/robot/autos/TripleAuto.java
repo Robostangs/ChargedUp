@@ -15,7 +15,9 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -36,118 +38,55 @@ public class TripleAuto extends SequentialCommandGroup {
                 Hand s_Hand = Hand.getInstance();
                 addRequirements(s_Swerve, s_Arm, s_Hand);
                 setName("Triple Auto");
-                String path = "paths/" + Robot.chooser.getSelected();
-                DataLogManager.log(path);
-
-                TrajectoryConfig config = new TrajectoryConfig(
-                                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                                .setKinematics(Constants.Swerve.swerveKinematics);
 
                 // An example trajectory to follow. All units in meters.
 
-                try {
-                        Path trajectoryPath = Filesystem.getDeployDirectory().toPath()
-                                        .resolve("paths/Expiremental/firstPath.wpilib.json");
-                        Trajectory firstTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-
-                        trajectoryPath = Filesystem.getDeployDirectory().toPath()
-                                        .resolve("paths/Expiremental/secondPath.wpilib.json");
-                        Trajectory secondTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-
-                        var thetaController = new ProfiledPIDController(
-                                        Constants.AutoConstants.kPThetaController, 0, 0,
-                                        Constants.AutoConstants.kThetaControllerConstraints);
-                        thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
                         // if(SmartDashboard.getBoolean("isRed", false)) {
                         // s_Swerve.setGyro(0);
-                        s_Swerve.updateOdometryManual(firstTrajectory.getInitialPose().getX(),
-                                        firstTrajectory.getInitialPose().getY(),
-                                        firstTrajectory.getInitialPose().getRotation().getDegrees());
+                        s_Swerve.updateOdometryManual(1.750021352640964,
+                                        5.006968553179155,
+                                        Rotation2d.fromRadians(-3.1336563122823273).getDegrees());
                         // } else {
                         // s_Swerve.setGyro(180);
                         // s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
                         // exampleTrajectory.getInitialPose().getY(), 0);
                         // }
 
-                        /*
-                         * TODO:
-                         * Add more to P of rotation so it rotates more after starting path
-                         * Make the starting auto place more accurate
-                         * Allow the auto grab command to properly end
-                         * TEST
-                         */
+                        Command firstPath =  translatePp.getAbsoluteTranslateCommand(()->new PathPoint(new Translation2d(5.51, 4.4),
+                        Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
+                        ()->Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose()
+                                        .getRotation().getDegrees() - 180)));
 
-                        SwerveControllerCommand firstController = new SwerveControllerCommand(
-                                        firstTrajectory,
-                                        s_Swerve::getPose,
-                                        Constants.Swerve.swerveKinematics,
-                                        new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                                        new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                                        thetaController,
-                                        s_Swerve::setModuleStates,
-                                        s_Swerve);
-
-                        SwerveControllerCommand secondController = new SwerveControllerCommand(
-                                        secondTrajectory,
-                                        s_Swerve::getPose,
-                                        Constants.Swerve.swerveKinematics,
-                                        new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                                        new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                                        thetaController,
-                                        s_Swerve::setModuleStates,
-                                        s_Swerve);
+                        Command secondPath = translatePp.getCompleteTranslateCommand(
+                                () -> new PathPoint(new Translation2d(6.6, 4.1) , Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(0)), 
+                                () -> new PathPoint(new Translation2d(1.536, 4.05), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)));
+                        // Command secondPath = translatePp.getAbsoluteTranslateCommand(()->new PathPoint(
+                        //         new Translation2d(1.536, 4.05),
+                        //         Rotation2d.fromDegrees(0),
+                        //         Rotation2d.fromDegrees(180)));
 
                         addCommands(
-                                        // ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
-                                        // new WaitCommand(0.2),
-                                        // new SetGrip().withTimeout(0.7),
-                                        // new ParallelDeadlineGroup(
-                                        // ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
-                                        // new SetGrip()),
-                                        // firstController,
-                                        // new charlieAutoDriveToCube(),
-                                        // ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
-                                        // secondController
-
                                 ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPositionBad),
-
-                                new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
+                                new WaitCommand(0.2), new InstantCommand(() -> s_Arm.resetLash()),
                                 new SetGrip().withTimeout(0.7),
-                                new ParallelDeadlineGroup(
-                                                new ParallelDeadlineGroup(
-                                                                ProfiledChangeSetPoint.createWithTimeout(
-                                                                                () -> Constants.Arm.SetPoint.stowPosition),
-                                                                new SetGrip()).withTimeout(2.5)),
-                                translatePp.getAbsoluteTranslateCommand(()->new PathPoint(new Translation2d(5.51, 4.4),
-                                                Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)),
-                                                ()->Rotation2d.fromDegrees(Math.abs(Swerve.getInstance().getPose()
-                                                                .getRotation().getDegrees() - 180))),
+
+                                new ParallelCommandGroup(
+                                        ProfiledChangeSetPoint.createWithTimeout(
+                                                                        () -> Constants.Arm.SetPoint.generalIntakePosition),
+                                        new SetGrip().withTimeout(2.5),
+                                        firstPath
+                                ),
                                 // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
 
                                 charlieAutoGrab.getCommand().withTimeout(5).andThen(new LoggyPrintCommand("exited")),
                                         // new LoggyPrintCommand("exited2"),
 
-                                translatePp.getAbsoluteTranslateCommand(()->new PathPoint(
-                                                                                        new Translation2d(1.536, 4.05),
-                                                                                        Rotation2d.fromDegrees(0),
-                                                                                        Rotation2d.fromDegrees(180))),
-
-        
-                                                        ProfiledChangeSetPoint.createWithTimeout(
-                                                                        () -> Constants.Arm.SetPoint.cubeHighPosition),
-                                                        new WaitCommand(0.5),
-                                                        new SetGrip().withTimeout(0.7),
-                                                        new ParallelDeadlineGroup(
-                                                                ProfiledChangeSetPoint.createWithTimeout(
-                                                                                () -> Constants.Arm.SetPoint.stowPosition),
-                                                                new SetGrip()).withTimeout(2.5));
-                } catch (IOException ex) {
-
-                        DriverStation.reportError("Unable to Open Trajectory" + Filesystem.getDeployDirectory(),
-                                        ex.getStackTrace());
-                }
-
+                                new ParallelCommandGroup(secondPath, new SequentialCommandGroup(new WaitCommand(1.8), ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.cubeHighPosition))),
+                                new WaitCommand(0.5),
+                                new SetGrip().withTimeout(0.7),
+                                new ParallelDeadlineGroup(
+                                        ProfiledChangeSetPoint.createWithTimeout(
+                                                        () -> Constants.Arm.SetPoint.stowPosition),
+                                        new SetGrip()).withTimeout(2.5));
         }
 }
