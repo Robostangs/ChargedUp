@@ -37,7 +37,7 @@ public class TripleAuto extends SequentialCommandGroup {
                         // if(SmartDashboard.getBoolean("isRed", false)) {
                         // s_Swerve.setGyro(0);
                         s_Swerve.updateOdometryManual(1.91,
-                                        3.91,
+                                        3.82,
                                         Rotation2d.fromRadians(-3.1336563122823273).getDegrees()
                                         );
                         // } else {
