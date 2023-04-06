@@ -59,14 +59,6 @@ public class RobotContainer {
             )
         );
 
-        // s_Arm.setDefaultCommand(
-        //     new FineAdjust(
-        //         () -> Utils.customDeadzone(-mManipController.getLeftX()),
-        //         () -> Utils.customDeadzone(-mManipController.getLeftY())
-        //     )
-        // );
-
-
         // new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
         new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
@@ -87,18 +79,8 @@ public class RobotContainer {
                 if (leftMeasurement.isPresent()) {s_Swerve.resetOdometry(leftMeasurement.get().mPose);}
                 else if(rightMeasurement.isPresent()) {s_Swerve.resetOdometry(rightMeasurement.get().mPose);}})
         );
-        
-        // new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
-        //     Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
-        //     Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
-        //     if (leftMeasurement.isPresent()) {
-        //         s_Swerve.resetOdometry(leftMeasurement.get().mPose);
-        //     } else if(rightMeasurement.isPresent()) {
-        //         s_Swerve.resetOdometry(rightMeasurement.get().mPose);
-        //     }
-        // });
-        
-
+       
+            /* Manip Controller Keybindings */
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
         new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneHighPositionBad:Constants.Arm.SetPoint.cubeHighPosition));
         new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneMediumPosition:Constants.Arm.SetPoint.cubeMediumPosition));
@@ -115,7 +97,7 @@ public class RobotContainer {
         );
 
         new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
-        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), ()->Lighting.getPWM()< 0.2));
+        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), () -> Lighting.lastLight < 0.2));
         // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
 
@@ -124,7 +106,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
         return new TripleAuto();
     }
 }
