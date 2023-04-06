@@ -17,7 +17,7 @@ import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
 import frc.robot.commands.Arm.PercentOutput;
-import frc.robot.commands.Lights.LightCMD;
+// import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
@@ -70,10 +70,14 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedLeaveLeft", "RedLeaveLeft.wpilib.json");
     chooser.addOption("RedLeaveRight", "RedLeaveRight.wpilib.json");
     chooser.addOption("RedCenterLeftStraight", "RedCenterLeftStraight.wpilib.json");    
-    chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json");   
+    chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json"); 
+    
+    chooser.addOption("DOUBLE AUTO", "tripleAuto");
 
     SmartDashboard.putData("jefy", chooser);
     SmartDashboard.putBoolean("isRed", false);
+
+    SmartDashboard.putBoolean("Open Side?", true);
 
     CommandScheduler.getInstance().onCommandInitialize((Command c) -> {DataLogManager.log("INITIALIZED: " + c.getName());});
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
@@ -113,7 +117,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    new LightCMD(Lights.kRobostangs).schedule();
+    // new LightCMD(Lights.kRobostangs).schedule();
     
     m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
@@ -128,7 +132,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    new LightCMD(Lights.kFireTwinkle).schedule();
+    // new LightCMD(Lights.kFireTwinkle).schedule();
     //ArmTrajectoryPlannerTest.main(null);
 
     // This makes sure that the autonomous stops running when

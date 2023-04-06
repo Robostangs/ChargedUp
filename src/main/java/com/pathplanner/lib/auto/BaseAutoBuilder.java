@@ -175,7 +175,7 @@ public abstract class BaseAutoBuilder {
             PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
             if (useAllianceColor) {
               initialState =
-                  PathPlannerTrajectory.transformStateForAlliance(
+                  PathPlannerTrajectory.horseyWpiBlueTransformStateForAlliance(
                       initialState, DriverStation.getAlliance());
             }
 
@@ -189,7 +189,7 @@ public abstract class BaseAutoBuilder {
             PathPlannerTrajectory.PathPlannerState initialState = trajectory.getInitialState();
             if (useAllianceColor) {
               initialState =
-                  PathPlannerTrajectory.transformStateForAlliance(
+                  PathPlannerTrajectory.horseyWpiBlueTransformStateForAlliance(
                       initialState, DriverStation.getAlliance());
             }
 

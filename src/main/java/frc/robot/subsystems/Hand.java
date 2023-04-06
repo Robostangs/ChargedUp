@@ -28,11 +28,12 @@ public class Hand extends SubsystemBase {
         }
         SmartDashboard.putBoolean("/Hand/Gripping", gripping);
         SmartDashboard.putBoolean("/Hand/HoldingCone", holdingCone);
-
+        
         if(holdingCone) {
         } else {
         }
 
+        
     }
 
     public void setGripping(boolean g) {

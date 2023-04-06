@@ -33,6 +33,10 @@ public class autoFromPath extends SequentialCommandGroup {
                 String path = "paths/" + Robot.chooser.getSelected();
                 DataLogManager.log(path);
 
+                if(path.equals("paths/tripleAuto")) {
+                        addCommands(new TripleAuto());
+                } else {
+
                 TrajectoryConfig config = new TrajectoryConfig(
                                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                                 Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -83,6 +87,6 @@ public class autoFromPath extends SequentialCommandGroup {
                         DriverStation.reportError("Unable to Open Trajectory" + Filesystem.getDeployDirectory(),
                                         ex.getStackTrace());
                 }
-
+        }
         }
 }

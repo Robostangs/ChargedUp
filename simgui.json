@@ -109,11 +109,6 @@
           "visible": true
         }
       },
-      "/Shuffleboard/PIT Test/Test Select": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/PITTest": {
         "window": {
           "visible": true
@@ -224,6 +219,9 @@
       },
       "open": true
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   },
   "Plot": {
     "Plot <0>": {

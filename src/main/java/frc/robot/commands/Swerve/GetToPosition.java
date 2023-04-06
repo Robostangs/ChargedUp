@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Constants;
-import frc.robot.autos.translate;
+//import frc.robot.autos.translate;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Utils;
@@ -102,7 +102,7 @@ public class GetToPosition extends CommandBase {
         SmartDashboard.putString("Position", setPosition.x + " " + setPosition.y + " " + setPosition.z + " ");
         // setPosition = new Vector3D(1.81, 4.43, 180 );
         // translatePp.getTheThing(new PathPoint(new Translation2d(setPosition.x, setPosition.y),  Rotation2d.fromDegrees(setPosition.z), Rotation2d.fromDegrees(setPosition.z))).schedule();
-        new ParallelDeadlineGroup(new translate(() -> setPosition).withTimeout(3), new InstantCommand(() -> System.out.println("I am a smart idiot"))).schedule();
+        //new ParallelDeadlineGroup(new translate(() -> setPosition).withTimeout(3), new InstantCommand(() -> System.out.println("I am a smart idiot"))).schedule();
     }
 
 }

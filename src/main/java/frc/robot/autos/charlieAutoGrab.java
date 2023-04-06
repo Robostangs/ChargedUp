@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -30,8 +31,7 @@ public class charlieAutoGrab {
                 ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition)
                         .alongWith(new LoggyPrintCommand("First Part")),
                 new ConditionalCommand(
-                        new LoggyPrintCommand("CANT SEE CUBE"),
-
+                        new LoggyPrintCommand("CANT SEE CUBE").andThen(()->CommandScheduler.getInstance().cancelAll()),
                         new SequentialCommandGroup(
                                 translatePp.getRelativeTranslateCommand(() -> getRelativeFieldSpaceCubePoint())
                                         .deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart"))),
@@ -54,6 +54,6 @@ public class charlieAutoGrab {
 
         Translation2d fieldSpacePieceDistT2d = fieldSpacePieceDist.toTranslation2d();
         Rotation2d finalAngle = fieldSpacePieceDistT2d.getAngle();
-        return new PathPoint(fieldSpacePieceDistT2d, finalAngle, finalAngle);
+        return new PathPoint(fieldSpacePieceDistT2d, finalAngle, Swerve.getInstance().getPose().getRotation().getDegrees());
     }
 }

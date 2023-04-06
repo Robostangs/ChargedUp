@@ -108,7 +108,8 @@ public class ProfiledChangeSetPoint extends CommandBase {
         SmartDashboard.putNumber("Elbow/Current Velocity",motorAngularVelocities.getElbow());
         SmartDashboard.putNumber("Shoulder/Current Velocity",motorAngularVelocities.getShoulder());
 
-
+        mArm.setElbowLock(false);
+        mArm.setShoulderLock(false);
 
         // if(mElbowHysteresis.calculate(Math.abs(uncorrectedElbowTarget - mArm.getUncorrectedElbowMotorPosition()))&&mArm.getElbowMotionProfileFinished()) {
         //     mArm.setElbowLock(true);
@@ -184,9 +185,10 @@ public class ProfiledChangeSetPoint extends CommandBase {
      * @param endPointSupplier (PathPoint) Target Position from {@link Constants.Arm.SetPoint}
      */
     public static Command createWithTimeout(Supplier<PathPoint> endPointSupplier) {
-        return createWithTimeout(()->getClosestPathPoint(), endPointSupplier);
+        return createWithTimeout(()->getCurrentPosWRightHeading(), endPointSupplier);
     }
 
+    
     public static PathPoint getClosestPathPoint() {
         final PathPoint[] allPoints = 
           { Constants.Arm.SetPoint.upIntakePosition, 
@@ -211,6 +213,11 @@ public class ProfiledChangeSetPoint extends CommandBase {
             }
         }
         
-        return closestPathPoint.withNewTranslation(armTranslation);
+        return closestPathPoint;
+    }
+
+    public static PathPoint getCurrentPosWRightHeading() {
+        Translation2d armTranslation = Arm.getInstance().getHandPosFromMotor().toTranslation2d();
+        return getClosestPathPoint().withNewTranslation(armTranslation);
     }
 }
