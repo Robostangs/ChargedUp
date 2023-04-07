@@ -73,6 +73,10 @@ public class Vision {
         }
     }
 
+    public void takeSnapshotDriver() {
+        mDriverLimelight.getEntry("snapshot").setNumber(1);
+    }
+
     public Rotation2d getRotation(LimelightState Limelight) {
         if (Limelight.compareTo(LimelightState.leftLimelight) == 0) {
             return rotFromAT(mLeftPosition);
@@ -206,7 +210,7 @@ public class Vision {
     public Vector2D objectPosition() {
         return new Vector2D(mObjectTX.get(), mObjectTY.get());
     }
-
+    
     private static double delayToTime(double delay) {
         return (Timer.getFPGATimestamp() - (delay / 1000));
     }

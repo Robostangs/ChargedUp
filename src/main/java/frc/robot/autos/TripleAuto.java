@@ -145,8 +145,6 @@ public class TripleAuto extends SequentialCommandGroup {
 
                                 new ParallelCommandGroup(secondPath, new SequentialCommandGroup(new WaitCommand(1.5), ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.cubeHighPosition))),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Wait")),
-
-                                new WaitCommand(0.5),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Open Grip for 0.7s")),
 
                                 new SetGrip().withTimeout(0.7),
