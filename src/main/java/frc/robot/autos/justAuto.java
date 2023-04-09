@@ -19,6 +19,7 @@ import frc.robot.Robot;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 
 public class justAuto extends SequentialCommandGroup {

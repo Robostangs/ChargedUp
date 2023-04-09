@@ -1,53 +1,56 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.LoggyThings.LoggyWPI_TalonFX;
+import frc.lib.math.Conversions;
 import frc.robot.Constants;
 
-public class Hand extends SubsystemBase {
-
+public class Hand extends SubsystemBase{
     private static Hand mInstance;
-    private DoubleSolenoid mSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Hand.mHandSolenoidFwd,Constants.Hand.mHandSolenoidRev);
-    public boolean holdingCone = true;
-    public boolean gripping = false;
 
     public static Hand getInstance() {
-        if(mInstance == null) {
+        if (mInstance == null) {
             mInstance = new Hand();
         }
         return mInstance;
     }
 
-    public void periodic() {
-        if(gripping) {
-            mSolenoid.set(DoubleSolenoid.Value.kForward);
-        } else {
-            mSolenoid.set(DoubleSolenoid.Value.kReverse);
-        }
-        SmartDashboard.putBoolean("/Hand/Gripping", gripping);
-        SmartDashboard.putBoolean("/Hand/HoldingCone", holdingCone);
+    public boolean holding;
+    public double currentAngle;
+    
+    private LoggyWPI_TalonFX mWristMotor;
+    private LoggyWPI_TalonFX mIntakeMotor;
 
-        if(holdingCone) {
-        } else {
-        }
+    private ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
 
-    }
+    public Hand() {
+        holding = true;
+        mWristMotor = new LoggyWPI_TalonFX(Constants.Hand.mWristMotor);
+        mIntakeMotor = new LoggyWPI_TalonFX(Constants.Hand.mIntakeMotor);
 
-    public void setGripping(boolean g) {
-        gripping = g;
-    }
-
-    public boolean getGripping() {
-        return mSolenoid.get() == DoubleSolenoid.Value.kForward;
-    }
-
-    public void setHolding(boolean h) {
-        holdingCone = h;
+        mWristMotor.setInverted(false);
+        mIntakeMotor.setInverted(false);
     }
 
     public boolean getHolding() {
-        return holdingCone;
+        return holding;
+    }
+
+    public void Suck() {
+        mIntakeMotor.set(ControlMode.PercentOutput, Constants.Hand.kSuckSpeed);
+    }
+
+    public void Spit() {
+        mIntakeMotor.set(ControlMode.PercentOutput, Constants.Hand.kSpitSpeed);
+    }
+
+    public void rotateWrist(DoubleSupplier rotation) {
+        double desiredAngle = currentAngle + rotation.getAsDouble();
+        mWristMotor.set(ControlMode.Position, Conversions.degreesToFalcon(0, 0));
     }
 }

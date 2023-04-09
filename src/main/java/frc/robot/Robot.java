@@ -20,7 +20,7 @@ import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    new LightCMD(Lights.kRobostangs).schedule();
+    new LightCMD(Lights.kRobostangs).withName("Auton Lights").schedule();
     
     m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    new LightCMD(Lights.kFireTwinkle).schedule();
+    new LightCMD(Lights.kFireTwinkle).withName("Teleop Lights").schedule();
     //ArmTrajectoryPlannerTest.main(null);
 
     // This makes sure that the autonomous stops running when

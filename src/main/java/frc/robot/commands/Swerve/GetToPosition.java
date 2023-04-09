@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Constants;
 import frc.robot.autos.translate;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Utils;
 
 public class GetToPosition extends CommandBase {
     Swerve mDrivetrain = Swerve.getInstance();
-    Hand mHand = Hand.getInstance();
+    // HandNormal mHand = HandNormal.getInstance();
     private boolean mHoldingCone;
     private static final ArrayList<Double> kConePositions = new ArrayList<Double>();
     private static final ArrayList<Double> kCubePositions = new ArrayList<Double>();
@@ -41,7 +41,7 @@ public class GetToPosition extends CommandBase {
 
     @Override
     public void initialize() {
-        mHoldingCone = mHand.getHolding();
+        // mHoldingCone = mHand.getHolding();
         Pose2d currentPos = mDrivetrain.getPose();
         if(mHoldingCone) {
             setPosition=new Utils.Vector3D(1.79, kConePositions.get(0), 180);

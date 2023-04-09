@@ -16,6 +16,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Utils.Vector2D;
@@ -352,6 +353,12 @@ public final class Constants {
 
     public static final double handMass = 2.1;
 
+    public static final int mWristMotor = 0;
+    public static final int mIntakeMotor = 0;
+
+    public static final double kSuckSpeed = 1;
+    public static final double kSpitSpeed = -1;
+
     public static final Utils.Vector2D maxFrameExtension = new Utils.Vector2D((48 + 15 - 5) / 39.37, (78 - 5) / 39.37);
   }
 
@@ -364,5 +371,14 @@ public final class Constants {
     public static final double kFireTwinkle = -0.49;
     public static final double kRobostangs = 0.63;
     public static final double kKillLights = 0.99;
+ 
+    public static Command prevLightReqCMD;
+
+    public enum ConeCube {
+      kCone,
+      kCube
+    }
+
+    // public static fin
   }
 }

@@ -22,6 +22,7 @@ import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 
 public class doubleAutoFromPath extends SequentialCommandGroup {

@@ -10,14 +10,14 @@ import frc.robot.Utils.Vector3D;
 import frc.robot.autos.basicTranslate;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 
 public class IntakingManager extends CommandBase {
     private static final Arm mArm = Arm.getInstance();
     private static final Swerve mDrivetrain = Swerve.getInstance();
     private static final Vision mVision = Vision.getInstance();
-    private static final Hand mHand = Hand.getInstance();
+    // private static final HandNormal mHand = HandNormal.getInstance();
 
     private double mTX, mTY;
     private Vector2D mVector2d;
@@ -28,7 +28,7 @@ public class IntakingManager extends CommandBase {
      */
     public IntakingManager() {
         setName("intaking Manager");
-        addRequirements(mDrivetrain, mArm, mHand);
+        addRequirements(mDrivetrain, mArm);
         // try {         
 
         //     addCommands(

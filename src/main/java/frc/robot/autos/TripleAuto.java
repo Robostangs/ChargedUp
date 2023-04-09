@@ -28,15 +28,15 @@ import frc.robot.Robot;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 
 public class TripleAuto extends SequentialCommandGroup {
         public TripleAuto() {
                 Swerve s_Swerve = Swerve.getInstance();
                 Arm s_Arm = Arm.getInstance();
-                Hand s_Hand = Hand.getInstance();
-                addRequirements(s_Swerve, s_Arm, s_Hand);
+                // HandNormal s_Hand = HandNormal.getInstance();
+                addRequirements(s_Swerve, s_Arm);
                 setName("Triple Auto");
 
                 // An example trajectory to follow. All units in meters.
