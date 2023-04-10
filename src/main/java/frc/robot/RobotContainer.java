@@ -59,18 +59,6 @@ public class RobotContainer {
             )
         );
 
-        // s_Lighting.setDefaultCommand(
-        //     new InstantCommand(() -> {
-        //         if (Constants.Lights.timer.hasElapsed(7.5)) {
-        //             new LightCMD(Constants.Lights.PWMVal).schedule();
-        //         } else {
-        //             System.out.println(Constants.Lights.timer.get());
-        //         }
-        //     }, s_Lighting)
-        // );
-
-        new Trigger(() -> Constants.Lights.timer.hasElapsed(Constants.Lights.blinkTime)).whileTrue(new InstantCommand(() -> new LightCMD(Constants.Lights.PWMVal).schedule(), s_Lighting));
-
         // new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
         new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
@@ -111,7 +99,8 @@ public class RobotContainer {
 
         // new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
 
-        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(), new LightReqCMD(), () -> Lighting.Cone).andThen(() -> Lighting.Cone = !Lighting.Cone));
+        new POVButton(mManipController, 90).onTrue(new LightReqCMD());
+        new Trigger(() -> Constants.Lights.timer.hasElapsed(Constants.Lights.blinkTime)).onTrue(new InstantCommand(() -> new LightCMD(Constants.Lights.PWMVal).schedule()));
 
         // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));

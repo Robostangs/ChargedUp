@@ -10,7 +10,7 @@ public class Lighting extends SubsystemBase {
     private static Spark blinkin;
 
     public static double lastLight;
-    public static boolean Cone;
+    public static boolean isCone;
 
     public static Lighting getInstance() {
         if (mLighting == null) {
@@ -18,15 +18,10 @@ public class Lighting extends SubsystemBase {
         }
         return mLighting;
     }
-    
-    // @Override
-    // public void periodic() {
-    //     System.out.println(getPWM());
-    // }
 
     public Lighting() {
         blinkin = new Spark(Lights.blinkinPWM_ID);
-        Cone = true;
+        isCone = true;
     }
 
     public void setLights(double PWMVal) {

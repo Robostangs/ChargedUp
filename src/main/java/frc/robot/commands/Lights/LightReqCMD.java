@@ -19,25 +19,24 @@ public class LightReqCMD extends InstantCommand {
      */
     public LightReqCMD() {
         this.addRequirements(mLighting);
-        // timer = new Timer(); 
     }
     
     @Override
     public void initialize() {
         timer.restart();
-        // Lighting.Cone = cone;
-        if (Lighting.Cone) {
+        if (Lighting.isCone) {
             Constants.Lights.PWMVal = Lights.kConeStatic;
             // Lights.lastLight = false;
             mLighting.setLights(Lights.kConeBlink);
             this.setName("Requesting Cone");         
         }
-        if (!Lighting.Cone) {
+        if (!Lighting.isCone) {
             Constants.Lights.PWMVal = Lights.kCubeStatic;
             // Lights.lastLight = true;            
             mLighting.setLights(Lights.kCubeBlink);
             this.setName("Requesting Cube");
         }
+        Lighting.isCone = !Lighting.isCone;
     }
 
     @Override
