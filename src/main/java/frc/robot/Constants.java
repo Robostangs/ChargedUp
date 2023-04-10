@@ -353,11 +353,14 @@ public final class Constants {
 
     public static final double handMass = 2.1;
 
-    public static final int mWristMotor = 0;
-    public static final int mIntakeMotor = 0;
+    public static final int mWristMotor_ID = 0;
+    public static final int mIntakeMotor_ID = 0;
+    public static final int mWristCoder_ID = 0;
 
-    public static final double kSuckSpeed = 1;
-    public static final double kSpitSpeed = -1;
+    public static final double kSuckSpeed = 0.5;
+    public static final double kSpitSpeed = -0.5;
+
+    public static final double WristGearRatio = 0;
 
     public static final Utils.Vector2D maxFrameExtension = new Utils.Vector2D((48 + 15 - 5) / 39.37, (78 - 5) / 39.37);
   }

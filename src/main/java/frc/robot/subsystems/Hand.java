@@ -1,8 +1,7 @@
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,25 +19,33 @@ public class Hand extends SubsystemBase{
         return mInstance;
     }
 
-    public boolean holding;
-    public double currentAngle;
+    public static boolean holding;
+    public static double currentAngle;
     
     private LoggyWPI_TalonFX mWristMotor;
     private LoggyWPI_TalonFX mIntakeMotor;
+    private CANCoder mWristCoder;
 
-    private ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
+    private ArmFeedforward feedforward;
 
     public Hand() {
         holding = true;
-        mWristMotor = new LoggyWPI_TalonFX(Constants.Hand.mWristMotor);
-        mIntakeMotor = new LoggyWPI_TalonFX(Constants.Hand.mIntakeMotor);
+        mWristMotor = new LoggyWPI_TalonFX(Constants.Hand.mWristMotor_ID);
+        mIntakeMotor = new LoggyWPI_TalonFX(Constants.Hand.mIntakeMotor_ID);
+        mWristCoder = new CANCoder(Constants.Hand.mWristCoder_ID);
 
         mWristMotor.setInverted(false);
         mIntakeMotor.setInverted(false);
+
+        feedforward = new ArmFeedforward(0, 0, 0, 0);
     }
 
     public boolean getHolding() {
         return holding;
+    }
+
+    public double getWristAngle() {
+        return mWristCoder.getPosition();
     }
 
     public void Suck() {
@@ -49,8 +56,11 @@ public class Hand extends SubsystemBase{
         mIntakeMotor.set(ControlMode.PercentOutput, Constants.Hand.kSpitSpeed);
     }
 
-    public void rotateWrist(DoubleSupplier rotation) {
-        double desiredAngle = currentAngle + rotation.getAsDouble();
-        mWristMotor.set(ControlMode.Position, Conversions.degreesToFalcon(0, 0));
+    public void setWristPosition(double desiredAngle) {
+        mWristMotor.set(ControlMode.Position, Conversions.degreesToFalcon(desiredAngle, Constants.Hand.WristGearRatio));
+    }
+
+    public void rawPower(double power) {
+        mWristMotor.set(ControlMode.PercentOutput, power);
     }
 }
