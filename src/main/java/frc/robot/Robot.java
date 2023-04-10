@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
+import frc.robot.autos.TripleAuto;
 import frc.robot.commands.Arm.PercentOutput;
 // import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
@@ -83,7 +84,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().onCommandFinish((Command c) -> {DataLogManager.log("FINISHED: " + c.getName());});
     CommandScheduler.getInstance().onCommandInterrupt((Command c) -> {DataLogManager.log("INTERUPTED: " + c.getName());});
    
-    new WaitCommand(1).andThen(new InstantCommand(()->Arm.getInstance().resetLash()).ignoringDisable(true)).andThen(new LoggyPrintCommand("Robot.java reset lash")).ignoringDisable(true).schedule();
+    // new WaitCommand(1).andThen(new InstantCommand(()->Arm.getInstance().resetLash()).ignoringDisable(true)).andThen(new LoggyPrintCommand("Robot.java reset lash")).ignoringDisable(true).schedule();
     // double startTime=System.nanoTime();
     // for(int i=0;i<10;i++)
     //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
@@ -119,7 +120,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // new LightCMD(Lights.kRobostangs).schedule();
     
-    m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
+    // m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -158,7 +159,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testInit() {}
+  public void testInit() {new TripleAuto().schedule();}
 
   @Override
   public void testPeriodic() {}

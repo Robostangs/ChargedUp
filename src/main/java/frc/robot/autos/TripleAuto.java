@@ -124,7 +124,8 @@ public class TripleAuto extends SequentialCommandGroup {
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Waiting")),
                                 new WaitCommand(0.2),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Reset Lash"))
-                                , new InstantCommand(() -> s_Arm.resetLash()),
+                                ,
+                                //  new InstantCommand(() -> s_Arm.resetLash()),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Set Grip")),
 
                                 new SetGrip().withTimeout(0.7),
@@ -139,20 +140,20 @@ public class TripleAuto extends SequentialCommandGroup {
                                 // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Auto Grab")),
 
-                                charlieAutoGrab.getCommand().withTimeout(5).andThen(new LoggyPrintCommand("exited")));
-                                        // new LoggyPrintCommand("exited2"),
-                                // new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Second Path along with High Arm")),
+                                charlieAutoGrab.getCommand().withTimeout(5).andThen(new LoggyPrintCommand("exited")),
+                                        //new LoggyPrintCommand("exited2"),
+                                new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Second Path along with High Arm")),
 
-                                // new ParallelCommandGroup(secondPath, new SequentialCommandGroup(new WaitCommand(1.5), ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.cubeHighPosition))),
-                                // new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Wait")),
-                                // new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Open Grip for 0.7s")),
+                                new ParallelCommandGroup(secondPath, new SequentialCommandGroup(new WaitCommand(1.5), ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.cubeHighPosition))),
+                                new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Wait")),
+                                new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Open Grip for 0.7s")),
 
-                                // new SetGrip().withTimeout(0.7),
-                                // new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Stow and open grip for 2.5s")),
+                                new SetGrip().withTimeout(0.7),
+                                new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Stow and open grip for 2.5s")),
 
-                                // new ParallelDeadlineGroup(
-                                //         ProfiledChangeSetPoint.createWithTimeout(
-                                //                         () -> Constants.Arm.SetPoint.stowPosition),
-                                //         new SetGrip()).withTimeout(2.5));
+                                new ParallelDeadlineGroup(
+                                        ProfiledChangeSetPoint.createWithTimeout(
+                                                        () -> Constants.Arm.SetPoint.stowPosition),
+                                        new SetGrip()).withTimeout(2.5));
         }
 }

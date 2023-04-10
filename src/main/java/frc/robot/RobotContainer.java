@@ -33,6 +33,7 @@ public class RobotContainer {
 
     private boolean lightsCone = true;
     private Spark blinkin = new Spark(Lights.blinkinPWM_ID);
+    // private Spark blinkin = 
 
     public static final XboxController mDriverController = new XboxController(0);
     public static final XboxController mManipController = new XboxController(1);
@@ -115,10 +116,10 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.startPosition));
         Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
         
-        new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
-            .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
-            .alongWith(new LoggyPrintCommand(leftTrigger))
-        );
+        // new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
+        //     .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
+        //     .alongWith(new LoggyPrintCommand(leftTrigger))
+        // );
 
         new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
 

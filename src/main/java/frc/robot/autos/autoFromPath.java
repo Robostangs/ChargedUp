@@ -74,7 +74,7 @@ public class autoFromPath extends SequentialCommandGroup {
 
                         addCommands(
                                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
-                                        new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
+                                        // new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
                                         new SetGrip().withTimeout(0.7),
                                         new ParallelDeadlineGroup(
                                                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),

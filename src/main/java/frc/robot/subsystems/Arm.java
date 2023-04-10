@@ -170,7 +170,7 @@ public class Arm extends SubsystemBase {
             - Constants.Arm.shoulderAngleSensor + Constants.Arm.shoulderAngleActual;
         correctedShoulderCanCoderPostion = Utils.clampDegreeMeasurement(correctedShoulderCanCoderPostion);
 
-        double correctedElbowCanCoderPostion = mElbowCanCoder.getAbsolutePosition()
+        double correctedElbowCanCoderPostion = -78.8
                 - Constants.Arm.elbowAngleSensor + Constants.Arm.elbowAngleActualDifference;
         correctedElbowCanCoderPostion = Utils.clampDegreeMeasurement(correctedElbowCanCoderPostion);
 
@@ -363,18 +363,18 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putString("Shoulder/Soft Limit", "None");
         }
 
-        if (elbowAngleActual > Constants.Arm.elbowAngleForwardSoftStop) {
-            elbowPeakOutputs.x = 0.00;
-            elbowPeakOutputs.y = 1.00;
-            SmartDashboard.putString("Elbow/Soft Limit", "Forward (Up)");
+        // if (elbowAngleActual > Constants.Arm.elbowAngleForwardSoftStop) {
+        //     elbowPeakOutputs.x = 0.00;
+        //     elbowPeakOutputs.y = 1.00;
+        //     SmartDashboard.putString("Elbow/Soft Limit", "Forward (Up)");
 
-        } else if (elbowAngleActual < Constants.Arm.elbowAngleReverseSoftStop) {
-            elbowPeakOutputs.x = 1.00;
-            elbowPeakOutputs.y = 0.00;
-            SmartDashboard.putString("Elbow/Soft Limit", "Reverse (Down)");
-        }else{
-            SmartDashboard.putString("Elbow/Soft Limit", "None");
-        }
+        // } else if (elbowAngleActual < Constants.Arm.elbowAngleReverseSoftStop) {
+        //     elbowPeakOutputs.x = 1.00;
+        //     elbowPeakOutputs.y = 0.00;
+        //     SmartDashboard.putString("Elbow/Soft Limit", "Reverse (Down)");
+        // }else{
+        //     SmartDashboard.putString("Elbow/Soft Limit", "None");
+        // }
 
 
         mShoulderMotor.configPeakOutputForward(shoulderPeakOutputs.x);
@@ -559,14 +559,14 @@ public class Arm extends SubsystemBase {
 
     //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
-    public void resetLash() {
-        mShoulderMotor.setSelectedSensorPosition(mShoulderCanCoder.getPosition()/Constants.Arm.shoulderDegreesPerMotorTick);
-        mElbowMotor.setSelectedSensorPosition(
-                                                decorrectElbowAngle(new Vector2D(mElbowCanCoder.getPosition(),mShoulderCanCoder.getPosition()))
-                                                / Constants.Arm.elbowDegreesPerMotorTick
-                                             );
-        DataLogManager.log("**********Reset Lash");
-    }
+    // public void resetLash() {
+    //     mShoulderMotor.setSelectedSensorPosition(mShoulderCanCoder.getPosition()/Constants.Arm.shoulderDegreesPerMotorTick);
+    //     mElbowMotor.setSelectedSensorPosition(
+    //                                             decorrectElbowAngle(new Vector2D(mElbowCanCoder.getPosition(),mShoulderCanCoder.getPosition()))
+    //                                             / Constants.Arm.elbowDegreesPerMotorTick
+    //                                          );
+    //     DataLogManager.log("**********Reset Lash");
+    // }
     
     public ControlMode getShoulderControlMode() {
         return mShoulderMotor.getControlMode();
