@@ -21,11 +21,17 @@ import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Lights.LightReqCMD;
+import frc.robot.commands.RollyArm.Intake.Spit;
+import frc.robot.commands.RollyArm.Intake.Suck;
+import frc.robot.commands.RollyArm.Intake.intakeDefault;
+import frc.robot.commands.RollyArm.Wrist.PercentRotation;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Swerve.GetToPosition;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Hand.Intake;
+import frc.robot.subsystems.Hand.Wrist;
 import frc.robot.Vision.LimelightMeasurement;
 
 public class RobotContainer {
@@ -36,8 +42,9 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
-    // private final HandNormal s_Hand = HandNormal.getInstance();
     private final Vision s_Vision = Vision.getInstance();
+    private final Wrist s_Wrist = Wrist.getInstance();
+    private final Intake s_Intake = Intake.getInstance();
     
     public RobotContainer() {
         configureButtonBindings();
@@ -61,6 +68,20 @@ public class RobotContainer {
             )
         );
 
+        // s_Hand.setDefaultCommand(
+        //     new defaultCMD()
+        // );
+
+        s_Wrist.setDefaultCommand(
+            new PercentRotation(
+                () -> mManipController.getRightY())
+        );
+
+        s_Intake.setDefaultCommand(
+            new intakeDefault()
+        );
+
+        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new ConditionalCommand(new Spit(), new Suck(), () -> s_Intake.getHolding()));
         
 
         // new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
@@ -85,7 +106,7 @@ public class RobotContainer {
         );
        
             /* Manip Controller Keybindings */
-        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
+        // new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
         // new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneHighPositionBad:Constants.Arm.SetPoint.cubeHighPosition));
         // new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneMediumPosition:Constants.Arm.SetPoint.cubeMediumPosition));
         new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.lowPosition));

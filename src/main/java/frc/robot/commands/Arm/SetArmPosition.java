@@ -15,6 +15,7 @@ import frc.robot.subsystems.Arm.ArmPosition;
  * @deprecated
  * Use {@link ProfiledChangeSetPoint} instead
  */
+@Deprecated
 public class SetArmPosition extends SequentialCommandGroup {
 
 //     //Scoring Positions

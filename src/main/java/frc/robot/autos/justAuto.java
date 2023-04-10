@@ -18,15 +18,15 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Hand.Wrist;
 
 public class justAuto extends SequentialCommandGroup {
         public justAuto() {
                 Swerve s_Swerve = Swerve.getInstance();
                 Arm s_Arm = Arm.getInstance();
-                Hand s_Hand = Hand.getInstance();
+                Wrist s_Hand = Wrist.getInstance();
                 addRequirements(s_Swerve, s_Arm, s_Hand);
                 String path = "paths/" + Robot.chooser.getSelected();
                 DataLogManager.log(path);

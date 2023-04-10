@@ -1,13 +1,14 @@
-package frc.robot.commands.RollyArm;
+package frc.robot.commands.RollyArm.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Hand.Intake;
 
 public class Suck extends CommandBase {
-    private Hand mHand = Hand.getInstance();
+    private final Intake mIntake = Intake.getInstance();
+
     public Suck() {
+        this.addRequirements(mIntake);
         this.setName("Sucking");
-        this.addRequirements(mHand);
     }
 
     @Override
@@ -17,12 +18,12 @@ public class Suck extends CommandBase {
 
     @Override
     public void execute() {
-        mHand.Suck();
+        mIntake.Suck();
         
     }
 
     @Override
     public void end(boolean interrupted) {
-        Hand.holding = true;
+        mIntake.setHolding(true);
     }
 }

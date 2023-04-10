@@ -1,7 +1,6 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Hand;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -11,30 +10,26 @@ import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Utils;
 
-public class Hand extends SubsystemBase{
-    private static Hand mInstance;
+public class Wrist extends SubsystemBase{
+    private static Wrist mInstance;
 
-    public static Hand getInstance() {
+    public static Wrist getInstance() {
         if (mInstance == null) {
-            mInstance = new Hand();
+            mInstance = new Wrist();
         }
         return mInstance;
     }
 
-    public static boolean holding;
     public static double currentAngle;
     
     private LoggyWPI_TalonFX mWristMotor;
-    private LoggyWPI_TalonFX mIntakeMotor;
     private CANCoder mWristCoder;
     private double correctedCanCoderPosition;
 
     private ArmFeedforward feedforward;
 
-    public Hand() {
-        holding = true;
+    public Wrist() {
         mWristMotor = new LoggyWPI_TalonFX(Constants.Hand.mWristMotor_ID);
-        mIntakeMotor = new LoggyWPI_TalonFX(Constants.Hand.mIntakeMotor_ID);
         mWristCoder = new CANCoder(Constants.Hand.mWristCoder_ID);
 
         correctedCanCoderPosition = mWristCoder.getAbsolutePosition()
@@ -43,25 +38,12 @@ public class Hand extends SubsystemBase{
         mWristCoder.setPosition(correctedCanCoderPosition);
 
         mWristMotor.setInverted(false);
-        mIntakeMotor.setInverted(false);
 
         feedforward = new ArmFeedforward(0, 0, 0, 0);
     }
 
-    public boolean getHolding() {
-        return holding;
-    }
-
     public double getWristAngle() {
         return mWristCoder.getPosition();
-    }
-
-    public void Suck() {
-        mIntakeMotor.set(ControlMode.PercentOutput, Constants.Hand.kSuckSpeed);
-    }
-
-    public void Spit() {
-        mIntakeMotor.set(ControlMode.PercentOutput, Constants.Hand.kSpitSpeed);
     }
 
     public void setWristPosition(double desiredAngle) {
@@ -73,6 +55,10 @@ public class Hand extends SubsystemBase{
     }
 
     public void testBench() {
-        mIntakeMotor.set(ControlMode.PercentOutput, 0, DemandType.ArbitraryFeedForward, feedforward.calculate(getWristAngle(), 0.5));
+        // mIntakeMotor.set(ControlMode.PercentOutput, 0, DemandType.ArbitraryFeedForward, feedforward.calculate(getWristAngle(), 0.5));
+    }
+
+    public void wristFeedFwd() {
+        mWristMotor.set(ControlMode.PercentOutput, 0.1);
     }
 }

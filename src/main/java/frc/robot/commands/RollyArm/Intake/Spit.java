@@ -1,11 +1,13 @@
-package frc.robot.commands.RollyArm;
+package frc.robot.commands.RollyArm.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Hand.Intake;
 
 public class Spit extends CommandBase {
-    private Hand mHand = Hand.getInstance();
+    private final Intake mIntake = Intake.getInstance();
+
     public Spit() {
+        this.addRequirements(mIntake);
         this.setName("Spitting");
     }
 
@@ -16,11 +18,11 @@ public class Spit extends CommandBase {
 
     @Override
     public void execute() {
-        mHand.Spit();
+        mIntake.Spit();
     }
 
     @Override
     public void end(boolean interrupted) {
-        Hand.holding = false;
+        mIntake.setHolding(false);
     }
 }

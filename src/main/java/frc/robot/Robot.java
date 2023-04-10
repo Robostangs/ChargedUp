@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
@@ -161,6 +162,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
+    DriverStation.silenceJoystickConnectionWarning(true);
   //   final Joystick xDrive = new Joystick(3);
   //   final Swerve s_Swerve = Swerve.getInstance();
   //   final Arm s_Arm = Arm.getInstance();

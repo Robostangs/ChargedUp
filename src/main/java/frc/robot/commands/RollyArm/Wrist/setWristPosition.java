@@ -1,10 +1,10 @@
-package frc.robot.commands.RollyArm;
+package frc.robot.commands.RollyArm.Wrist;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Hand.Wrist;
 
 public class setWristPosition extends InstantCommand {
-    private final Hand mHand = Hand.getInstance();
+    private final Wrist mHand = Wrist.getInstance();
     private double desiredAngle;
     private double rotation;
 
