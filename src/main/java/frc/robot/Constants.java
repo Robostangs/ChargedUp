@@ -153,7 +153,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int canCoderID = 32;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445 );
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(102.537 );
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -248,14 +248,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 61.7; // Degrees
-    public static final double shoulderAngleSensor = 255.322; // Degrees
+    public static final double shoulderAngleActual = 65.5; // Degrees
+    public static final double shoulderAngleSensor = 256.025 ; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -54.7; // Degrees
-    public static final double elbowAngleSensor = 253.301; // Degrees
+    public static final double elbowAngleActualDifference = -78.8; // Degrees
+    public static final double elbowAngleSensor = 249.170; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 

@@ -56,6 +56,6 @@ public class charlieAutoGrab {
 
         Translation2d fieldSpacePieceDistT2d = fieldSpacePieceDist.toTranslation2d();
         Rotation2d finalAngle = fieldSpacePieceDistT2d.getAngle();
-        return new PathPoint(fieldSpacePieceDistT2d, finalAngle, Swerve.getInstance().getPose().getRotation().getDegrees());
+        return new PathPoint(fieldSpacePieceDistT2d, finalAngle, Swerve.getInstance().getPose().getRotation());
     }
 }

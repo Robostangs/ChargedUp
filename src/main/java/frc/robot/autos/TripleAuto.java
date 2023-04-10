@@ -123,7 +123,8 @@ public class TripleAuto extends SequentialCommandGroup {
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Waiting")),
                                 new WaitCommand(0.2),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Reset Lash"))
-                                , new InstantCommand(() -> s_Arm.resetLash()),
+                                ,
+                                //  new InstantCommand(() -> s_Arm.resetLash()),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Set Grip")),
 
                                 new SetGrip().withTimeout(0.7),
@@ -139,8 +140,8 @@ public class TripleAuto extends SequentialCommandGroup {
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Auto Grab")),
 
                                 charlieAutoGrab.getCommand().withTimeout(5).andThen(new LoggyPrintCommand("exited")),
-                                        // new LoggyPrintCommand("exited2"),
-                                        new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Second Path along with High Arm")),
+                                        //new LoggyPrintCommand("exited2"),
+                                new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Second Path along with High Arm")),
 
                                 new ParallelCommandGroup(secondPath, new SequentialCommandGroup(new WaitCommand(1.5), ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.cubeHighPosition))),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Wait")),
