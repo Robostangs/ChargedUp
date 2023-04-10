@@ -8,22 +8,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
-<<<<<<< HEAD
-import frc.robot.Constants.Lights;
 import frc.robot.autos.TripleAuto;
-import frc.robot.commands.Arm.PercentOutput;
-// import frc.robot.commands.Lights.LightCMD;
-import frc.robot.commands.Swerve.TeleopSwerve;
-=======
->>>>>>> 97968481f567dc7a5e011c794774520457818ed4
-import frc.robot.subsystems.Arm;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

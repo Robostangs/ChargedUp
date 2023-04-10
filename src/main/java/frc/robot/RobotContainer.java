@@ -5,12 +5,10 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.charlieAutoGrab;
 import frc.robot.commands.Arm.PercentOutput;
@@ -27,13 +25,6 @@ import frc.robot.Vision.LimelightMeasurement;
 public class RobotContainer {
     /* Controllers */
 
-<<<<<<< HEAD
-    private boolean lightsCone = true;
-    private Spark blinkin = new Spark(Lights.blinkinPWM_ID);
-    // private Spark blinkin = 
-
-=======
->>>>>>> 97968481f567dc7a5e011c794774520457818ed4
     public static final XboxController mDriverController = new XboxController(0);
     public static final XboxController mManipController = new XboxController(1);
   
@@ -42,7 +33,6 @@ public class RobotContainer {
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
     private final Vision s_Vision = Vision.getInstance();
-    private final Lighting s_Lighting = Lighting.getInstance();
     
     public RobotContainer() {
         configureButtonBindings();
