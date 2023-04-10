@@ -362,6 +362,9 @@ public final class Constants {
 
     public static final double WristGearRatio = 0;
 
+    public static final double wristAngleSensor = 0;
+    public static final double wristAngleActual = 0;
+
     public static final Utils.Vector2D maxFrameExtension = new Utils.Vector2D((48 + 15 - 5) / 39.37, (78 - 5) / 39.37);
   }
 

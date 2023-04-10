@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.LoggyThings.LoggyWPI_TalonFX;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
+import frc.robot.Utils;
 
 public class Hand extends SubsystemBase{
     private static Hand mInstance;
@@ -25,6 +27,7 @@ public class Hand extends SubsystemBase{
     private LoggyWPI_TalonFX mWristMotor;
     private LoggyWPI_TalonFX mIntakeMotor;
     private CANCoder mWristCoder;
+    private double correctedCanCoderPosition;
 
     private ArmFeedforward feedforward;
 
@@ -33,6 +36,11 @@ public class Hand extends SubsystemBase{
         mWristMotor = new LoggyWPI_TalonFX(Constants.Hand.mWristMotor_ID);
         mIntakeMotor = new LoggyWPI_TalonFX(Constants.Hand.mIntakeMotor_ID);
         mWristCoder = new CANCoder(Constants.Hand.mWristCoder_ID);
+
+        correctedCanCoderPosition = mWristCoder.getAbsolutePosition()
+        - Constants.Hand.wristAngleSensor + Constants.Hand.wristAngleActual;
+        correctedCanCoderPosition = Utils.clampDegreeMeasurement(correctedCanCoderPosition);
+        mWristCoder.setPosition(correctedCanCoderPosition);
 
         mWristMotor.setInverted(false);
         mIntakeMotor.setInverted(false);
@@ -62,5 +70,9 @@ public class Hand extends SubsystemBase{
 
     public void rawPower(double power) {
         mWristMotor.set(ControlMode.PercentOutput, power);
+    }
+
+    public void testBench() {
+        mIntakeMotor.set(ControlMode.PercentOutput, 0, DemandType.ArbitraryFeedForward, feedforward.calculate(getWristAngle(), 0.5));
     }
 }
