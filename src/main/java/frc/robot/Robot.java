@@ -11,17 +11,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
-import frc.robot.Constants.Lights;
-import frc.robot.commands.Arm.PercentOutput;
-// import frc.robot.commands.Lights.LightCMD;
-import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
-import frc.robot.subsystems.Swerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -165,6 +159,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
+    DriverStation.silenceJoystickConnectionWarning(true);
   //   final Joystick xDrive = new Joystick(3);
   //   final Swerve s_Swerve = Swerve.getInstance();
   //   final Arm s_Arm = Arm.getInstance();
