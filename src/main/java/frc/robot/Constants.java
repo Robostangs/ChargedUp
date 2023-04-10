@@ -16,14 +16,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm.ViolationType;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.lib.util.COTSFalconSwerveConstants;
-import frc.lib.util.SwerveModuleConstants;
 
 //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
 //0.42545 + 0.254/2
@@ -342,5 +339,10 @@ public final class Constants {
     public static final double kFireTwinkle = -0.49;
     public static final double kRobostangs = 0.63;
     public static final double kKillLights = 0.99;
+    public static double PWMVal;
+    public static final double blinkTime = 7.5;
+
+
+    public static final Timer timer = new Timer();
   }
 }

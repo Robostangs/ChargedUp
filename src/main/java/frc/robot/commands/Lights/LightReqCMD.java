@@ -1,55 +1,45 @@
-// package frc.robot.commands.Lights;
+package frc.robot.commands.Lights;
 
 
-// import edu.wpi.first.wpilibj.Timer;
-// import edu.wpi.first.wpilibj2.command.CommandBase;
-// import frc.robot.Constants.Lights;
-// import frc.robot.subsystems.Lighting;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants;
+import frc.robot.Constants.Lights;
+import frc.robot.subsystems.Lighting;
 
-// public class LightReqCMD extends CommandBase {
-//     private final Lighting mLighting = Lighting.getInstance();
-//     Boolean Cone;
-//     Boolean Cube;
-//     String reqPiece;
+public class LightReqCMD extends InstantCommand {
+    private final Lighting mLighting = Lighting.getInstance();
     
-//     double PWMVal;
-//     Timer timer;
-//     double blinkTime = 7.5;
-//     int angle;
+    Timer timer = Constants.Lights.timer;
+    boolean cone;
 
-//     /**
-//      * 90 for Cone, 270 for Cube
-//      * @param angle POV Angle
-//      */
-//     public LightReqCMD(int angle) {
-//         this.angle = angle; 
-//         addRequirements(mLighting);
-//         timer = new Timer(); 
-//     }
+    /**
+     * 90 for Cone, 270 for Cube
+     * @param angle POV Angle
+     */
+    public LightReqCMD() {
+        this.addRequirements(mLighting);
+        // timer = new Timer(); 
+    }
     
-//     @Override
-//     // public void initialize() {
-//         timer.restart();
-//         if (angle == 90) {
-//             Lighting.lastLight = Lights.kConeStatic;
-//             Lighting.Cone = true;
-//             mLighting.setLights(Lights.kConeBlink);
-//             this.setName("Requesting Piece: Cone");
-//         } if (angle == 270) {
-//             Lighting.lastLight = Lights.kCubeStatic;
-//             Lighting.Cone = false;
-//             mLighting.setLights(Lights.kCubeBlink);
-//             this.setName("Requesting Piece: Cube");
-//         }
-//     }
+    @Override
+    public void initialize() {
+        timer.restart();
+        // Lighting.Cone = cone;
+        if (Lighting.Cone) {
+            Constants.Lights.PWMVal = Lights.kConeStatic;
+            // Lights.lastLight = false;
+            mLighting.setLights(Lights.kConeBlink);
+            this.setName("Requesting Cone");         
+        }
+        if (!Lighting.Cone) {
+            Constants.Lights.PWMVal = Lights.kCubeStatic;
+            // Lights.lastLight = true;            
+            mLighting.setLights(Lights.kCubeBlink);
+            this.setName("Requesting Cube");
+        }
+    }
 
-//     @Override
-//     public void execute() {
-//         if (timer.hasElapsed(blinkTime)) {
-//             new LightCMD(Lighting.lastLight).schedule();
-//         }
-//     }
-
-//     @Override
-//     public void end(boolean interrupted) {}
-// }
+    @Override
+    public void execute() {}
+}
