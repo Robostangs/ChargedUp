@@ -68,7 +68,7 @@ public class justAuto extends SequentialCommandGroup {
 
                         addCommands(
                                         // new SetArmPosition(ArmPosition.kHighPosition).withTimeout(5),
-                                        new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
+                                        // new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
                                         // new SetGrip().withTimeout(0.7),
                                         // new ParallelDeadlineGroup(
                                         //                 new SetArmPosition(ArmPosition.kStowPosition),

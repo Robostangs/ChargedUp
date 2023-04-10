@@ -12,7 +12,8 @@ public class Lighting extends SubsystemBase {
     
     private static Spark blinkin;
 
-    public static Constants.Lights.ConeCube lastLight;
+    public static double lastLight;
+    public static boolean isCone;
 
     public static Lighting getInstance() {
         if (mLighting == null) {
@@ -20,11 +21,10 @@ public class Lighting extends SubsystemBase {
         }
         return mLighting;
     }
-    
+
     public Lighting() {
         blinkin = new Spark(Lights.blinkinPWM_ID);
-        lastLight = ConeCube.kCube;
-        Constants.Lights.prevLightReqCMD = null;
+        isCone = true;
     }
 
     public void setLights(double PWMVal) {

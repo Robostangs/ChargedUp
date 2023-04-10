@@ -73,6 +73,10 @@ public class Vision {
         }
     }
 
+    public void takeSnapshotDriver() {
+        mDriverLimelight.getEntry("snapshot").setNumber(1);
+    }
+
     public Rotation2d getRotation(LimelightState Limelight) {
         if (Limelight.compareTo(LimelightState.leftLimelight) == 0) {
             return rotFromAT(mLeftPosition);
@@ -206,7 +210,7 @@ public class Vision {
     public Vector2D objectPosition() {
         return new Vector2D(mObjectTX.get(), mObjectTY.get());
     }
-
+    
     private static double delayToTime(double delay) {
         return (Timer.getFPGATimestamp() - (delay / 1000));
     }
@@ -248,7 +252,7 @@ public class Vision {
         double mTargetXFromOrigin = Math.abs(((degSin(90+mVector2d.y) * Constants.Arm.upperarmLength)
             / degSin(90-mVector2d.y-Arm.getInstance().getShoulderPositionFromMotor())));
         double mTargetY = (mTargetXFromOrigin * degTan(-mVector2d.x)) - 0.08;
-        double mTargetX = mTargetXFromOrigin- (Arm.getInstance().getHandPositionX())+0.08 ;
+        double mTargetX = mTargetXFromOrigin- (Arm.getInstance().getHandPositionX())+0.04;
 
         // Vector2D mVector2d = Vision.getInstance().objectPosition();
 

@@ -11,6 +11,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.sensors.CANCoder;
 
 public class SwerveModule {
@@ -90,6 +91,8 @@ public class SwerveModule {
         mAngleMotor.configAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
         mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
         mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
+        mAngleMotor.setStatusFramePeriod(1, 500);
+        mAngleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 500);
         resetToAbsolute();
     }
 
@@ -99,6 +102,10 @@ public class SwerveModule {
         mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert);
         mDriveMotor.setNeutralMode(Constants.Swerve.driveNeutralMode);
         mDriveMotor.setSelectedSensorPosition(0);
+        mDriveMotor.setStatusFramePeriod(1, 500);
+        mDriveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 500);
+
+
     }
 
     public SwerveModuleState getState(){

@@ -13,6 +13,7 @@ import java.util.List;
 
 public class PathPlannerTrajectory extends Trajectory {
   private static final double FIELD_WIDTH_METERS = 8.02;
+  private static final double FIELD_LENGTH_METERS = 16.54;
 
   private final List<EventMarker> markers;
   private final StopEvent startStopEvent;
@@ -115,16 +116,16 @@ public class PathPlannerTrajectory extends Trajectory {
         sample, (time - prevSample.timeSeconds) / (sample.timeSeconds - prevSample.timeSeconds));
   }
 
-  public static PathPlannerState transformStateForAlliance(
+  public static PathPlannerState horseyWpiBlueTransformStateForAlliance(
       PathPlannerState state, DriverStation.Alliance alliance) {
     if (alliance == DriverStation.Alliance.Red) {
       // Create a new state so that we don't overwrite the original
       PathPlannerState transformedState = new PathPlannerState();
 
       Translation2d transformedTranslation =
-          new Translation2d(state.poseMeters.getX(), FIELD_WIDTH_METERS - state.poseMeters.getY());
-      Rotation2d transformedHeading = state.poseMeters.getRotation().times(-1);
-      Rotation2d transformedHolonomicRotation = state.holonomicRotation.times(-1);
+          new Translation2d(FIELD_LENGTH_METERS - state.poseMeters.getX(), state.poseMeters.getY());
+      Rotation2d transformedHeading = Rotation2d.fromDegrees(180 - state.poseMeters.getRotation().getDegrees());
+      Rotation2d transformedHolonomicRotation = Rotation2d.fromDegrees(180 - state.holonomicRotation.getDegrees());
 
       transformedState.timeSeconds = state.timeSeconds;
       transformedState.velocityMetersPerSecond = state.velocityMetersPerSecond;
@@ -151,7 +152,7 @@ public class PathPlannerTrajectory extends Trajectory {
       for (State s : trajectory.getStates()) {
         PathPlannerState state = (PathPlannerState) s;
 
-        transformedStates.add(transformStateForAlliance(state, alliance));
+        transformedStates.add(horseyWpiBlueTransformStateForAlliance(state, alliance));
       }
 
       return new PathPlannerTrajectory(
