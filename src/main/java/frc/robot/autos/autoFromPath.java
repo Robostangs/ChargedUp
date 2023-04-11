@@ -10,18 +10,15 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
-import frc.robot.commands.Hand.SetGrip;
+import frc.robot.commands.RollyArm.Intake.Suck;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Hand.Wrist;
 
@@ -76,10 +73,10 @@ public class autoFromPath extends SequentialCommandGroup {
                         addCommands(
                                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                                         // new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
-                                        new SetGrip().withTimeout(0.7),
+                                        new Suck().withTimeout(0.7),
                                         new ParallelDeadlineGroup(
                                                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
-                                                        new SetGrip()).withTimeout(2.5),
+                                                        new Suck()).withTimeout(2.5),
                                         // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
                                         swerveControllerCommand,
                                         new balance());

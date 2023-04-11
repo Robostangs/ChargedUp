@@ -6,6 +6,9 @@ import frc.robot.subsystems.Hand.Intake;
 public class Spit extends CommandBase {
     private final Intake mIntake = Intake.getInstance();
 
+    /**
+     * Reverse Intake to clear the intake Mechanism
+     */
     public Spit() {
         this.addRequirements(mIntake);
         this.setName("Spitting");
@@ -23,6 +26,6 @@ public class Spit extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        mIntake.setHolding(false);
+        // mIntake.setHolding(false);
     }
 }

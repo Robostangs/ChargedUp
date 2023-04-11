@@ -6,6 +6,9 @@ import frc.robot.subsystems.Hand.Intake;
 public class intakeDefault extends CommandBase {
     private final Intake mIntake = Intake.getInstance();
 
+    /**
+     * Default code to run the Intake Feed Fwd
+     */
     public intakeDefault() {
         this.addRequirements(mIntake);
         this.setName("Default Command");

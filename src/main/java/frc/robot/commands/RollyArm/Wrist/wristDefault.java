@@ -4,10 +4,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hand.Wrist;
 
 public class wristDefault extends CommandBase {
-    private final Wrist mHand = Wrist.getInstance();
+    private final Wrist mWrist = Wrist.getInstance();
 
+    /**
+     * Default code to run the Wrist Feed Fwd
+     */
     public wristDefault() {
-        this.addRequirements(mHand);
+        this.addRequirements(mWrist);
         this.setName("Default Command");
     }
 
@@ -16,7 +19,7 @@ public class wristDefault extends CommandBase {
 
     @Override
     public void execute() {
-        mHand.wristFeedFwd();
+        mWrist.wristFeedFwd();
     }
     
 }

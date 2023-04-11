@@ -8,16 +8,19 @@ import frc.robot.Vision;
 import frc.robot.Utils.Vector2D;
 import frc.robot.Utils.Vector3D;
 import frc.robot.autos.basicTranslate;
-import frc.robot.commands.Hand.SetGrip;
+import frc.robot.commands.RollyArm.Intake.Suck;
+// import frc.robot.commands.Hand.SetGrip;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Hand.Intake;
+import frc.robot.subsystems.Hand.Wrist;
 
 public class IntakingManager extends CommandBase {
     private static final Arm mArm = Arm.getInstance();
     private static final Swerve mDrivetrain = Swerve.getInstance();
     private static final Vision mVision = Vision.getInstance();
-    // private static final HandNormal mHand = HandNormal.getInstance();
+    private static final Wrist mWrist = Wrist.getInstance();
+    private static final Intake mIntake = Intake.getInstance();
 
     private double mTX, mTY;
     private Vector2D mVector2d;
@@ -28,7 +31,7 @@ public class IntakingManager extends CommandBase {
      */
     public IntakingManager() {
         setName("intaking Manager");
-        addRequirements(mDrivetrain, mArm);
+        addRequirements(mDrivetrain, mArm, mWrist, mIntake);
         // try {         
 
         //     addCommands(
@@ -94,7 +97,7 @@ public class IntakingManager extends CommandBase {
             "Target Y: " + mFinalY + "," 
         );
     
-        new SetGrip().withTimeout(2.5).schedule();
+        new Suck().withTimeout(2.5).schedule();
         new basicTranslate(mDrivetrain, new Vector3D(-mFinalX, -mFinalY, 0)).schedule();
     }
     

@@ -13,6 +13,10 @@ public class PercentRotation extends CommandBase {
     // Import Cone and Cube weight as they will factor in
     // Will be default command
 
+    /**
+     * Manual Rotation of the Wrist
+     * @param input XboxController Joystick that controlls angle movement of Wrist
+     */
     public PercentRotation(DoubleSupplier input) {
         this.addRequirements(mWrist);
         this.setName("Rotating Claw");
@@ -29,6 +33,10 @@ public class PercentRotation extends CommandBase {
         // I need to put in how much is the max rotation
         // Also need a scale for how much input on xbox controller joystick equals how much angle change
         output = Utils.customDeadzone(input.getAsDouble());
+        if (output == 0) {
+            output = 0.1;
+        }
+
         mWrist.rawPower(output);
     }
 }

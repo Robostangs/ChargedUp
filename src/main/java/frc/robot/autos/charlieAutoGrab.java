@@ -16,7 +16,7 @@ import frc.robot.Utils.Vector2D;
 import frc.robot.Vision.LimelightState;
 import frc.robot.Vision;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
-import frc.robot.commands.Hand.SetGrip;
+import frc.robot.commands.RollyArm.Intake.Suck;
 import frc.robot.subsystems.Swerve;
 
 public class charlieAutoGrab {
@@ -36,12 +36,11 @@ public class charlieAutoGrab {
                         new SequentialCommandGroup(
                                 new WaitCommand(0.5),
                                 translatePp.getRelativeTranslateCommand(() -> getRelativeFieldSpaceCubePoint())
-                                        .deadlineWith(new SetGrip()).alongWith(new LoggyPrintCommand("SecondPart"))),
+                                        .deadlineWith(new Suck()).alongWith(new LoggyPrintCommand("SecondPart"))),
                         () -> !Vision.getInstance().targetVisible(LimelightState.center))
                         // ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition).alongWith(new LoggyPrintCommand("Third Part"))
                         );
-
-    }
+        }
 
     public static PathPoint getRelativeFieldSpaceCubePoint() {
         Vector2D robotSpacePiecePos = Vision.getInstance().calculateAndPrintGamePiecePosition();

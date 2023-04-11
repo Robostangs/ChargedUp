@@ -4,12 +4,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Hand.Wrist;
 
 public class setWristPosition extends InstantCommand {
-    private final Wrist mHand = Wrist.getInstance();
+    private final Wrist mWrist = Wrist.getInstance();
     private double desiredAngle;
     private double rotation;
 
+    /**
+     * Wrist Setpoints
+     * @param angle the Desired angle you would like the arm to be at
+     */
     public setWristPosition(double angle) {
-        this.addRequirements(mHand);
+        this.addRequirements(mWrist);
         this.setName("Set Wrist to: " + angle + " Degrees");
         desiredAngle = angle;
     }
@@ -17,19 +21,19 @@ public class setWristPosition extends InstantCommand {
     @Override
     public void initialize() {
         // double desiredAngle = currentAngle + rotation;
-        rotation = desiredAngle - mHand.getWristAngle();
+        rotation = desiredAngle - mWrist.getWristAngle();
         System.out.println("Wrist is going to move: " + rotation + " Degrees");
     }
 
     @Override
     public void execute() {
-        mHand.setWristPosition(desiredAngle);
+        mWrist.setWristPosition(desiredAngle);
     }
 
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
-            System.out.println("Current Wrist Position: " + mHand.getWristAngle() + " Degrees");
+            System.out.println("Current Wrist Position: " + mWrist.getWristAngle() + " Degrees");
         }
     }
 }

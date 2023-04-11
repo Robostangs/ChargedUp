@@ -61,4 +61,9 @@ public class Wrist extends SubsystemBase{
     public void wristFeedFwd() {
         mWristMotor.set(ControlMode.PercentOutput, 0.1);
     }
+
+    @Override
+    public void periodic() {
+        System.out.println("WristMotor PercentOutput: " + mWristMotor.get());
+    }
 }

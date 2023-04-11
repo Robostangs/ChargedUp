@@ -20,9 +20,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
-import frc.robot.commands.Hand.SetGrip;
+import frc.robot.commands.RollyArm.Intake.Suck;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 
 public class TripleAuto extends SequentialCommandGroup {
@@ -127,13 +126,13 @@ public class TripleAuto extends SequentialCommandGroup {
                                 //  new InstantCommand(() -> s_Arm.resetLash()),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Set Grip")),
 
-                                new SetGrip().withTimeout(0.7),
+                                new Suck().withTimeout(0.7),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "General Intake And SetGrip for 2.5s and first path")),
 
                                 new ParallelCommandGroup(
                                         ProfiledChangeSetPoint.createWithTimeout(
                                                                         () -> Constants.Arm.SetPoint.generalIntakePosition),
-                                        new SetGrip().withTimeout(2.5),
+                                        new Suck().withTimeout(2.5),
                                         firstPath
                                 ),
                                 // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
@@ -147,12 +146,12 @@ public class TripleAuto extends SequentialCommandGroup {
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Wait")),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Open Grip for 0.7s")),
 
-                                new SetGrip().withTimeout(0.7),
+                                new Suck().withTimeout(0.7),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Stow and open grip for 2.5s")),
 
                                 new ParallelDeadlineGroup(
                                         ProfiledChangeSetPoint.createWithTimeout(
                                                         () -> Constants.Arm.SetPoint.stowPosition),
-                                        new SetGrip()).withTimeout(2.5));
+                                        new Suck()).withTimeout(2.5));
         }
 }

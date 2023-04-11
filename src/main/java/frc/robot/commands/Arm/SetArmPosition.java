@@ -8,7 +8,6 @@ import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Utils;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Arm.ArmPosition;
 
 /**

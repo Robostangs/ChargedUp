@@ -1,11 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.Lights;
-import frc.robot.Constants.Lights.ConeCube;
 
 public class Lighting extends SubsystemBase {
     private static Lighting mLighting;

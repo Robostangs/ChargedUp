@@ -6,6 +6,9 @@ import frc.robot.subsystems.Hand.Intake;
 public class Suck extends CommandBase {
     private final Intake mIntake = Intake.getInstance();
 
+    /**
+     * Intake to load the intake Mechanism
+     */
     public Suck() {
         this.addRequirements(mIntake);
         this.setName("Sucking");
@@ -24,6 +27,6 @@ public class Suck extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        mIntake.setHolding(true);
+        // mIntake.setHolding(true);
     }
 }

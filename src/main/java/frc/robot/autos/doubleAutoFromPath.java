@@ -19,9 +19,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
-import frc.robot.commands.Hand.SetGrip;
+import frc.robot.commands.RollyArm.Intake.Suck;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.HandNormal;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Hand.Wrist;
 
@@ -88,17 +87,17 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
             addCommands(
                 ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                     new WaitCommand(0.2),
-                    new SetGrip().withTimeout(0.7),
+                    new Suck().withTimeout(0.7),
                     new ParallelDeadlineGroup(
                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition),
-                        new SetGrip()),
+                        new Suck()),
                     firstController,
                     new InstantCommand(
                             () -> s_Swerve.drive(new Translation2d(0, 0), 0, false, false)),
                     new ParallelDeadlineGroup(
                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.generalIntakePosition), // .andThen(new
                                                                                     // WaitCommand(0.2)),
-                            new SetGrip()),
+                            new Suck()),
                             ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition));
                     // swerveControllerCommand,
                     // new balance());

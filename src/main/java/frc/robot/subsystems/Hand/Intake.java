@@ -16,7 +16,8 @@ public class Intake extends SubsystemBase{
         return mInstance;
     }
     
-    private boolean holding;
+    private boolean holding = true;
+    public boolean holdingCone = true;
     
     private LoggyWPI_TalonFX mIntakeMotor;
 
@@ -48,7 +49,11 @@ public class Intake extends SubsystemBase{
     }
 
     public void intakeFeedFwd() {
-        mIntakeMotor.set(ControlMode.PercentOutput, 0.1);
+        if (holding) {
+            mIntakeMotor.set(ControlMode.PercentOutput, 0.1);
+        } else {
+            mIntakeMotor.set(ControlMode.PercentOutput, 0);
+        }
     }
 
     public boolean isHolding() {
@@ -58,4 +63,10 @@ public class Intake extends SubsystemBase{
     public void setHolding(boolean holding) {
         this.holding = holding;
     }
+
+    // @Override
+    // public void periodic() {
+        // System.out.println("Holding: " + holding);
+        // intakeFeedFwd();
+    // }
 }

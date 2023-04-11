@@ -1,4 +1,3 @@
-
 package frc.robot;
 
 import java.util.Optional;
@@ -6,24 +5,20 @@ import java.util.Optional;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.charlieAutoGrab;
 import frc.robot.commands.Arm.PercentOutput;
-import frc.robot.commands.Hand.SetGrip;
-import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Lights.LightReqCMD;
 import frc.robot.commands.RollyArm.Intake.Spit;
 import frc.robot.commands.RollyArm.Intake.Suck;
+import frc.robot.commands.RollyArm.Intake.ToggleHolding;
 import frc.robot.commands.RollyArm.Intake.intakeDefault;
 import frc.robot.commands.RollyArm.Wrist.PercentRotation;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
@@ -65,14 +60,10 @@ public class RobotContainer {
 
         s_Arm.setDefaultCommand(
             new PercentOutput(
-                () -> Utils.customDeadzone(-mManipController.getLeftY()),
-                () -> Utils.customDeadzone(-mManipController.getRightY())
+                () -> Utils.customDeadzone(-mManipController.getLeftX()),
+                () -> Utils.customDeadzone(-mManipController.getLeftY())
             )
         );
-
-        // s_Hand.setDefaultCommand(
-        //     new defaultCMD()
-        // );
 
         s_Wrist.setDefaultCommand(
             new PercentRotation(
@@ -83,7 +74,7 @@ public class RobotContainer {
             new intakeDefault()
         );
 
-        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new ConditionalCommand(new Spit(), new Suck(), () -> s_Intake.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kStart.value).whileTrue(new ConditionalCommand(new Spit(), new Suck(), () -> s_Intake.getHolding()).repeatedly().andThen(() -> s_Intake.setHolding(!s_Intake.getHolding())));
         
 
         // new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
@@ -105,11 +96,11 @@ public class RobotContainer {
                 Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
                 if (leftMeasurement.isPresent()) {s_Swerve.resetOdometry(leftMeasurement.get().mPose);}
                 else if(rightMeasurement.isPresent()) {s_Swerve.resetOdometry(rightMeasurement.get().mPose);}})
-        );        
+        );
 
         // new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
-        new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneHighPosition:Constants.Arm.SetPoint.cubeHighPosition));
-        new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneMediumPosition:Constants.Arm.SetPoint.cubeMediumPosition));
+        new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Intake.holdingCone?Constants.Arm.SetPoint.coneHighPosition:Constants.Arm.SetPoint.cubeHighPosition));
+        new JoystickButton(mManipController, XboxController.Button.kB.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Intake.holdingCone?Constants.Arm.SetPoint.coneMediumPosition:Constants.Arm.SetPoint.cubeMediumPosition));
         new JoystickButton(mManipController, XboxController.Button.kA.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.lowPosition));
         new JoystickButton(mManipController, XboxController.Button.kX.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition));
         new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
