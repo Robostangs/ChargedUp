@@ -17,7 +17,7 @@ public class Intake extends SubsystemBase{
     }
     
     private boolean holding = true;
-    public boolean holdingCone = true;
+    private boolean holdingCone = true;
     
     private LoggyWPI_TalonFX mIntakeMotor;
 
@@ -29,7 +29,7 @@ public class Intake extends SubsystemBase{
 
         mIntakeMotor.setInverted(false);
 
-        feedforward = new ArmFeedforward(0, 0, 0, 0);
+        feedforward = new ArmFeedforward(0, 0, 0);
     }
 
     public boolean getHolding() {
@@ -64,9 +64,12 @@ public class Intake extends SubsystemBase{
         this.holding = holding;
     }
 
+    public boolean holdingCone() {
+        return holdingCone;
+    }
+
     // @Override
     // public void periodic() {
-        // System.out.println("Holding: " + holding);
-        // intakeFeedFwd();
+    //     System.out.println("Holding: " + holding);
     // }
 }

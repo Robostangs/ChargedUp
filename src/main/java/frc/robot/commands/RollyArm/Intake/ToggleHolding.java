@@ -15,7 +15,8 @@ public class ToggleHolding extends InstantCommand {
      * Change the Cone Holding State, does not affect Claw State
      */
     public ToggleHolding() {
-        addRequirements(mIntake);
+        this.addRequirements(mIntake);
+        this.setName("Toggle Holding");
     }
 
     @Override
