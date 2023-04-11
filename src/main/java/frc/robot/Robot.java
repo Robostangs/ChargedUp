@@ -15,14 +15,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
-<<<<<<< HEAD
 import frc.robot.Constants.Lights;
 import frc.robot.autos.TripleAuto;
 import frc.robot.commands.Arm.PercentOutput;
 // import frc.robot.commands.Lights.LightCMD;
 import frc.robot.commands.Swerve.TeleopSwerve;
-=======
->>>>>>> 97968481f567dc7a5e011c794774520457818ed4
 import frc.robot.subsystems.Arm;
 
 /**

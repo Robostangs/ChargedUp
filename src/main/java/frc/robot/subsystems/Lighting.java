@@ -25,19 +25,19 @@ public class Lighting extends SubsystemBase {
     // }
 
     public Lighting() {
-        blinkin = new Spark(Lights.blinkinPWM_ID);
+        // blinkin = new Spark(Lights.blinkinPWM_ID);
         Cone = true;
     }
 
     public void setLights(double PWMVal) {
-        blinkin.set(PWMVal);
+        // blinkin.set(PWMVal);
     }
 
     public void lightsOff() {
-        blinkin.set(Lights.kKillLights);
+        // blinkin.set(Lights.kKillLights);
     }
 
     public static double getPWM() {
-        return blinkin.get();
+        return 0.0;// blinkin.get();
     }
 }

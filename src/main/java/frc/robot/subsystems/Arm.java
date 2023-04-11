@@ -170,7 +170,7 @@ public class Arm extends SubsystemBase {
             - Constants.Arm.shoulderAngleSensor + Constants.Arm.shoulderAngleActual;
         correctedShoulderCanCoderPostion = Utils.clampDegreeMeasurement(correctedShoulderCanCoderPostion);
 
-        double correctedElbowCanCoderPostion = -78.8
+        double correctedElbowCanCoderPostion = mElbowCanCoder.getAbsolutePosition()
                 - Constants.Arm.elbowAngleSensor + Constants.Arm.elbowAngleActualDifference;
         correctedElbowCanCoderPostion = Utils.clampDegreeMeasurement(correctedElbowCanCoderPostion);
 

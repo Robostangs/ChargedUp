@@ -248,13 +248,13 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 65.5; // Degrees
+    public static final double shoulderAngleActual = 50.1; // Degrees
     public static final double shoulderAngleSensor = 256.025 ; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -78.8; // Degrees
+    public static final double elbowAngleActualDifference = -62.3; // Degrees
     public static final double elbowAngleSensor = 249.170; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
@@ -281,6 +281,17 @@ public final class Constants {
     public static final double elbowDegreesPerMotorTick = 360.0/2048.0 / Constants.Arm.elbowGearRatio / elbowVirtualFourBarRatio;
 
     public static final double floorHeight = -0.15;
+
+    public static final int RollyHandRotatorCanCoderID = 3;
+    public static final int RollyHandRollerID = 52;
+    public static final int RollyHandRotatorID = 53;
+    public static final double RollyHandRotatorP = 0.1;
+    public static final double RollyHandRotatorI = 0.001;
+    public static final double RollyHandRotatorD = 0;
+    public static double rotatorAngleSensor = 0.0;
+    public static double rotatorAngleActualDifference = -18.0;
+
+
 
     public static class SetPoint {
       //Scoring Positions
@@ -318,6 +329,8 @@ public final class Constants {
         }
       }
     }
+
+
 
   }
 

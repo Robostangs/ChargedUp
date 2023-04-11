@@ -50,7 +50,6 @@ public class TripleAuto extends SequentialCommandGroup {
                 }
 
                 // pretending i am working so gary doesnt bother me
-
                 // pretending i am working so gary doesnt bother me
                 // pretending i am working so gary doesnt bother me
                 // pretending i am working so gary doesnt bother me
