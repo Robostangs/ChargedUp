@@ -10,7 +10,7 @@ import frc.robot.subsystems.Lighting;
 public class LightReqCMD extends InstantCommand {
     private final Lighting mLighting = Lighting.getInstance();
     
-    Timer timer = Constants.Lights.timer;
+    Timer timer = Lighting.timer;
     boolean cone;
 
     /**
@@ -25,13 +25,13 @@ public class LightReqCMD extends InstantCommand {
     public void initialize() {
         timer.restart();
         if (Lighting.isCone) {
-            Constants.Lights.PWMVal = Lights.kConeStatic;
+            Lighting.PWMVal = Lights.kConeStatic;
             // Lights.lastLight = false;
             mLighting.setLights(Lights.kConeBlink);
             this.setName("Requesting Cone");         
         }
         if (!Lighting.isCone) {
-            Constants.Lights.PWMVal = Lights.kCubeStatic;
+            Lighting.PWMVal = Lights.kCubeStatic;
             // Lights.lastLight = true;            
             mLighting.setLights(Lights.kCubeBlink);
             this.setName("Requesting Cube");

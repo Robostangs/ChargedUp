@@ -16,7 +16,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Utils.Vector2D;
@@ -213,7 +212,7 @@ public final class Constants {
   }
 
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final double kDebounce = 0.2;
   }
 
   public static class Arm {
@@ -339,10 +338,6 @@ public final class Constants {
     public static final double kFireTwinkle = -0.49;
     public static final double kRobostangs = 0.63;
     public static final double kKillLights = 0.99;
-    public static double PWMVal;
-    public static final double blinkTime = 7.5;
-
-
-    public static final Timer timer = new Timer();
+    public static final double blinkTime = 7.5;    
   }
 }
