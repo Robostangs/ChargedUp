@@ -1,9 +1,7 @@
-
 package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -87,7 +85,6 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kRightStick.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.loadingZonePosition));
         new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.startPosition));
         Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
-        
         // new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
         //     .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
         //     .alongWith(new LoggyPrintCommand(leftTrigger))
