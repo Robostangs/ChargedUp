@@ -20,6 +20,7 @@ import frc.robot.commands.Swerve.GetToPosition;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.*;
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.Vision.LimelightMeasurement;
 
 public class RobotContainer {
@@ -87,10 +88,10 @@ public class RobotContainer {
         new JoystickButton(mManipController, XboxController.Button.kBack.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.startPosition));
         Trigger leftTrigger = new JoystickButton(mManipController, XboxController.Axis.kLeftTrigger.value);
         
-        // new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
-        //     .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
-        //     .alongWith(new LoggyPrintCommand(leftTrigger))
-        // );
+        new Trigger(() -> mManipController.getLeftTriggerAxis() > 0.5)
+            .whileTrue(new InstantCommand(() -> s_Arm.resetLash())
+            .alongWith(new LoggyPrintCommand(leftTrigger))
+        );
 
         new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
 
