@@ -1,9 +1,9 @@
-# Team 548 Robostangs Charged Up Code
+# Team 548, The Robostangs, Charged Up Code
 
-Contributers:
+## Contributers:
   <!--  -->
-  Saket Kulkarni
+    Saket Kulkarni - @SaketKulkarni121
   <!--  -->
-  Charlie Sands
+    Charlie Sands - @sckzor
   <!--  -->
-  Ankur Desai
+    Ankur Desai - @Ardusa
