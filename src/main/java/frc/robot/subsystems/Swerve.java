@@ -20,6 +20,7 @@ import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.Vision;
 import frc.robot.Vision.LimelightMeasurement;
+import frc.robot.commands.Swerve.locateSwerve;
 
 public class Swerve extends SubsystemBase {
     private SwerveDrivePoseEstimator swerveOdometry;
@@ -27,6 +28,8 @@ public class Swerve extends SubsystemBase {
     private Field2d mField = new Field2d();
     private Pigeon2 mGyro;
     private Vision mVision = Vision.getInstance();
+
+    public locateSwerve swerveXY;
 
     // The Swerve class should not hold the vision systems, this is a great way to
     // end up in dependecy hell
@@ -68,7 +71,10 @@ public class Swerve extends SubsystemBase {
             getModulePositions(),
             new Pose2d(),
             Constants.Swerve.Odometry.STATE_STANDARD_DEVS,
-            Constants.Swerve.Odometry.VISION_STANDARD_DEVS);
+            Constants.Swerve.Odometry.VISION_STANDARD_DEVS
+        );
+
+        swerveXY = new locateSwerve(mGyro, getInstance());
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -202,5 +208,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putNumber("angle", getGyroAngle());
         mField.setRobotPose(getPose());
+        SmartDashboard.putNumber(getName(), getGyroAngle());
+        System.out.println("Swerve X: " + swerveXY.robotX());
+        System.out.println("Swerve Y: " + swerveXY.robotY());
     }
 }

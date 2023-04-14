@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class translatePp {
-    // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+    /**  Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems. */
     static SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
         Swerve.getInstance()::getPose, // Pose2d supplier
         (pose)->{}, // Pose2d consumer, used to reset odometry at the beginning of auto

@@ -114,11 +114,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/field": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/sim arm": {
         "window": {
           "visible": true
@@ -219,9 +214,6 @@
       },
       "open": true
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   },
   "Plot": {
     "Plot <0>": {
