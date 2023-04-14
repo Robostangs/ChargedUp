@@ -98,8 +98,8 @@ public class RobotContainer {
 
         // new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
 
-        new POVButton(mManipController, 90).onTrue(new LightReqCMD()).debounce(Constants.OperatorConstants.kDebounce);
-        new Trigger(() -> Lighting.timer.hasElapsed(Constants.Lights.blinkTime)).onTrue(new InstantCommand(() -> new LightCMD(Lighting.PWMVal).schedule()));
+        // new POVButton(mManipController, 90).onTrue(new LightReqCMD()).debounce(Constants.OperatorConstants.kDebounce);
+        // new Trigger(() -> Lighting.timer.hasElapsed(Constants.Lights.blinkTime)).onTrue(new InstantCommand(() -> new LightCMD(Lighting.PWMVal).schedule()));
 
         // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));

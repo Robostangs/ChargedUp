@@ -35,6 +35,11 @@ public class translatePp {
     public static Command getRelativeTranslateCommand(Supplier<PathPoint> relativeTranslateFieldCoordsSupplier) {
         return autoBuilder.followPath(()->getTrajectory(relativeTranslateFieldCoordsSupplier.get().withNewTranslation(relativeTranslateFieldCoordsSupplier.get().position.plus(Swerve.getInstance().getPose().getTranslation()))));
     }
+
+    public static Command getRelativeTranslateCommandWithVelo(Supplier<PathPoint> relativeTranslateFieldCoordsSupplier, double velo) {
+        return autoBuilder.followPath(()->getTrajectory(relativeTranslateFieldCoordsSupplier.get().withNewTranslation(relativeTranslateFieldCoordsSupplier.get().position.plus(Swerve.getInstance().getPose().getTranslation())), 2));
+    }
+
     public static Command getAbsoluteTranslateCommand(Supplier<PathPoint> endPointSupplier) {
         return autoBuilder.followPath(()->PathPlannerTrajectory.transformTrajectoryForAlliance(getTrajectory(endPointSupplier.get()),DriverStation.getAlliance()));
     }
@@ -55,7 +60,15 @@ public class translatePp {
         return getTrajectory(endPoint, Swerve.getInstance().getPose().getRotation());
     }
 
+    public static PathPlannerTrajectory getTrajectory(PathPoint endPoint, double velo){
+        return getTrajectory(endPoint, Swerve.getInstance().getPose().getRotation(), velo);
+    }
+
     public static PathPlannerTrajectory getTrajectory(PathPoint endPoint, Rotation2d startHeading){
+        return getTrajectory(endPoint, startHeading, 4);
+    }
+
+    public static PathPlannerTrajectory getTrajectory(PathPoint endPoint, Rotation2d startHeading, double velo){
         PathPoint startPoint = new PathPoint(Swerve.getInstance().getPose().getTranslation(), startHeading, Swerve.getInstance().getPose().getRotation());
 
         SmartDashboard.putString("TranslatePp/Start Point", startPoint.name);
@@ -63,7 +76,7 @@ public class translatePp {
 
 
         return PathPlanner.generatePath(
-            new PathConstraints(4, 3), 
+            new PathConstraints(velo, 3), 
             startPoint, // position, heading, holoroot
             endPoint
         );
@@ -82,6 +95,10 @@ public class translatePp {
     }
 
     public static PathPlannerTrajectory getTrajectory(PathPoint startPoint, PathPoint midPoint, PathPoint endPoint, Rotation2d startHeading) {
+        return getTrajectory(startPoint, midPoint, endPoint, startHeading, 4);
+    }
+
+    public static PathPlannerTrajectory getTrajectory(PathPoint startPoint, PathPoint midPoint, PathPoint endPoint, Rotation2d startHeading, double velo) {
         // PathPoint startPoint = new PathPoint(Swerve.getInstance().getPose().getTranslation(), startHeading, Swerve.getInstance().getPose().getRotation());
 
         SmartDashboard.putString("TranslatePp/Start Point", midPoint.name);
@@ -89,7 +106,7 @@ public class translatePp {
 
 
         return PathPlanner.generatePath(
-            new PathConstraints(4, 3), 
+            new PathConstraints(velo, 3), 
             startPoint, // position, heading, holoroot
             midPoint,
             endPoint

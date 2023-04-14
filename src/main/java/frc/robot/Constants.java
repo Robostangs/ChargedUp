@@ -20,6 +20,10 @@ import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm.ViolationType;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.lib.util.COTSFalconSwerveConstants;
+import frc.lib.util.SwerveModuleConstants;
 
 //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
 //0.42545 + 0.254/2
@@ -152,7 +156,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int canCoderID = 32;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(102.537 );
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(201.445 - 95 );
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -212,7 +216,7 @@ public final class Constants {
   }
 
   public static class OperatorConstants {
-    public static final double kDebounce = 0.2;
+    public static final int kDriverControllerPort = 0;
   }
 
   public static class Arm {
@@ -247,14 +251,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 75.4; // Degrees
-    public static final double shoulderAngleSensor = 265.781; // Degrees
+    public static final double shoulderAngleActual = 67.9; // Degrees
+    public static final double shoulderAngleSensor = 259.805; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -66.2; // Degrees
-    public static final double elbowAngleSensor = 302.871; // Degrees
+    public static final double elbowAngleActualDifference = -65.6; // Degrees make negative
+    public static final double elbowAngleSensor = 307.266; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -338,6 +342,5 @@ public final class Constants {
     public static final double kFireTwinkle = -0.49;
     public static final double kRobostangs = 0.63;
     public static final double kKillLights = 0.99;
-    public static final double blinkTime = 7.5;    
   }
 }

@@ -34,20 +34,20 @@ public class TripleAuto extends SequentialCommandGroup {
                 setName("Triple Auto");
 
                 ArrayList<Translation2d> points = new ArrayList<Translation2d>();
-
-                if(SmartDashboard.getBoolean("Open Side?", true)) {
+/*
+                if(SmartDashboard.getBoolean("Open Side?", false)) {
                         points.add(new Translation2d(1.91, 3.82)); // Starting the Trajectory Position
                         points.add(new Translation2d(6, 4.4));  // Final Position before starting Auto Grab
                         points.add(new Translation2d(2.3, 4.82));  // Midpoint to avoid hitting the charge station
                         points.add(new Translation2d(6.6, 4.9));   // Starting the Second Path a little bit to the left to the cube
-                        points.add(new Translation2d(1.87, 4.45));// Finish point infront of cube placement
-                } else {
+                        points.add(new Translation2d(1.9, 4.45));// Finish point infront of cube placement
+                } else { */
                         points.add(new Translation2d(1.878, 1.81)); // Starting the Trajectory Position
-                        points.add(new Translation2d(6.111, 0.859));  // Final Position before starting Auto Grab
+                        points.add(new Translation2d(6.111, 0.5));  // Final Position before starting Auto Grab
                         points.add(new Translation2d(2.3, 0.709));  // Midpoint to avoid hitting the charge station
                         points.add(new Translation2d(6.6, 0.494));   // Starting the Second Path a little bit to the right to the cube
-                        points.add(new Translation2d(1.436, 1.11));// Finish point infront of cube placement
-                }
+                        points.add(new Translation2d(1.9, 1.11));// Finish point infront of cube placement
+                // }
 
                 // pretending i am working so gary doesnt bother me
 
@@ -152,7 +152,7 @@ public class TripleAuto extends SequentialCommandGroup {
 
                                 new ParallelDeadlineGroup(
                                         ProfiledChangeSetPoint.createWithTimeout(
-                                                        () -> Constants.Arm.SetPoint.stowPosition),
+                                                        () -> Constants.Arm.SetPoint.startPosition),
                                         new SetGrip()).withTimeout(2.5));
         }
 }

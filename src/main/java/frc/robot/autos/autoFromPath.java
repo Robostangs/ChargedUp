@@ -35,6 +35,9 @@ public class autoFromPath extends SequentialCommandGroup {
 
                 if(path.equals("paths/tripleAuto")) {
                         addCommands(new TripleAuto());
+                }
+                else if(path.equals("paths/upandover")) {
+                        addCommands(new upandover());
                 } else {
 
                 TrajectoryConfig config = new TrajectoryConfig(

@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json"); 
     
     chooser.addOption("DOUBLE AUTO", "tripleAuto");
+    chooser.addOption("UP AND OVER", "upandover");
 
     SmartDashboard.putData("jefy", chooser);
     SmartDashboard.putBoolean("isRed", false);
