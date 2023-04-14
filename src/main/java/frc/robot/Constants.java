@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPoint;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -188,6 +189,11 @@ public final class Constants {
           }
 
           public static final double MIN_TIME_BETWEEN_LL_UPDATES_MS = 20e-3;
+        }
+
+        public static final class homePoints {
+          public static final Pose2d kBlueLeft = new Pose2d(2.2, 4.65, new Rotation2d(180));
+
         }
     }
 

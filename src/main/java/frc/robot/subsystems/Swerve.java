@@ -29,7 +29,7 @@ public class Swerve extends SubsystemBase {
     private Pigeon2 mGyro;
     private Vision mVision = Vision.getInstance();
 
-    public locateSwerve swerveXY;
+    public locateSwerve returnHome;
 
     // The Swerve class should not hold the vision systems, this is a great way to
     // end up in dependecy hell
@@ -74,7 +74,8 @@ public class Swerve extends SubsystemBase {
             Constants.Swerve.Odometry.VISION_STANDARD_DEVS
         );
 
-        swerveXY = new locateSwerve(mGyro, getInstance());
+        returnHome = new locateSwerve(Constants.Swerve.homePoints.kBlueLeft);
+        // new locateSwerve(mGyro, mInstance).returnHome().schedule();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -209,7 +210,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("angle", getGyroAngle());
         mField.setRobotPose(getPose());
         SmartDashboard.putNumber(getName(), getGyroAngle());
-        System.out.println("Swerve X: " + swerveXY.robotX());
-        System.out.println("Swerve Y: " + swerveXY.robotY());
+        System.out.println("Swerve X: " + returnHome.robotX());
+        System.out.println("Swerve Y: " + returnHome.robotY());
     }
 }

@@ -93,7 +93,7 @@ public class RobotContainer {
             .alongWith(new LoggyPrintCommand(leftTrigger))
         );
 
-        new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
+        new POVButton(mDriverController, 90).onTrue(s_Swerve.returnHome.returnHome());
 
         // new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
 
