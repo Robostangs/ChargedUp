@@ -47,7 +47,7 @@ public class locateSwerve {
      * @param isHomePoint boolean if the input is the home point of midpoint
      */
     // public locateSwerve(Pose2d posePoint, boolean isHomePoint) {
-    //     if (isHomePoint) {
+        // if (isHomePoint) {
     //         home = posePoint;
     //     } else {
     //         setPoint = posePoint;
