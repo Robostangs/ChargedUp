@@ -251,14 +251,14 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 67.9; // Degrees
-    public static final double shoulderAngleSensor = 259.805; // Degrees
+    public static final double shoulderAngleActual = 65.8; // Degrees
+    public static final double shoulderAngleSensor = 47.461; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -65.6; // Degrees make negative
-    public static final double elbowAngleSensor = 307.266; // Degrees
+    public static final double elbowAngleActualDifference = -65.5; // Degrees make negative
+    public static final double elbowAngleSensor = 302.168 ; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -287,7 +287,7 @@ public final class Constants {
 
     public static class SetPoint {
       //Scoring Positions
-      public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
+      public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1.1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
       public static final PathPoint coneHighPosition = new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
       public static final PathPoint coneHighPositionBad = new PathPoint(new Translation2d(1.39, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
       public static final PathPoint cubeMediumPosition = new PathPoint(new Translation2d(1.067, 0.781), Rotation2d.fromDegrees(-30), "cubeMediumPosition").withControlLengths(0.5, 0.5);
@@ -335,6 +335,7 @@ public final class Constants {
 
   public static class Lights {
     public static final int blinkinPWM_ID = 0;
+    public static final double blinkTime = 7;
     public static final double kConeStatic = 0.11;
     public static final double kConeBlink = 0.15;
     public static final double kCubeStatic = 0.31;

@@ -182,7 +182,7 @@ public interface ILoggyMotor {
     EnumSet<LogItem> getLogLevel();
 
     default void setLogLevel(EnumSet<LogItem> logLevel) {// constructs all added log entries
-        DataLogManager.log("LoggyMotor " + getLogPath() + " log levels set to " + logLevel.toString());
+        //DataLogManager.log("LoggyMotor " + getLogPath() + " log levels set to " + logLevel.toString());
         EnumSet<LogItem> lastLogSet = EnumSet.copyOf(getLogLevel());
         setLogLevel_internal(logLevel);
         EnumSet<LogItem> newLogSet = EnumSet.copyOf(getLogLevel());

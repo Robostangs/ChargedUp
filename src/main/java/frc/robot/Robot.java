@@ -15,8 +15,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
+import frc.robot.Constants.Lights;
 import frc.robot.autos.TripleAuto;
+import frc.robot.commands.Lights.LightCMD;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Swerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -38,7 +41,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -68,6 +70,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json"); 
     
     chooser.addOption("DOUBLE AUTO", "tripleAuto");
+    chooser.addOption("DOUBLE AUTO BUMP", "tripleAutoBump");
     chooser.addOption("UP AND OVER", "upandover");
 
     SmartDashboard.putData("jefy", chooser);
@@ -113,7 +116,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // new LightCMD(Lights.kRobostangs).schedule();
+    new LightCMD(Lights.kRobostangs).schedule();
     
      m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
@@ -128,7 +131,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // new LightCMD(Lights.kFireTwinkle).schedule();
+    new LightCMD(Lights.kFireTwinkle).schedule();
+    Swerve.getInstance().setGyro(180);
     //ArmTrajectoryPlannerTest.main(null);
 
     // This makes sure that the autonomous stops running when

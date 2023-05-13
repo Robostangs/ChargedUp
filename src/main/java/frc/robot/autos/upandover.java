@@ -38,23 +38,23 @@ public class upandover extends SequentialCommandGroup {
 
 
                         PathPlannerState unFixedInitialState = new PathPlannerState();
-                        unFixedInitialState.poseMeters = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+                        unFixedInitialState.poseMeters = new Pose2d(2, 3.2, Rotation2d.fromDegrees(0));
                         unFixedInitialState.holonomicRotation = Rotation2d.fromDegrees(180);
-                        PathPlannerState initialState = PathPlannerTrajectory.horseyWpiBlueTransformStateForAlliance(
-                                unFixedInitialState, 
-                                DriverStation.getAlliance());
+                        // PathPlannerState initialState = PathPlannerTrajectory.horseyWpiBlueTransformStateForAlliance(
+                        //         unFixedInitialState, 
+                        //         DriverStation.getAlliance());
 
                         
 
 
                         //Maybe make this first x smaller
-                        Command firstPath = translatePp.getRelativeTranslateCommandWithVelo(() -> new PathPoint(new Translation2d(5, 0), Swerve.getInstance().getPose().getRotation(), Swerve.getInstance().getPose().getRotation()), 1.5);
-                        Command secondPath = translatePp.getRelativeTranslateCommandWithVelo(() -> new PathPoint(new Translation2d(-2, 0), Swerve.getInstance().getPose().getRotation().plus(Rotation2d.fromDegrees(180)), Swerve.getInstance().getPose().getRotation()), 1.5);
+                        Command firstPath = translatePp.getRelativeTranslateCommandWithVelo(() -> new PathPoint(new Translation2d(4.25, 0), Swerve.getInstance().getPose().getRotation(), Swerve.getInstance().getPose().getRotation()), 1.25);
+                        Command secondPath = translatePp.getRelativeTranslateCommandWithVelo(() -> new PathPoint(new Translation2d(-2, 0), Swerve.getInstance().getPose().getRotation().plus(Rotation2d.fromDegrees(180)), Swerve.getInstance().getPose().getRotation()), 1.25);
 
                         addCommands(
-                                // new InstantCommand(()-> s_Swerve.updateOdometryManual(initialState.poseMeters.getX(),
-                                // initialState.poseMeters.getY(),
-                                // initialState.holonomicRotation.getDegrees())),
+                                new InstantCommand(()-> s_Swerve.updateOdometryManual(unFixedInitialState.poseMeters.getX(),
+                                unFixedInitialState.poseMeters.getY(),
+                                unFixedInitialState.holonomicRotation.getDegrees())),
                                 new InstantCommand(()->SmartDashboard.putString("upandover", "High Arm")),
                                 ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPositionBad),
                                 new InstantCommand(()->SmartDashboard.putString("upandover", "Waiting")),

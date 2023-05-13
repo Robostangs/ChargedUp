@@ -37,7 +37,7 @@ public class translatePp {
     }
 
     public static Command getRelativeTranslateCommandWithVelo(Supplier<PathPoint> relativeTranslateFieldCoordsSupplier, double velo) {
-        return autoBuilder.followPath(()->getTrajectory(relativeTranslateFieldCoordsSupplier.get().withNewTranslation(relativeTranslateFieldCoordsSupplier.get().position.plus(Swerve.getInstance().getPose().getTranslation())), 2));
+        return autoBuilder.followPath(()->getTrajectory(relativeTranslateFieldCoordsSupplier.get().withNewTranslation(relativeTranslateFieldCoordsSupplier.get().position.plus(Swerve.getInstance().getPose().getTranslation())), velo));
     }
 
     public static Command getAbsoluteTranslateCommand(Supplier<PathPoint> endPointSupplier) {

@@ -160,7 +160,7 @@ public class Swerve extends SubsystemBase {
 
     public void updateOdometry() {
         updateWithSwerveStates();
-        updateWithLimelight();
+        // updateWithLimelight();
     }
 
     public void updateWithSwerveStates() {
@@ -168,7 +168,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void updateOdometryManual(double x, double y, double angle) {
-                swerveOdometry.resetPosition(Rotation2d.fromDegrees(getGyroAngle()), getModulePositions(), new Pose2d(x, y, Rotation2d.fromDegrees(angle)));
+        swerveOdometry.resetPosition(Rotation2d.fromDegrees(getGyroAngle()), getModulePositions(), new Pose2d(x, y, Rotation2d.fromDegrees(angle)));
     }
 
     /**

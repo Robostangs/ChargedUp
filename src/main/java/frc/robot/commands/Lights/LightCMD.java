@@ -14,13 +14,7 @@ public class LightCMD extends InstantCommand {
     }
 
     @Override
-    public void initialize() {
-    //     if (PWMVal == Constants.Lights.kConeBlink || PWMVal == Constants.Lights.kConeStatic) {
-    //         Lighting.Cone = false;
-    //     } else {
-    //         Lighting.Cone = true;
-    //     }
-    }
+    public void initialize() {}
     
     @Override
     public void execute() {

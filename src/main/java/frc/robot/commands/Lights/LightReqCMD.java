@@ -3,7 +3,6 @@ package frc.robot.commands.Lights;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants;
 import frc.robot.Constants.Lights;
 import frc.robot.subsystems.Lighting;
 
@@ -14,8 +13,7 @@ public class LightReqCMD extends InstantCommand {
     boolean cone;
 
     /**
-     * 90 for Cone, 270 for Cube
-     * @param angle POV Angle
+     * Switch between Cone and Cube lights
      */
     public LightReqCMD() {
         this.addRequirements(mLighting);
