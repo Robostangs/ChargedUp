@@ -25,7 +25,7 @@ public class balance extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        mDrivetrain.drive(new Translation2d(0, 0), 0, false, false);
+        mDrivetrain.drive(new Translation2d(0, 0), .25, false, false);
         balancePID.close();
     }
 
