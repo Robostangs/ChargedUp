@@ -409,6 +409,10 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("Shoulder/Lock", getShoulderLocked());
         SmartDashboard.putData("ArmCommand",Arm.getInstance());
 
+        SmartDashboard.putNumber("Shoulder Angle", mShoulderCanCoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Elbow Angle", mElbowCanCoder.getAbsolutePosition());
+
+
         // SmartDashboard.putNumber("Shoulder Cancoder", mShoulderCanCoder.getPosition());
         // SmartDashboard.putNumber("Shoulder Motor Encoder",
         //         ((mShoulderMotor.getSelectedSensorPosition() *Constants.Arm.);
