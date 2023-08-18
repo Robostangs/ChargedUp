@@ -201,6 +201,12 @@ public class Swerve extends SubsystemBase {
         updateOdometry();
         SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putNumber("angle", getGyroAngle());
+        
+        SmartDashboard.putNumber("Front Right Angle", mSwerveMods[0].getCanCoder().getDegrees());
+        SmartDashboard.putNumber("Front Left Angle", mSwerveMods[1].getCanCoder().getDegrees());
+        SmartDashboard.putNumber("Back Left Angle", mSwerveMods[2].getCanCoder().getDegrees());
+        SmartDashboard.putNumber("Back Right Angle", mSwerveMods[3].getCanCoder().getDegrees());
+
         mField.setRobotPose(getPose());
     }
 }
