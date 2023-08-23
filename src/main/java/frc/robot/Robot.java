@@ -12,13 +12,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
-import frc.robot.autos.TripleAuto;
-import frc.robot.commands.Lights.LightCMD;
+import frc.robot.commands.Arm.PercentOutput;
+// import frc.robot.commands.Lights.LightCMD;
+import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -41,6 +44,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -70,8 +74,6 @@ public class Robot extends TimedRobot {
     chooser.addOption("RedCenterRightStraight", "RedCenterRightStraight.wpilib.json"); 
     
     chooser.addOption("DOUBLE AUTO", "tripleAuto");
-    chooser.addOption("DOUBLE AUTO BUMP", "tripleAutoBump");
-    chooser.addOption("UP AND OVER", "upandover");
 
     SmartDashboard.putData("jefy", chooser);
     SmartDashboard.putBoolean("isRed", false);
@@ -87,6 +89,8 @@ public class Robot extends TimedRobot {
     // for(int i=0;i<10;i++)
     //   new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4), Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5, 0.5), 7, 7, 2).plan();
     //   System.out.println(new Double(System.nanoTime()-startTime)/10000000);
+  
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   /**
@@ -116,9 +120,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    new LightCMD(Lights.kRobostangs).schedule();
+    // new LightCMD(Lights.kRobostangs).schedule();
     
-     m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
+    m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -131,8 +135,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    new LightCMD(Lights.kFireTwinkle).schedule();
-    Swerve.getInstance().setGyro(180);
+    // new LightCMD(Lights.kFireTwinkle).schedule();
     //ArmTrajectoryPlannerTest.main(null);
 
     // This makes sure that the autonomous stops running when
@@ -165,7 +168,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
-    DriverStation.silenceJoystickConnectionWarning(true);
   //   final Joystick xDrive = new Joystick(3);
   //   final Swerve s_Swerve = Swerve.getInstance();
   //   final Arm s_Arm = Arm.getInstance();

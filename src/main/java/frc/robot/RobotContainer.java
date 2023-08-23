@@ -3,32 +3,35 @@ package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.LoggyThings.LoggyPrintCommand;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.charlieAutoGrab;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
-import frc.robot.commands.Lights.LightCMD;
-import frc.robot.commands.Lights.LightReqCMD;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Swerve.GetToPosition;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.*;
-import frc.LoggyThings.LoggyPrintCommand;
+import frc.robot.Constants.Lights;
 import frc.robot.Vision.LimelightMeasurement;
 
 public class RobotContainer {
     /* Controllers */
+
+    private boolean lightsCone = true;
+    private Spark blinkin = new Spark(Lights.blinkinPWM_ID);
 
     public static final XboxController mDriverController = new XboxController(0);
     public static final XboxController mManipController = new XboxController(1);
@@ -61,14 +64,18 @@ public class RobotContainer {
             )
         );
 
+        // s_Arm.setDefaultCommand(
+        //     new FineAdjust(
+        //         () -> Utils.customDeadzone(-mManipController.getLeftX()),
+        //         () -> Utils.customDeadzone(-mManipController.getLeftY())
+        //     )
+        // );
+
+
         // new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
-
-        /** Add this back 4.25 */
-        // new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
+        new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        // new JoystickButton(mDriverController, XboxController.Button.kY.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.lockPosition()));
-
-
+        new JoystickButton(mDriverController, XboxController.Button.kY.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.lockPosition()));
         // new JoystickButton(mDriverController, XboxController.Button.kA.value).onTrue(new rotation(-s_Vision.getDrivetrainAngle()));
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
@@ -78,15 +85,24 @@ public class RobotContainer {
         // new JoystickButton(mDriverController, XboxController.Button.kB.value).whenPressed(new Rotation(-10));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
         // new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whenPressed(new StraightenManager(s_Hand.getHolding()));
-
-        /** Add this back 4.25 */
-        // new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).onTrue(
-        //     new InstantCommand(() -> {
-        //         Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
-        //         Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
-        //         if (leftMeasurement.isPresent()) {s_Swerve.resetOdometry(leftMeasurement.get().mPose);}
-        //         else if(rightMeasurement.isPresent()) {s_Swerve.resetOdometry(rightMeasurement.get().mPose);}})
-        // );        
+        new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).onTrue(
+            new InstantCommand(() -> {
+                Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
+                Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
+                if (leftMeasurement.isPresent()) {s_Swerve.resetOdometry(leftMeasurement.get().mPose);}
+                else if(rightMeasurement.isPresent()) {s_Swerve.resetOdometry(rightMeasurement.get().mPose);}})
+        );
+        
+        // new JoystickButton(mDriverController, XboxController.Button.kRightBumper.value).whenPressed(() -> {
+        //     Optional<LimelightMeasurement> leftMeasurement = s_Vision.getNewLeftMeasurement();
+        //     Optional<LimelightMeasurement> rightMeasurement = s_Vision.getNewRightMeasurement();
+        //     if (leftMeasurement.isPresent()) {
+        //         s_Swerve.resetOdometry(leftMeasurement.get().mPose);
+        //     } else if(rightMeasurement.isPresent()) {
+        //         s_Swerve.resetOdometry(rightMeasurement.get().mPose);
+        //     }
+        // });
+        
 
         new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new SetGrip()); 
         new JoystickButton(mManipController, XboxController.Button.kY.value).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> s_Hand.holdingCone?Constants.Arm.SetPoint.coneHighPosition:Constants.Arm.SetPoint.cubeHighPosition));
@@ -103,23 +119,28 @@ public class RobotContainer {
             .alongWith(new LoggyPrintCommand(leftTrigger))
         );
 
-        // new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
-
+        new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
 
         new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
-
-        new POVButton(mManipController, 90).onTrue(new LightReqCMD());
         
-        new Trigger(() -> Lighting.timer.hasElapsed(Constants.Lights.blinkTime)).onTrue(new InstantCommand(() -> new LightCMD(Lighting.PWMVal).schedule()));
+        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new InstantCommand(() -> blinkin.set(Lights.kConeBlink)), new InstantCommand(() -> blinkin.set(Lights.kCubeBlink)), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
+        
+        
+        // new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
+        // new POVButton(mManipController, 90).onTrue(new ConditionalCommand((new LightCMD(
+        // new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReCMD(90), new LightReqCMD(270), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
+        // new Trigger(() -> mManipController.getPOV() == 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), () -> Lighting.lastLight < 0.3));
+        // new POVButton(mManipController, 90).onTrue(new LightReqCMD(90));
+        // new POVButton(mManipController, 270).onTrue(new LightReqCMD(270));
 
         // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
-
-        // new POVButton(mDriverController, 270).onTrue(new GetToPosition());
+        new POVButton(mDriverController, 270).onTrue(new GetToPosition());
         new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
     }
 
     public Command getAutonomousCommand() {
+        // An ExampleCommand will run in autonomous
         return new autoFromPath();
     }
 }
