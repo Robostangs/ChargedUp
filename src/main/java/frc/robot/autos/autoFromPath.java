@@ -73,6 +73,7 @@ public class autoFromPath extends SequentialCommandGroup {
                                         s_Swerve);
 
                         addCommands(
+                                        new InstantCommand(() -> s_Swerve.lockPosition()),
                                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
                                         new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
                                         new SetGrip().withTimeout(0.7),

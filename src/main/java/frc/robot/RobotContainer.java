@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.LoggyThings.LoggyPrintCommand;
-import frc.robot.autos.TripleAuto;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.charlieAutoGrab;
 import frc.robot.commands.Arm.PercentOutput;
@@ -124,7 +123,7 @@ public class RobotContainer {
 
         new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         
-        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new InstantCommand(() -> blinkin.set(Lights.kConeStatic)), new InstantCommand(() -> blinkin.set(Lights.kCubeStatic)), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
+        new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new InstantCommand(() -> blinkin.set(Lights.kConeBlink)), new InstantCommand(() -> blinkin.set(Lights.kCubeBlink)), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
         
         
         // new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
@@ -136,7 +135,6 @@ public class RobotContainer {
 
         // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
-
         new POVButton(mDriverController, 270).onTrue(new GetToPosition());
         new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
     }

@@ -20,10 +20,6 @@ import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Utils.Vector2D;
 import frc.robot.subsystems.Arm.ViolationType;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.lib.util.COTSFalconSwerveConstants;
-import frc.lib.util.SwerveModuleConstants;
 
 //Numbering system for drivetrain: 0 - front right, 1 - front left, 2 - back left, 3 - back right
 //0.42545 + 0.254/2
@@ -257,8 +253,8 @@ public final class Constants {
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
 
     public static final int elbowCanCoderID = 2;
-    public static final double elbowAngleActualDifference = -30.7; // Degrees
-    public static final double elbowAngleSensor = 247.852; // Degrees
+    public static final double elbowAngleActualDifference = -65.2; // Degrees
+    public static final double elbowAngleSensor = 211.816; // Degrees
     public static final double elbowAngleForwardSoftStop = 90; // Degrees
     public static final double elbowAngleReverseSoftStop = -160; // Degrees
 
@@ -295,7 +291,7 @@ public final class Constants {
       public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.7, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
 
       //Intaking Positions
-      public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.666, 1.005), Rotation2d.fromDegrees(0), "loadingZonePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.636, 1.005), Rotation2d.fromDegrees(-60), "loadingZonePosition").withControlLengths(0.25, 0.25);
 
       // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
 
