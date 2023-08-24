@@ -2,6 +2,9 @@ package frc.robot.autos;
 
 import java.io.IOException;
 import java.nio.file.Path;
+
+import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -23,7 +26,6 @@ import frc.robot.commands.Swerve.balance;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
-
 public class autoFromPath extends SequentialCommandGroup {
         public autoFromPath() {
                 Swerve s_Swerve = Swerve.getInstance();
@@ -50,7 +52,7 @@ public class autoFromPath extends SequentialCommandGroup {
 
                 try {
                         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(path);
-                        Trajectory exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+                        Trajectory exampleTrajectory = P(trajectoryPath);
                         var thetaController = new ProfiledPIDController(
                                         Constants.AutoConstants.kPThetaController, 0, 0,
                                         Constants.AutoConstants.kThetaControllerConstraints);

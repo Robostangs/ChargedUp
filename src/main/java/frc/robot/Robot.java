@@ -55,14 +55,7 @@ public class Robot extends TimedRobot {
 
     chooser = new SendableChooser<String>();
     chooser.setDefaultOption("Nothing", "Nothing");
-    chooser.addOption("BlueBalanceLeft", "BlueBalanceLeft.wpilib.json");
-    chooser.addOption("BlueBalanceRight", "BlueBalanceRight.wpilib.json");
-    chooser.addOption("BlueCenterBalance", "BlueCenterBalance.wpilib.json");
-    chooser.addOption("BlueCenterStay", "BlueCenterStay.wpilib.json");
-    chooser.addOption("BlueLeaveLeft", "BlueLeaveLeft.wpilib.json");
-    chooser.addOption("BlueLeaveRight", "BlueLeaveRight.wpilib.json");
-    chooser.addOption("BlueCenterLeftStraight", "BlueCenterLeftStraight.wpilib.json");    
-    chooser.addOption("BlueCenterRightStraight", "BlueCenterRightStraight.wpilib.json");    
+    chooser.addOption("BlueCoopLeftBal", "BlueCoopLeftBal.wpilib.json");
 
     chooser.addOption("RedBalanceLeft", "RedBalanceLeft.wpilib.json");
     chooser.addOption("RedBalanceRight", "RedBalanceRight.wpilib.json");
