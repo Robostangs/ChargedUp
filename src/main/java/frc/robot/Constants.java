@@ -247,7 +247,7 @@ public final class Constants {
     public static final double elbowMass = 0.95; // Kilograms
 
     public static final int shoulderCanCoderID = 1;
-    public static final double shoulderAngleActual = 57; // Degrees
+    public static final double shoulderAngleActual = 54.7; // Degrees
     public static final double shoulderAngleSensor = 307.881; // Degrees
     public static final double shoulderAngleReverseSoftStop = 38; // Degrees
     public static final double shoulderAngleForwardSoftStop = 130; // Degrees
@@ -283,20 +283,22 @@ public final class Constants {
 
     public static class SetPoint {
       //Scoring Positions
-      public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
-      public static final PathPoint coneHighPosition = new PathPoint(new Translation2d(1.44, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
-      public static final PathPoint coneHighPositionBad = new PathPoint(new Translation2d(1.39, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
+      public static final PathPoint cubeHighPosition = new PathPoint(new Translation2d(1.5, 1.1), Rotation2d.fromDegrees(-30), "cubeHighPosition").withControlLengths(0.5, 0.5);
       public static final PathPoint cubeMediumPosition = new PathPoint(new Translation2d(1.067, 0.781), Rotation2d.fromDegrees(-30), "cubeMediumPosition").withControlLengths(0.5, 0.5);
-      public static final PathPoint coneMediumPosition = new PathPoint(new Translation2d(1.042, 0.987), Rotation2d.fromDegrees(-30), "coneMediumPosition").withControlLengths(0.5, 0.5);
-      public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.7, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
+      
+      public static final PathPoint coneHighPosition = new PathPoint(new Translation2d(1.44, 1.2), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
+      public static final PathPoint coneHighPositionBad = new PathPoint(new Translation2d(1.39, 1.3), Rotation2d.fromDegrees(-35), "coneHighPosition").withControlLengths(0.75, .75);
+      public static final PathPoint coneMediumPosition = new PathPoint(new Translation2d(1.042, 0.96), Rotation2d.fromDegrees(-30), "coneMediumPosition").withControlLengths(0.5, 0.5);
+      
+      public static final PathPoint lowPosition = new PathPoint(new Translation2d(0.63, 0.158), Rotation2d.fromDegrees(-90), "lowPosition").withControlLengths(0.25, 0.25);
 
       //Intaking Positions
       public static final PathPoint loadingZonePosition = new PathPoint(new Translation2d(0.636, 1.005), Rotation2d.fromDegrees(-60), "loadingZonePosition").withControlLengths(0.25, 0.25);
 
       // private static final Vector2D intakeTweenPosition = new Vector2D(0.59, 0.22);
 
-      public static final PathPoint upIntakePosition = new PathPoint(new Translation2d(0.59, 0.09), Rotation2d.fromDegrees(-90), "upIntakePosition").withControlLengths(0.25, 0.25);
-      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.59, 0), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint upIntakePosition = new PathPoint(new Translation2d(0.59, 0.05), Rotation2d.fromDegrees(-90), "upIntakePosition").withControlLengths(0.25, 0.25);
+      public static final PathPoint generalIntakePosition = new PathPoint(new Translation2d(0.665, -0.07), Rotation2d.fromDegrees(-90), "generalIntakePosition").withControlLengths(0.25, 0.25);
 
       //Stowing Positions
       public static final PathPoint stowPosition = new PathPoint(new Translation2d(0.423, 0.324), Rotation2d.fromDegrees(-90), "stowPosition");

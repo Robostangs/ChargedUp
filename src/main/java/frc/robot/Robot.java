@@ -12,17 +12,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
-import frc.robot.commands.Arm.PercentOutput;
-// import frc.robot.commands.Lights.LightCMD;
-import frc.robot.commands.Swerve.TeleopSwerve;
+import frc.robot.commands.Lights.LightCMD;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
-import frc.robot.subsystems.Swerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -120,7 +115,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // new LightCMD(Lights.kRobostangs).schedule();
+    new LightCMD(Lights.kRobostangs).schedule();
     
     m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash()).andThen(m_robotContainer.getAutonomousCommand());
 
@@ -135,7 +130,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // new LightCMD(Lights.kFireTwinkle).schedule();
+    new LightCMD(Lights.kFireTwinkle).schedule();
     //ArmTrajectoryPlannerTest.main(null);
 
     // This makes sure that the autonomous stops running when
