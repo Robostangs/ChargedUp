@@ -29,16 +29,16 @@ public final class Constants {
     public static final double fieldLength = 16.54;
 
     public static final class Swerve {
-        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+          public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
-        public static final double kRange = 20;
+          public static final double kRange = 20;
 
-        public static class CustomDeadzone {
+          public static class CustomDeadzone {
 
-          public static final double kLowerLimitExpFunc = 0.1;
-          public static final double kUpperLimitExpFunc = 0.5;
-          public static final double kUpperLimitLinFunc = 1;
-    
+            public static final double kLowerLimitExpFunc = 0.1;
+            public static final double kUpperLimitExpFunc = 0.5;
+            public static final double kUpperLimitLinFunc = 1;
+      
           public static final double kExpFuncConstant = 0.3218;
           public static final double kExpFuncBase = 12.5;
           public static final double kExpFuncMult = 0.25;
@@ -219,7 +219,7 @@ public final class Constants {
 
     public static final int shoulderMotorID = 50;
 
-    public static final double shoulderMotorP = 0.1;
+    public static final double shoulderMotorP = 0.15;
     public static final double shoulderMotorI = 0.01;
     public static final double shoulderMotorD = 0;
     public static final double shoulderMotorF = 0.06;
@@ -229,7 +229,7 @@ public final class Constants {
 
     public static final int elbowMotorID = 51;
 
-    public static final double elbowMotorP = 0.1;
+    public static final double elbowMotorP = 0.15;
     public static final double elbowMotorI = 0.001;
     public static final double elbowMotorD = 0;
     public static final double elbowMotorF = 0.06;
