@@ -28,7 +28,7 @@ public class LightReqCMD extends InstantCommand {
             mLighting.setLights(Lights.kConeBlink);
             this.setName("Requesting Cone");         
         }
-        if (!Lighting.isCone) {
+        else if (!Lighting.isCone) {
             Lighting.PWMVal = Lights.kCubeStatic;
             // Lights.lastLight = true;            
             mLighting.setLights(Lights.kCubeBlink);

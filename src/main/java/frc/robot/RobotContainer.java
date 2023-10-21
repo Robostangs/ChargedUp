@@ -19,6 +19,7 @@ import frc.robot.autos.charlieAutoGrab;
 import frc.robot.commands.Arm.PercentOutput;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Hand.ToggleHolding;
+import frc.robot.commands.Lights.LightReqCMD;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Swerve.GetToPosition;
 import frc.robot.commands.Swerve.TeleopSwerve;
@@ -119,12 +120,11 @@ public class RobotContainer {
             .alongWith(new LoggyPrintCommand(leftTrigger))
         );
 
-        new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
+        // new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
 
         new POVButton(mManipController, 270).onTrue(new ToggleHolding().andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         
         new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new InstantCommand(() -> blinkin.set(Lights.kConeBlink)), new InstantCommand(() -> blinkin.set(Lights.kCubeBlink)), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
-        
         
         // new POVButton(mManipController, 90).onTrue(new ConditionalCommand(new LightReqCMD(90), new LightReqCMD(270), () -> lightsCone).andThen(new InstantCommand(() -> lightsCone = !lightsCone)));
         // new POVButton(mManipController, 90).onTrue(new ConditionalCommand((new LightCMD(
@@ -135,8 +135,8 @@ public class RobotContainer {
 
         // new POVButton(mManipController, 270).onTrue(new SetHolding(false).andThen(new WaitCommand((2))).andThen(()->mManipController.setRumble(RumbleType.kBothRumble, 0)).handleInterrupt(()->mManipController.setRumble(RumbleType.kBothRumble, 0)));
         new POVButton(mManipController, 180).onTrue(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.upIntakePosition));
-        new POVButton(mDriverController, 270).onTrue(new GetToPosition());
-        new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
+        // new POVButton(mDriverController, 270).onTrue(new GetToPosition());
+        // new POVButton(mDriverController, 90).onTrue(charlieAutoGrab.getCommand());
     }
 
     public Command getAutonomousCommand() {
