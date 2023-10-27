@@ -6,7 +6,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -34,11 +33,6 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
         String path = "paths/" + Robot.chooser.getSelected();
         DataLogManager.log(path);
 
-        TrajectoryConfig config = new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics);
-
         // An example trajectory to follow. All units in meters.
 
         try {
@@ -48,7 +42,7 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
 
             trajectoryPath = Filesystem.getDeployDirectory().toPath()
                     .resolve("paths/BlueBalanceLeftSecondPath.wpilib.json");
-            Trajectory secondTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        //     Trajectory secondTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
             var thetaController = new ProfiledPIDController(
                     Constants.AutoConstants.kPThetaController, 0, 0,
                     Constants.AutoConstants.kThetaControllerConstraints);
@@ -74,15 +68,15 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
                     s_Swerve::setModuleStates,
                     s_Swerve);
 
-            SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                    secondTrajectory,
-                    s_Swerve::getPose,
-                    Constants.Swerve.swerveKinematics,
-                    new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                    new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                    thetaController,
-                    s_Swerve::setModuleStates,
-                    s_Swerve);
+        //     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        //             secondTrajectory,
+        //             s_Swerve::getPose,
+        //             Constants.Swerve.swerveKinematics,
+        //             new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+        //             new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+        //             thetaController,
+        //             s_Swerve::setModuleStates,
+        //             s_Swerve);
 
             addCommands(
                 ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
@@ -99,7 +93,7 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
                                                                                     // WaitCommand(0.2)),
                             new SetGrip()),
                             ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.stowPosition));
-                    // swerveControllerCommand,
+                //     swerveControllerCommand,
                     // new balance());
         } catch (IOException ex) {
 

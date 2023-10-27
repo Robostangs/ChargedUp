@@ -105,23 +105,43 @@ public class PPSwerveControllerCommand extends CommandBase {
    * @param outputChassisSpeeds The field relative chassis speeds output consumer.
    * @param requirements The subsystems to require.
    */
+  // public PPSwerveControllerCommand(
+  //     PathPlannerTrajectory trajectory,
+  //     Supplier<Pose2d> poseSupplier,
+  //     PIDController xController,
+  //     PIDController yController,
+  //     PIDController rotationController,
+  //     Consumer<ChassisSpeeds> outputChassisSpeeds,
+  //     Subsystem... requirements) {
+  //   this(
+  //       () -> trajectory,
+  //       poseSupplier,
+  //       xController,
+  //       yController,
+  //       rotationController,
+  //       outputChassisSpeeds,
+  //       false,
+  //       requirements);
+  // }
+  
   public PPSwerveControllerCommand(
-      PathPlannerTrajectory trajectory,
-      Supplier<Pose2d> poseSupplier,
-      PIDController xController,
-      PIDController yController,
-      PIDController rotationController,
-      Consumer<ChassisSpeeds> outputChassisSpeeds,
-      Subsystem... requirements) {
+    PathPlannerTrajectory trajectory,
+    Supplier<Pose2d> poseSupplier,
+    PIDController xController,
+    PIDController yController,
+    PIDController rotationController,
+    Consumer<ChassisSpeeds> outputChassisSpeeds,
+    Subsystem... requirements) {
     this(
-        ()->trajectory,
+        () -> trajectory,
         poseSupplier,
         xController,
         yController,
         rotationController,
         outputChassisSpeeds,
         false,
-        requirements);
+        requirements
+      );
   }
 
   /**

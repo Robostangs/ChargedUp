@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PathPlannerTrajectory extends Trajectory {
-  private static final double FIELD_WIDTH_METERS = 8.02;
+  // private static final double FIELD_WIDTH_METERS = 8.02;
   private static final double FIELD_LENGTH_METERS = 16.54;
 
   private final List<EventMarker> markers;

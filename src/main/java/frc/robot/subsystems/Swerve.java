@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -199,9 +200,10 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometry();
-        SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
+        SmartDashboard.putString("CurrentPosition",
+                getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putNumber("angle", getGyroAngle());
-        
+
         SmartDashboard.putNumber("Front Right Angle", mSwerveMods[0].getCanCoder().getDegrees());
         SmartDashboard.putNumber("Front Left Angle", mSwerveMods[1].getCanCoder().getDegrees());
         SmartDashboard.putNumber("Back Left Angle", mSwerveMods[2].getCanCoder().getDegrees());
@@ -209,4 +211,15 @@ public class Swerve extends SubsystemBase {
 
         mField.setRobotPose(getPose());
     }
+    
+    public void addFieldObj(FieldObject2d obj) {
+        mField.getObject("Path").setPoses(obj.getPoses());
+    }
+
+    public Field2d getField() {
+        return mField;
+    }
+
+    // public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+    // }
 }

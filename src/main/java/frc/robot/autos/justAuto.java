@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,11 +28,6 @@ public class justAuto extends SequentialCommandGroup {
                 addRequirements(s_Swerve, s_Arm, s_Hand);
                 String path = "paths/" + Robot.chooser.getSelected();
                 DataLogManager.log(path);
-
-                TrajectoryConfig config = new TrajectoryConfig(
-                                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                                .setKinematics(Constants.Swerve.swerveKinematics);
 
                 // An example trajectory to follow. All units in meters.
 
