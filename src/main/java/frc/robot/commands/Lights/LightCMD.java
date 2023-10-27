@@ -10,7 +10,7 @@ public class LightCMD extends InstantCommand {
 
     public LightCMD(double color) {
         PWMVal = color;
-        addRequirements(mLighting);
+        this.addRequirements(mLighting);
     }
 
     @Override

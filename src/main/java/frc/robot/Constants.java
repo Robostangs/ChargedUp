@@ -332,6 +332,7 @@ public final class Constants {
   }
 
   public static class Lights {
+    public static final double blinkTime = 7.5;
     public static final int blinkinPWM_ID = 0;
     public static final double kConeStatic = 0.11;
     public static final double kConeBlink = 0.15;
