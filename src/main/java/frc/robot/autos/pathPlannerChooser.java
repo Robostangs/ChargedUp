@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
@@ -34,22 +36,38 @@ public class pathPlannerChooser {
 
     /** Do not include file extensions: .exe, .json, .path */
     public pathPlannerChooser(String path) {
-
         autonFinished = false;
         this.selectedAuton = path;
         if (!selectedAuton.equals("null")) {
-            pathPlannerTrajectory = PathPlanner.loadPath(
-                    path,
-                    PathPlanner.getConstraintsFromPath(path));
-            pathPlannerTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(pathPlannerTrajectory, DriverStation.getAlliance());
-            
+            try {
+                pathPlannerTrajectory = PathPlanner.loadPath(
+                        path,
+                        PathPlanner.getConstraintsFromPath(path));
+                pathPlannerTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(pathPlannerTrajectory,
+                        DriverStation.getAlliance());
+            } catch (Exception e) {
+                /* Blank Trajectory that will just chill */
+                pathPlannerTrajectory = PathPlanner.generatePath(
+                        new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared),
+                        new PathPoint(mSwerve.getPose().getTranslation(),
+                                mSwerve.getPose().getRotation(),
+                                mSwerve.getPose().getRotation()),
+                        new PathPoint(mSwerve.getPose().getTranslation(),
+                                mSwerve.getPose().getRotation(),
+                                mSwerve.getPose().getRotation()));
+
+                System.out.println("PathPlannerChooser: " + e);
+            }
+
             mSwerve.resetOdometry(pathPlannerTrajectory.getInitialHolonomicPose());
             autonPoses();
         }
         eventMap1.put("done", new InstantCommand(() -> autonFinished = true));
         eventMap1.put("start", Commands.print("Start"));
         eventMap1.put("print", Commands.print("print"));
-        eventMap1.put("testmark", ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition));
+        eventMap1.put("testmark",
+                ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.generalIntakePosition));
         // eventMap1.put("balance", new balance());
     }
 
@@ -61,15 +79,25 @@ public class pathPlannerChooser {
                     new PPSwerveControllerCommand(
                             pathPlannerTrajectory,
                             mSwerve::getPose,
+                            Constants.Swerve.swerveKinematics,
                             new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                             new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                             new PIDController(Constants.AutoConstants.kPThetaController, 0, 0),
-                            null,
-                            mSwerve
-                    ),
+                            mSwerve::setModuleStates,
+                            mSwerve),
                     pathPlannerTrajectory.getMarkers(),
-                eventMap1
-            );
+                    eventMap1);
+
+            // new PPSwerveControllerCommand(
+            // pathPlannerTrajectory,
+            // mSwerve::getPose,
+            // new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            // new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            // new PIDController(Constants.AutoConstants.kPThetaController, 0, 0),
+            // null,
+            // mSwerve),
+            // pathPlannerTrajectory.getMarkers(),
+            // eventMap1);
         }
     }
 
@@ -77,8 +105,8 @@ public class pathPlannerChooser {
         return pathPlannerTrajectory;
     }
 
-    public void autonPoses() {
-        pathTrajectory = Swerve.getInstance().getField().getObject("Path Poses");
+    private void autonPoses() {
+        pathTrajectory = mSwerve.getField().getObject("Path Poses");
         posesPerTrajectory = Math.floor(pathPlannerTrajectory.getStates().size() / 85);
         System.out.println(pathPlannerTrajectory.getStates().size());
         System.out.println(posesPerTrajectory);

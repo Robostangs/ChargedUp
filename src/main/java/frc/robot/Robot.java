@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,8 +19,11 @@ import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
 import frc.robot.autos.pathPlannerChooser;
+import frc.robot.commands.Arm.ProfiledChangeSetPoint;
+import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Lights.LightCMD;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -37,7 +39,6 @@ public class Robot extends TimedRobot {
     public static CTREConfigs ctreConfigs;
     public pathPlannerChooser pathPlanner;
     private Command m_autonomousCommand;
-    private RobotContainer m_robotContainer;
     public SendableChooser<String> autonChooser;
     // public static PowerDistribution mPowerDistribution = new PowerDistribution(1,
     // PowerDistribution.ModuleType.kRev);
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our
         // autonomous chooser on the dashboard.
-        m_robotContainer = new RobotContainer();
+        new RobotContainer();
         // mPowerDistribution.setSwitchableChannel(true);
 
         // SmartDashboard.putData("PDH", mPowerDistribution);
@@ -89,16 +90,16 @@ public class Robot extends TimedRobot {
 
         DriverStation.silenceJoystickConnectionWarning(true);
 
-    
         autonChooser = new SendableChooser<>();
 
         autonChooser.setDefaultOption("Nothing", "null");
-        autonChooser.addOption("Place and Charge Path", "1pieceAndCharge");
+        autonChooser.addOption("Place and Charge Path", "path1");
         /* TODO: Add Auton Options, talk to @mwmcclure7 (Matthew) */
 
         SmartDashboard.putData("Autonomous Command", autonChooser);
 
-        // Constants.tab.add("Auton Chooser", autonChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 1);
+        // Constants.tab.add("Auton Chooser",
+        // autonChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 1);
 
         CommandScheduler.getInstance().onCommandInitialize((Command c) -> {
             DataLogManager.log("INITIALIZED: " + c.getName());
@@ -154,12 +155,10 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         new LightCMD(Lights.kRobostangs).schedule();
 
-        // pathPlanner = new pathPlannerChooser(autonChooser.getSelected());
-        // m_autonomousCommand = pathPlanner.generateTrajectory();
-        
         m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash())
-            .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory());
-
+                .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPosition))
+                .andThen(() -> new SetGrip(), Hand.getInstance())
+                .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory());
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }

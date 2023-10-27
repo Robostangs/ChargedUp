@@ -84,6 +84,7 @@
       "/SmartDashboard/ArmMechanism/Motor": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Profile": "Mechanism2d",
       "/SmartDashboard/ArmMechanism/Target": "Mechanism2d",
+      "/SmartDashboard/Autonomous Command": "String Chooser",
       "/SmartDashboard/field": "Field2d",
       "/SmartDashboard/jefy": "String Chooser",
       "/SmartDashboard/sim arm": "Mechanism2d"
@@ -94,17 +95,7 @@
           "visible": true
         }
       },
-      "/LiveWindow/Ungrouped/Spark[0]": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/PIT Test/Decrease Speed": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/PIT Test/Increase Speed": {
+      "/SmartDashboard/Autonomous Command": {
         "window": {
           "visible": true
         }
@@ -115,6 +106,11 @@
         }
       },
       "/SmartDashboard/field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/jefy": {
         "window": {
           "visible": true
         }

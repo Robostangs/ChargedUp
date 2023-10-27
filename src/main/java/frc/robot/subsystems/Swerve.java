@@ -220,6 +220,9 @@ public class Swerve extends SubsystemBase {
         return mField;
     }
 
-    // public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
-    // }
+    public void outputModuleStates(SwerveModuleState[] states) {
+        for (int i = 0; i < states.length; i++) {
+            mSwerveMods[i].setDesiredState(states[i], false);
+        }
+    }
 }
