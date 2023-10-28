@@ -553,7 +553,7 @@ public class Arm extends SubsystemBase {
         DataLogManager.log("***********Reset Lash At Init");
     }
 
-    //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
+    //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION.
 
     public void resetLash() {
         if(!isElbowCanCoderPresent()){
