@@ -8,7 +8,7 @@ import frc.robot.subsystems.Hand;
 
 public class SetHolding extends InstantCommand{
     private Hand mHand = Hand.getInstance();
-    private XboxController mManipController = RobotContainer.mManipController;
+    private XboxController mManipController = RobotContainer.mDriverController;
     private Boolean holding;
     /**
      * @deprecated
