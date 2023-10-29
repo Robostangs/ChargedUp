@@ -158,7 +158,8 @@ public class Robot extends TimedRobot {
         m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash())
                 .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPosition))
                 .andThen(() -> new SetGrip(), Hand.getInstance())
-                .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory());
+                .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory())
+                .alongWith(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }

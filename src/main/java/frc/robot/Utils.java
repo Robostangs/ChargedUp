@@ -591,6 +591,11 @@ public class Utils {
         return false;
     }
 
+    /**
+     * Custom Deadzone Function that is exponential at the lower end and linear at the upper end
+     * @param input (double) Input to be deadzoned
+     * @return (double) Deadzoned input
+     */
     public static double customDeadzone(double input) {
         if(Math.abs(input) >= Constants.Swerve.CustomDeadzone.kLowerLimitExpFunc && Math.abs(input) < Constants.Swerve.CustomDeadzone.kUpperLimitExpFunc) {
             return Math.signum(input) * ((Constants.Swerve.CustomDeadzone.kExpFuncMult) * Math.pow((Constants.Swerve.CustomDeadzone.kExpFuncBase), Math.abs(input)) - Constants.Swerve.CustomDeadzone.kExpFuncConstant); 
