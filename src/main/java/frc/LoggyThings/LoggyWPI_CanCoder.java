@@ -33,10 +33,7 @@ public class LoggyWPI_CanCoder extends WPI_CANCoder implements ILoggyMotor{
     }
 
     @Override
-    public void writeToLog() {
-        // TODO Auto-generated method stub
-        
-    }
+    public void writeToLog() {}
 
     @Override
     public void setMinimumLogPeriod(double logPeriodSeconds) {
@@ -56,6 +53,14 @@ public class LoggyWPI_CanCoder extends WPI_CANCoder implements ILoggyMotor{
     @Override
     public String getLogPath() {
         return mLogPath;
+    }
+
+    public long getLogPeriod() {
+        return mLogPeriod;
+    }
+
+    public long getLastLogTime() {
+        return lastLogTime;
     }
 
     @Override

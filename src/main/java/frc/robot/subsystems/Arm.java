@@ -549,8 +549,8 @@ public class Arm extends SubsystemBase {
         mElbowMotor.set(ControlMode.PercentOutput,power);
     }
 
-    //TODO: WE "ARE BAD" AT SCHEDULING
-    //THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
+    // WE "ARE BAD" AT SCHEDULING
+    // THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
     public void resetLash(double correctedShoulderCanCoderPostion, double correctedElbowCanCoderPostion) {
         mShoulderMotor.setSelectedSensorPosition(-correctedShoulderCanCoderPostion/Constants.Arm.shoulderDegreesPerMotorTick);
@@ -561,7 +561,7 @@ public class Arm extends SubsystemBase {
         DataLogManager.log("***********Reset Lash At Init");
     }
 
-    //TODO: THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
+    // THESE THINGS ARE ALL BAD BECAUSE OF INIT RACE CONDITION
 
     public void resetLash() {
         mShoulderMotor.setSelectedSensorPosition(mShoulderCanCoder.getPosition()/Constants.Arm.shoulderDegreesPerMotorTick);

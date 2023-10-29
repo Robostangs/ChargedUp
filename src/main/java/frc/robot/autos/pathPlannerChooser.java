@@ -106,7 +106,7 @@ public class pathPlannerChooser {
     }
 
     private void autonPoses() {
-        pathTrajectory = mSwerve.getField().getObject("Path Poses");
+        pathTrajectory = mSwerve.getField().getObject(Constants.AutoConstants.kFieldObjectName);
         posesPerTrajectory = Math.floor(pathPlannerTrajectory.getStates().size() / 85);
         System.out.println(pathPlannerTrajectory.getStates().size());
         System.out.println(posesPerTrajectory);

@@ -183,7 +183,6 @@ public final class Constants {
     }
 
     public static final class Odometry {
-      // TODO: ADJUST THESE STANDARD DEVIATIONS
       public static final Matrix<N3, N1> STATE_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
       public static final Matrix<N3, N1> VISION_STANDARD_DEVS = new Matrix<>(Nat.N3(), Nat.N1());
       static {
@@ -201,7 +200,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    
+
     public static final TrajectoryConfig config = new TrajectoryConfig(
         Constants.AutoConstants.kMaxSpeedMetersPerSecond,
         Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -218,7 +217,10 @@ public final class Constants {
 
     /* Constraint for the motion profilied robot angle controller */
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared
+    );
+
+    public static final String kFieldObjectName = "path";
   }
 
   public static class motorConstants {

@@ -229,7 +229,6 @@ public class MecanumAutoBuilder extends BaseAutoBuilder {
 
   @Override
   public CommandBase followPath(Supplier<PathPlannerTrajectory> trajectorySupplier) {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'followPath'");
   }
 }

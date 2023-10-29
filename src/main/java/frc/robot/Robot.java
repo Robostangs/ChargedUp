@@ -165,7 +165,11 @@ public class Robot extends TimedRobot {
         }
     }
 
-    /** This function is called periodically during autonomous. */
+    @Override
+    public void autonomousExit() {
+        Swerve.getInstance().getField().getObject(Constants.AutoConstants.kFieldObjectName).close();
+    }
+
     @Override
     public void autonomousPeriodic() {
     }
@@ -178,7 +182,7 @@ public class Robot extends TimedRobot {
         new InstantCommand(() -> Swerve.getInstance()
                 .resetOdometry(new Pose2d(Swerve.getInstance().getPose().getTranslation(),
                         Swerve.getInstance().getPose().getRotation().rotateBy(new Rotation2d(180)))))
-                .andThen(new InstantCommand(() -> Swerve.getInstance().zeroGyro()));
+                .alongWith(new InstantCommand(() -> Swerve.getInstance().zeroGyro())).withName("Reset gyro 180° ").schedule();
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
