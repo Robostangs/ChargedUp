@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Launch Java Program",
+      "request": "launch",
+      "mainClass": "frc.robot.Main",
+      "projectName": "ChargedUp"
+    },
+    {
+      "type": "java",
       "name": "Launch ArmTrajectoryPlannerTest",
       "request": "launch",
       "mainClass": "frc.ArmTrajectoryPlanner.ArmTrajectoryPlannerTest",

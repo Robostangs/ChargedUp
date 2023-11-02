@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -56,7 +57,6 @@ public class pathPlannerChooser {
                         new PathPoint(mSwerve.getPose().getTranslation(),
                                 mSwerve.getPose().getRotation(),
                                 mSwerve.getPose().getRotation()));
-
                 System.out.println("PathPlannerChooser: " + e);
             }
 
@@ -108,17 +108,18 @@ public class pathPlannerChooser {
     private void autonPoses() {
         pathTrajectory = mSwerve.getField().getObject(Constants.AutoConstants.kFieldObjectName);
         posesPerTrajectory = Math.floor(pathPlannerTrajectory.getStates().size() / 85);
-        System.out.println(pathPlannerTrajectory.getStates().size());
-        System.out.println(posesPerTrajectory);
+        // System.out.println(pathPlannerTrajectory.getStates().size());
+        // System.out.println(posesPerTrajectory);
         for (int x = 0; x < pathPlannerTrajectory.getStates().size(); x++) {
             if (x % posesPerTrajectory == 0) {
-                System.out.println(x);
+                // System.out.println(x);
                 pathPoses.add(pathPlannerTrajectory.getStates().get(x).poseMeters);
             }
         }
 
         pathPoses.add(pathPlannerTrajectory.getEndState().poseMeters);
         pathTrajectory.setPoses(pathPoses);
+        SmartDashboard.putString("Path Trajectory", pathPoses.toArray().toString());
     }
 
     public void closeObject() {

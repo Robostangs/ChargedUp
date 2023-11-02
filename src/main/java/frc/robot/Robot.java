@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +20,7 @@ import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
 import frc.robot.autos.pathPlannerChooser;
+import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
 import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Lights.LightCMD;
@@ -40,8 +42,6 @@ public class Robot extends TimedRobot {
     public pathPlannerChooser pathPlanner;
     private Command m_autonomousCommand;
     public SendableChooser<String> autonChooser;
-    // public static PowerDistribution mPowerDistribution = new PowerDistribution(1,
-    // PowerDistribution.ModuleType.kRev);
     public static SendableChooser<String> chooser;
 
     /**
@@ -51,15 +51,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-
         ctreConfigs = new CTREConfigs();
-        // Instantiate our RobotContainer. This will perform all our button bindings,
-        // and put our
-        // autonomous chooser on the dashboard.
         new RobotContainer();
-        // mPowerDistribution.setSwitchableChannel(true);
-
-        // SmartDashboard.putData("PDH", mPowerDistribution);
 
         chooser = new SendableChooser<String>();
         chooser.setDefaultOption("Nothing", "Nothing");
@@ -83,7 +76,7 @@ public class Robot extends TimedRobot {
 
         chooser.addOption("DOUBLE AUTO", "tripleAuto");
 
-        SmartDashboard.putData("jefy", chooser);
+        // SmartDashboard.putData("jefy", chooser);
         SmartDashboard.putBoolean("isRed", false);
 
         SmartDashboard.putBoolean("Open Side?", true);
@@ -98,9 +91,6 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData("Autonomous Command", autonChooser);
 
-        // Constants.tab.add("Auton Chooser",
-        // autonChooser).withWidget(BuiltInWidgets.kComboBoxChooser).withSize(2, 1);
-
         CommandScheduler.getInstance().onCommandInitialize((Command c) -> {
             DataLogManager.log("INITIALIZED: " + c.getName());
         });
@@ -113,24 +103,8 @@ public class Robot extends TimedRobot {
 
         new WaitCommand(1).andThen(new InstantCommand(() -> Arm.getInstance().resetLash()).ignoringDisable(true))
                 .andThen(new LoggyPrintCommand("Robot.java reset lash")).ignoringDisable(true).schedule();
-        // double startTime=System.nanoTime();
-        // for(int i=0;i<10;i++)
-        // new ArmTrajectoryPlanner(new PathPoint(new Translation2d(0.2,0.4),
-        // Rotation2d.fromDegrees(90)).withControlLengths(0.25, 0.25), new PathPoint(new
-        // Translation2d(1.44, 1.3), Rotation2d.fromDegrees(0)).withControlLengths(0.5,
-        // 0.5), 7, 7, 2).plan();
-        // System.out.println(new Double(System.nanoTime()-startTime)/10000000);
-
-        DriverStation.silenceJoystickConnectionWarning(true);
     }
 
-    /**
-     *
-     * <p>
-     * This runs after the mode specific periodic functions, but before LiveWindow
-     * and
-     * SmartDashboard integrated updating.
-     */
     @Override
     public void robotPeriodic() {
         SmartDashboard.putString("path", chooser.getSelected());
@@ -138,7 +112,6 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
     }
 
-    /** This function is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
     }
@@ -147,19 +120,17 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
     }
 
-    /**
-     * This autonomous runs the autonomous command selected by your
-     * {@link RobotContainer} class.
-     */
     @Override
     public void autonomousInit() {
         new LightCMD(Lights.kRobostangs).schedule();
 
         m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash())
                 .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPosition))
-                .andThen(() -> new SetGrip(), Hand.getInstance())
-                .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory())
-                .alongWith(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition));
+                .andThen(() -> new SetGrip())
+                .andThen(new WaitCommand(0.5))
+                .andThen(() -> new SetGrip())
+                .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition))
+                .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory());
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -179,17 +150,17 @@ public class Robot extends TimedRobot {
         new LightCMD(Lights.kFireTwinkle).schedule();
 
         /* Resets swerve odemetry to 180 degrees off rip */
-        new InstantCommand(() -> Swerve.getInstance()
-                .resetOdometry(new Pose2d(Swerve.getInstance().getPose().getTranslation(),
-                        Swerve.getInstance().getPose().getRotation().rotateBy(new Rotation2d(180)))))
-                .alongWith(new InstantCommand(() -> Swerve.getInstance().zeroGyro())).withName("Reset gyro 180° ").schedule();
+        new InstantCommand(() -> Swerve.getInstance().setGyro(180)).withName("Reset gyro 180°").schedule();
+        // new InstantCommand(() -> Swerve.getInstance()
+        //         .resetOdometry(new Pose2d(Swerve.getInstance().getPose().getTranslation(),
+        //                 Swerve.getInstance().getPose().getRotation().rotateBy(new Rotation2d(180)))))
+        //         .alongWith(new InstantCommand(() -> Swerve.getInstance().zeroGyro())).withName("Reset gyro 180° ").schedule();
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
     }
 
-    /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
     }
