@@ -95,11 +95,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Autonomous Command": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/PITTest": {
         "window": {
           "visible": true
@@ -172,11 +167,7 @@
               "open": true
             },
             "open": true
-          },
-          "open": true
-        },
-        ".recording": {
-          "open": true
+          }
         },
         "PIT Test": {
           "Decrease Speed": {

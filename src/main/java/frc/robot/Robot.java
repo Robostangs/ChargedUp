@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.LoggyThings.LoggyPrintCommand;
 import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
+import frc.robot.autos.autoFromPath;
 import frc.robot.autos.pathPlannerChooser;
 import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Arm.ProfiledChangeSetPoint;
@@ -76,20 +77,18 @@ public class Robot extends TimedRobot {
 
         chooser.addOption("DOUBLE AUTO", "tripleAuto");
 
-        // SmartDashboard.putData("jefy", chooser);
+        SmartDashboard.putData("jefy", chooser);
         SmartDashboard.putBoolean("isRed", false);
 
         SmartDashboard.putBoolean("Open Side?", true);
 
         DriverStation.silenceJoystickConnectionWarning(true);
 
-        autonChooser = new SendableChooser<>();
-
-        autonChooser.setDefaultOption("Nothing", "null");
-        autonChooser.addOption("Place and Charge Path", "path1");
+        // autonChooser = new SendableChooser<>();
+        // autonChooser.setDefaultOption("Nothing", "null");
+        // autonChooser.addOption("Place and Charge Path", "path1");
         /* TODO: Add Auton Options, talk to @mwmcclure7 (Matthew) */
-
-        SmartDashboard.putData("Autonomous Command", autonChooser);
+        // SmartDashboard.putData("Autonomous Command", autonChooser);
 
         CommandScheduler.getInstance().onCommandInitialize((Command c) -> {
             DataLogManager.log("INITIALIZED: " + c.getName());
@@ -124,13 +123,15 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         new LightCMD(Lights.kRobostangs).schedule();
 
-        m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash())
-                .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPosition))
-                .andThen(() -> new SetGrip())
-                .andThen(new WaitCommand(0.5))
-                .andThen(() -> new SetGrip())
-                .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition))
-                .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory());
+        // m_autonomousCommand = new InstantCommand(() -> Arm.getInstance().resetLash())
+        //         .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPosition))
+        //         .andThen(() -> new SetGrip())
+        //         .andThen(new WaitCommand(0.5))
+        //         .andThen(() -> new SetGrip())
+        //         .andThen(ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition))
+        //         .andThen(new pathPlannerChooser(autonChooser.getSelected()).generateTrajectory());
+
+        m_autonomousCommand = new autoFromPath();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
