@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
 import frc.robot.Vision;
 import frc.robot.Vision.LimelightMeasurement;
@@ -27,6 +28,24 @@ public class Swerve extends SubsystemBase {
     private Field2d mField = new Field2d();
     private Pigeon2 mGyro;
     private Vision mVision = Vision.getInstance();
+
+
+    private String NameLi = "limelight-left";
+
+    //gets the horizonal offset from the target -27 - 27 degrees
+    public  double tx = LimelightHelpers.getTX(NameLi);
+    //gets the vertical offset from the target -20.5 - 20.5
+    public  double ty = LimelightHelpers.getTY(NameLi);
+    //roughly how far away the target is away from the hull 0 - 100 % of image 
+    public  double ta = LimelightHelpers.getTA(NameLi);
+
+
+    //TODO name these variables better when you figure out what they are
+    public  double SwerveDrivePoseEstimator = LimelightHelpers.getLatency_Capture(NameLi);
+    public  double PoseEstimator = LimelightHelpers.getLatency_Pipeline(NameLi);
+
+        
+            
 
     // The Swerve class should not hold the vision systems, this is a great way to
     // end up in dependecy hell
@@ -184,21 +203,36 @@ public class Swerve extends SubsystemBase {
         setModuleStates(lockStates);
     }
 
-    private void updateWithLimelight() {
-        Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
-        if (!leftMeasurement.isEmpty()) {
-            swerveOdometry.addVisionMeasurement(leftMeasurement.get().mPose, leftMeasurement.get().mTime);
-        }
+    // private void updateWithLimelight() {
+    //     Optional<LimelightMeasurement> leftMeasurement = mVision.getNewLeftMeasurement();
+    //     if (!leftMeasurement.isEmpty()) {
+    //         swerveOdometry.addVisionMeasurement(leftMeasurement.get().mPose, leftMeasurement.get().mTime);
+    //     }
 
-        Optional<LimelightMeasurement> rightMeasurement = mVision.getNewRightMeasurement();
-        if (!rightMeasurement.isEmpty()) {
-            swerveOdometry.addVisionMeasurement(rightMeasurement.get().mPose, rightMeasurement.get().mTime);
-        }
+    //     Optional<LimelightMeasurement> rightMeasurement = mVision.getNewRightMeasurement();
+    //     if (!rightMeasurement.isEmpty()) {
+    //         swerveOdometry.addVisionMeasurement(rightMeasurement.get().mPose, rightMeasurement.get().mTime);
+    //     }
+    // }
+
+
+
+
+
+
+
+    public void visionUpdate(){
+
+        //TODO Find what to put instead of ta
+        swerveOdometry.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),  rightMeasurement.get().mTime);
+
+
     }
-
     @Override
     public void periodic() {
-        updateOdometry();
+        // updateOdometry();
+
+        visionUpdate();
         SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
         SmartDashboard.putNumber("angle", getGyroAngle());
         
@@ -207,6 +241,15 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Back Left Angle", mSwerveMods[2].getCanCoder().getDegrees());
         SmartDashboard.putNumber("Back Right Angle", mSwerveMods[3].getCanCoder().getDegrees());
 
-        mField.setRobotPose(getPose());
+        SmartDashboard.putNumber("Horizontal-Offset", tx);
+        SmartDashboard.putNumber("Vertical-Offset", ty);
+        SmartDashboard.putNumber("Target-Area", ta);
+        
+        SmartDashboard.putNumberArray("get bot pose",LimelightHelpers.getBotPose("limelight-left"));
+
+        SmartDashboard.putNumber("Latency pipline", LimelightHelpers.getLatency_Pipeline(NameLi));
+        SmartDashboard.putNumber("Latency capture", LimelightHelpers.getLatency_Capture(NameLi));
+
+        // mField.setRobotPose(getPose());
     }
 }
