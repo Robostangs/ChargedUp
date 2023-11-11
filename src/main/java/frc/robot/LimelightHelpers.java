@@ -285,7 +285,7 @@ public class LimelightHelpers {
         public double latency_jsonParse;
 
         @JsonProperty("ts")
-        public double timestamp_LIMELIGHT_publish;
+        public static double timestamp_LIMELIGHT_publish;
 
         @JsonProperty("ts_rio")
         public double timestamp_RIOFPGA_capture;

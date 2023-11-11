@@ -226,8 +226,8 @@ public class Swerve extends SubsystemBase {
     public void visionUpdate(){
 
 
-        Optional<LimelightMeasurement> rightMeasurement = mVision.getNewLeftMeasurement();  
-        swerveOdometry.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),  rightMeasurement.get().mTime);
+        
+        swerveOdometry.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),LimelightHelpers.Results.timestamp_LIMELIGHT_publish);
 
     }
     @Override
@@ -248,7 +248,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Target-Area", ta);
         
         SmartDashboard.putNumberArray("get bot pose",LimelightHelpers.getBotPose("limelight-left"));
-        SmartDashboard.putData("Swerve Odo with vision",(Sendable) swerveOdometry);
+        // SmartDashboard.putData("Swerve Odo with vision",(Sendable) swerveOdometry);
 
 
         // SmartDashboard.putNumber("Latency pipline", LimelightHelpers.getLatency_Pipeline(NameLi));
