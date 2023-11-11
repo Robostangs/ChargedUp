@@ -6,12 +6,14 @@ import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -223,9 +225,9 @@ public class Swerve extends SubsystemBase {
 
     public void visionUpdate(){
 
-        //TODO Find what to put instead of ta
-        swerveOdometry.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),  rightMeasurement.get().mTime);
 
+        Optional<LimelightMeasurement> rightMeasurement = mVision.getNewLeftMeasurement();  
+        swerveOdometry.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),  rightMeasurement.get().mTime);
 
     }
     @Override
@@ -233,22 +235,25 @@ public class Swerve extends SubsystemBase {
         // updateOdometry();
 
         visionUpdate();
-        SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
-        SmartDashboard.putNumber("angle", getGyroAngle());
+        // SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
+        // SmartDashboard.putNumber("angle", getGyroAngle());
         
-        SmartDashboard.putNumber("Front Right Angle", mSwerveMods[0].getCanCoder().getDegrees());
-        SmartDashboard.putNumber("Front Left Angle", mSwerveMods[1].getCanCoder().getDegrees());
-        SmartDashboard.putNumber("Back Left Angle", mSwerveMods[2].getCanCoder().getDegrees());
-        SmartDashboard.putNumber("Back Right Angle", mSwerveMods[3].getCanCoder().getDegrees());
+        // SmartDashboard.putNumber("Front Right Angle", mSwerveMods[0].getCanCoder().getDegrees());
+        // SmartDashboard.putNumber("Front Left Angle", mSwerveMods[1].getCanCoder().getDegrees());
+        // SmartDashboard.putNumber("Back Left Angle", mSwerveMods[2].getCanCoder().getDegrees());
+        // SmartDashboard.putNumber("Back Right Angle", mSwerveMods[3].getCanCoder().getDegrees());
 
         SmartDashboard.putNumber("Horizontal-Offset", tx);
         SmartDashboard.putNumber("Vertical-Offset", ty);
         SmartDashboard.putNumber("Target-Area", ta);
         
         SmartDashboard.putNumberArray("get bot pose",LimelightHelpers.getBotPose("limelight-left"));
+        SmartDashboard.putData("Swerve Odo with vision",(Sendable) swerveOdometry);
 
-        SmartDashboard.putNumber("Latency pipline", LimelightHelpers.getLatency_Pipeline(NameLi));
-        SmartDashboard.putNumber("Latency capture", LimelightHelpers.getLatency_Capture(NameLi));
+
+        // SmartDashboard.putNumber("Latency pipline", LimelightHelpers.getLatency_Pipeline(NameLi));
+        // SmartDashboard.putNumber("Latency capture", LimelightHelpers.getLatency_Capture(NameLi));
+
 
         // mField.setRobotPose(getPose());
     }
