@@ -26,6 +26,7 @@ import frc.robot.Vision.LimelightMeasurement;
 
 public class Swerve extends SubsystemBase {
     private SwerveDrivePoseEstimator swerveOdometry;
+    private SwerveDrivePoseEstimator swerveOdowithVision;
     public SwerveModule[] mSwerveMods;
     private Field2d mField = new Field2d();
     private Pigeon2 mGyro;
@@ -82,6 +83,13 @@ public class Swerve extends SubsystemBase {
          */
         Timer.delay(1.0);
         resetModulesToAbsolute();
+        swerveOdowithVision = new SwerveDrivePoseEstimator(
+            Constants.Swerve.swerveKinematics,
+            getYaw(),
+            getModulePositions(),
+            new Pose2d(),
+            Constants.Swerve.Odometry.STATE_STANDARD_DEVS,
+            Constants.Swerve.Odometry.VISION_STANDARD_DEVS);
 
         swerveOdometry = new SwerveDrivePoseEstimator(
             Constants.Swerve.swerveKinematics,
@@ -227,12 +235,12 @@ public class Swerve extends SubsystemBase {
 
 
         
-        swerveOdometry.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),LimelightHelpers.Results.timestamp_LIMELIGHT_publish);
+        swerveOdowithVision.addVisionMeasurement(LimelightHelpers.getBotPose2d(NameLi),LimelightHelpers.Results.timestamp_LIMELIGHT_publish);
 
     }
     @Override
     public void periodic() {
-        // updateOdometry();
+        updateOdometry();
 
         visionUpdate();
         // SmartDashboard.putString("CurrentPosition", getPose().getX() + " " + getPose().getY() + " " + getPose().getRotation().getDegrees() + " ");
@@ -246,8 +254,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Horizontal-Offset", tx);
         SmartDashboard.putNumber("Vertical-Offset", ty);
         SmartDashboard.putNumber("Target-Area", ta);
-        
-        SmartDashboard.putNumberArray("get bot pose",LimelightHelpers.getBotPose("limelight-left"));
+        SmartDashboard.putData("Odo_Pose",(Sendable) swerveOdometry);
+        SmartDashboard.putData("Odo_Vision_Pose",(Sendable)swerveOdowithVision);
         // SmartDashboard.putData("Swerve Odo with vision",(Sendable) swerveOdometry);
 
 
