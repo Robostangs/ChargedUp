@@ -15,6 +15,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     },
     "PWM Outputs": {
@@ -101,6 +104,11 @@
         }
       },
       "/SmartDashboard/field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/jefy": {
         "window": {
           "visible": true
         }

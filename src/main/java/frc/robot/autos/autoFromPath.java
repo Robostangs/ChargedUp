@@ -9,6 +9,7 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,10 +26,10 @@ import frc.robot.subsystems.Swerve;
 
 public class autoFromPath extends SequentialCommandGroup {
     public autoFromPath() {
-        Swerve s_Swerve = Swerve.getInstance();
-        Arm s_Arm = Arm.getInstance();
-        Hand s_Hand = Hand.getInstance();
-        addRequirements(s_Swerve, s_Arm, s_Hand);
+        Swerve mSwerve = Swerve.getInstance();
+        Arm mArm = Arm.getInstance();
+        Hand mHand = Hand.getInstance();
+        addRequirements(mSwerve, mArm, mHand);
         String path = "paths/" + Robot.chooser.getSelected();
         DataLogManager.log(path);
 
@@ -40,41 +41,40 @@ public class autoFromPath extends SequentialCommandGroup {
 
             try {
                 Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(path);
-                Trajectory exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+                Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
                 var thetaController = new ProfiledPIDController(
                         Constants.AutoConstants.kPThetaController, 0, 0,
                         Constants.AutoConstants.kThetaControllerConstraints);
                 thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
                 // if(SmartDashboard.getBoolean("isRed", false)) {
-                // s_Swerve.setGyro(0);
-                s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
-                        exampleTrajectory.getInitialPose().getY(),
-                        exampleTrajectory.getInitialPose().getRotation().getDegrees());
-                // } else {
-                // s_Swerve.setGyro(180);
-                // s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
-                // exampleTrajectory.getInitialPose().getY(), 0);
-                // }
+                // mSwerve.setGyro(0);
+                mSwerve.updateOdometryManual(trajectory.getInitialPose().getX(),
+                    trajectory.getInitialPose().getY(),
+                    trajectory.getInitialPose().getRotation().getDegrees()
+                );
+
+                mSwerve.addFieldObj(trajectory);
+                
                 SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                        exampleTrajectory,
-                        s_Swerve::getPose,
+                        trajectory,
+                        mSwerve::getPose,
                         Constants.Swerve.swerveKinematics,
                         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                         thetaController,
-                        s_Swerve::setModuleStates,
-                        s_Swerve);
+                        mSwerve::setModuleStates,
+                        mSwerve);
 
                 addCommands(
-                        new InstantCommand(() -> s_Swerve.lockPosition()),
+                        new InstantCommand(() -> mSwerve.lockPosition()),
                         ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.coneHighPosition),
-                        new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
+                        new WaitCommand(0.5), new InstantCommand(() -> mArm.resetLash()),
                         new SetGrip().withTimeout(0.7),
                         new ParallelDeadlineGroup(
                                 ProfiledChangeSetPoint.createWithTimeout(() -> Constants.Arm.SetPoint.stowPosition),
                                 new SetGrip()).withTimeout(2.5),
-                        // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
+                        // new InstantCommand(() -> mSwerve.resetOdometry(new )),
                         swerveControllerCommand,
                         new balance());
             } catch (IOException ex) {

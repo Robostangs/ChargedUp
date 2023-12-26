@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.Vector;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
@@ -12,6 +13,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -212,8 +215,18 @@ public class Swerve extends SubsystemBase {
         mField.setRobotPose(getPose());
     }
     
-    public void addFieldObj(FieldObject2d obj) {
-        mField.getObject("Path").setPoses(obj.getPoses());
+    public void addFieldObj(Trajectory trajectory) {
+        Vector<Pose2d> poses = new Vector<Pose2d>();
+        poses.add(trajectory.getInitialPose());
+        for (int i = 0; i < trajectory.getStates().size(); i++) {
+            if (i % 10 == 0 && trajectory.getStates().get(i).poseMeters != poses.lastElement()) {
+                poses.add(trajectory.getStates().get(i).poseMeters);
+            }
+        }
+        // for (State state : trajectory.getStates()) {
+        //     poses.add(state.poseMeters);
+        // }
+        mField.getObject(Constants.AutoConstants.kFieldObjectName).setPoses(poses);
     }
 
     public Field2d getField() {

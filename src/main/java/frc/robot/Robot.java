@@ -9,10 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -21,12 +18,8 @@ import frc.LoggyThings.LoggyThingManager;
 import frc.robot.Constants.Lights;
 import frc.robot.autos.autoFromPath;
 import frc.robot.autos.pathPlannerChooser;
-import frc.robot.commands.Arm.ChangeSetPoint;
-import frc.robot.commands.Arm.ProfiledChangeSetPoint;
-import frc.robot.commands.Hand.SetGrip;
 import frc.robot.commands.Lights.LightCMD;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hand;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -177,13 +170,13 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationInit() {
         // final Joystick xDrive = new Joystick(3);
-        // final Swerve s_Swerve = Swerve.getInstance();
-        // final Arm s_Arm = Arm.getInstance();
-        // final Hand s_Hand = Hand.getInstance();
-        // s_Swerve.removeDefaultCommand();
-        // s_Arm.removeDefaultCommand();
-        // s_Hand.removeDefaultCommand();
-        // s_Swerve.setDefaultCommand(
+        // final Swerve mSwerve = Swerve.getInstance();
+        // final Arm mArm = Arm.getInstance();
+        // final Hand mHand = Hand.getInstance();
+        // mSwerve.removeDefaultCommand();
+        // mArm.removeDefaultCommand();
+        // mHand.removeDefaultCommand();
+        // mSwerve.setDefaultCommand(
         // new TeleopSwerve(
         // () -> -xDrive.getRawAxis(1),
         // () -> -xDrive.getRawAxis(0),
@@ -193,7 +186,7 @@ public class Robot extends TimedRobot {
         // )
         // );
 
-        // s_Arm.setDefaultCommand(
+        // mArm.setDefaultCommand(
         // new PercentOutput(
         // () -> Utils.customDeadzone(-xDrive.getRawAxis(3)),
         // () -> Utils.customDeadzone(-xDrive.getRawAxis(4))

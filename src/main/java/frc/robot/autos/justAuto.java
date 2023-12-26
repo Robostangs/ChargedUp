@@ -22,10 +22,10 @@ import frc.robot.subsystems.Swerve;
 
 public class justAuto extends SequentialCommandGroup {
         public justAuto() {
-                Swerve s_Swerve = Swerve.getInstance();
-                Arm s_Arm = Arm.getInstance();
-                Hand s_Hand = Hand.getInstance();
-                addRequirements(s_Swerve, s_Arm, s_Hand);
+                Swerve mSwerve = Swerve.getInstance();
+                Arm mArm = Arm.getInstance();
+                Hand mHand = Hand.getInstance();
+                addRequirements(mSwerve, mArm, mHand);
                 String path = "paths/" + Robot.chooser.getSelected();
                 DataLogManager.log(path);
 
@@ -40,33 +40,33 @@ public class justAuto extends SequentialCommandGroup {
                         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
                         // if(SmartDashboard.getBoolean("isRed", false)) {
-                        // s_Swerve.setGyro(0);
-                        s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
+                        // mSwerve.setGyro(0);
+                        mSwerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
                                         exampleTrajectory.getInitialPose().getY(),
                                         exampleTrajectory.getInitialPose().getRotation().getDegrees());
                         // } else {
-                        // s_Swerve.setGyro(180);
-                        // s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
+                        // mSwerve.setGyro(180);
+                        // mSwerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
                         // exampleTrajectory.getInitialPose().getY(), 0);
                         // }
                         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
                                         exampleTrajectory,
-                                        s_Swerve::getPose,
+                                        mSwerve::getPose,
                                         Constants.Swerve.swerveKinematics,
                                         new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                                         new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                                         thetaController,
-                                        s_Swerve::setModuleStates,
-                                        s_Swerve);
+                                        mSwerve::setModuleStates,
+                                        mSwerve);
 
                         addCommands(
                                         // new SetArmPosition(ArmPosition.kHighPosition).withTimeout(5),
-                                        new WaitCommand(0.5), new InstantCommand(() -> s_Arm.resetLash()),
+                                        new WaitCommand(0.5), new InstantCommand(() -> mArm.resetLash()),
                                         // new SetGrip().withTimeout(0.7),
                                         // new ParallelDeadlineGroup(
                                         //                 new SetArmPosition(ArmPosition.kStowPosition),
                                         //                 new SetGrip()).withTimeout(2.5),
-                                        // // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
+                                        // // new InstantCommand(() -> mSwerve.resetOdometry(new )),
                                         swerveControllerCommand,
                                         new balance());
                 } catch (IOException ex) {

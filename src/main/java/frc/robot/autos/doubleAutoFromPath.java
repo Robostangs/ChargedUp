@@ -25,10 +25,10 @@ import frc.robot.subsystems.Swerve;
 
 public class doubleAutoFromPath extends SequentialCommandGroup {
     public doubleAutoFromPath() {
-        Swerve s_Swerve = Swerve.getInstance();
-        Arm s_Arm = Arm.getInstance();
-        Hand s_Hand = Hand.getInstance();
-        addRequirements(s_Swerve, s_Arm, s_Hand);
+        Swerve mSwerve = Swerve.getInstance();
+        Arm mArm = Arm.getInstance();
+        Hand mHand = Hand.getInstance();
+        addRequirements(mSwerve, mArm, mHand);
         setName("autooooooooo");
         String path = "paths/" + Robot.chooser.getSelected();
         DataLogManager.log(path);
@@ -49,34 +49,34 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
             // if(SmartDashboard.getBoolean("isRed", false)) {
-            // s_Swerve.setGyro(0);
-            s_Swerve.updateOdometryManual(firstTrajectory.getInitialPose().getX(),
+            // mSwerve.setGyro(0);
+            mSwerve.updateOdometryManual(firstTrajectory.getInitialPose().getX(),
                     firstTrajectory.getInitialPose().getY(),
                     firstTrajectory.getInitialPose().getRotation().getDegrees());
             // } else {
-            // s_Swerve.setGyro(180);
-            // s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
+            // mSwerve.setGyro(180);
+            // mSwerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
             // exampleTrajectory.getInitialPose().getY(), 0);
             // }
             SwerveControllerCommand firstController = new SwerveControllerCommand(
                     firstTrajectory,
-                    s_Swerve::getPose,
+                    mSwerve::getPose,
                     Constants.Swerve.swerveKinematics,
                     new PIDController(Constants.AutoConstants.kPXController, 0, 0),
                     new PIDController(Constants.AutoConstants.kPYController, 0, 0),
                     thetaController,
-                    s_Swerve::setModuleStates,
-                    s_Swerve);
+                    mSwerve::setModuleStates,
+                    mSwerve);
 
         //     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         //             secondTrajectory,
-        //             s_Swerve::getPose,
+        //             mSwerve::getPose,
         //             Constants.Swerve.swerveKinematics,
         //             new PIDController(Constants.AutoConstants.kPXController, 0, 0),
         //             new PIDController(Constants.AutoConstants.kPYController, 0, 0),
         //             thetaController,
-        //             s_Swerve::setModuleStates,
-        //             s_Swerve);
+        //             mSwerve::setModuleStates,
+        //             mSwerve);
 
             addCommands(
                 ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.coneHighPosition),
@@ -87,7 +87,7 @@ public class doubleAutoFromPath extends SequentialCommandGroup {
                         new SetGrip()),
                     firstController,
                     new InstantCommand(
-                            () -> s_Swerve.drive(new Translation2d(0, 0), 0, false, false)),
+                            () -> mSwerve.drive(new Translation2d(0, 0), 0, false, false)),
                     new ParallelDeadlineGroup(
                         ProfiledChangeSetPoint.createWithTimeout(()->Constants.Arm.SetPoint.generalIntakePosition), // .andThen(new
                                                                                     // WaitCommand(0.2)),

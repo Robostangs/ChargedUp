@@ -21,12 +21,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class basicTranslate extends CommandBase {
-    private Swerve s_Swerve = Swerve.getInstance();
+    private Swerve mSwerve = Swerve.getInstance();
     private Vector3D position;
     private TrajectoryConfig config;
-    public basicTranslate(Swerve s_Swerve, Utils.Vector3D position){
+    public basicTranslate(Swerve mSwerve, Utils.Vector3D position){
         this.position = position;
-        addRequirements(s_Swerve);
+        addRequirements(mSwerve);
         config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -41,15 +41,15 @@ public class basicTranslate extends CommandBase {
         Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
-                // new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(s_Swerve.getGyroAngle())),
-                new Pose2d(s_Swerve.getPose().getX(), s_Swerve.getPose().getY(), Rotation2d.fromDegrees(s_Swerve.getGyroAngle())),
+                // new Pose2d(mSwerve.getPose().getX(), mSwerve.getPose().getY(), Rotation2d.fromDegrees(mSwerve.getGyroAngle())),
+                new Pose2d(mSwerve.getPose().getX(), mSwerve.getPose().getY(), Rotation2d.fromDegrees(mSwerve.getGyroAngle())),
                 // Pass through these two interior waypoints, making an 's' curve path
                 List.of(
-                        // new Translation2d(s_Swerve.getPose().getX() + position, 0)
+                        // new Translation2d(mSwerve.getPose().getX() + position, 0)
                         ),
                 // End 3 meters straight ahead of where we started, facing forward
                 // new Pose2d(position.x, position.y, Rotation2d.fromDegrees((position.y >= Constants.fieldLength/2) ? 0 : 180)),
-                new Pose2d(s_Swerve.getPose().getX() - position.x, s_Swerve.getPose().getY() + position.y, Rotation2d.fromDegrees(s_Swerve.getGyroAngle())),
+                new Pose2d(mSwerve.getPose().getX() - position.x, mSwerve.getPose().getY() + position.y, Rotation2d.fromDegrees(mSwerve.getGyroAngle())),
                 config);
 
 
@@ -61,18 +61,18 @@ public class basicTranslate extends CommandBase {
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
                 exampleTrajectory,
-                s_Swerve::getPose,
+                mSwerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 1, 0),
                 new PIDController(Constants.AutoConstants.kPYController, 1, 0),
                 thetaController,
-                s_Swerve::setModuleStates,
-                s_Swerve);
+                mSwerve::setModuleStates,
+                mSwerve);
 
 
         new SequentialCommandGroup(
-            // new InstantCommand(() -> new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose()))),
-            swerveControllerCommand.deadlineWith(new RunCommand(() -> DataLogManager.log(s_Swerve.getPose().getX() + ", " + s_Swerve.getPose().getY())))
+            // new InstantCommand(() -> new InstantCommand(() -> mSwerve.resetOdometry(exampleTrajectory.getInitialPose()))),
+            swerveControllerCommand.deadlineWith(new RunCommand(() -> DataLogManager.log(mSwerve.getPose().getX() + ", " + mSwerve.getPose().getY())))
         ).schedule();
     }
 }

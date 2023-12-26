@@ -27,10 +27,10 @@ import frc.robot.subsystems.Swerve;
 
 public class TripleAuto extends SequentialCommandGroup {
         public TripleAuto() {
-                Swerve s_Swerve = Swerve.getInstance();
-                Arm s_Arm = Arm.getInstance();
-                Hand s_Hand = Hand.getInstance();
-                addRequirements(s_Swerve, s_Arm, s_Hand);
+                Swerve mSwerve = Swerve.getInstance();
+                Arm mArm = Arm.getInstance();
+                Hand mHand = Hand.getInstance();
+                addRequirements(mSwerve, mArm, mHand);
                 setName("Triple Auto");
 
                 ArrayList<Translation2d> points = new ArrayList<Translation2d>();
@@ -64,14 +64,14 @@ public class TripleAuto extends SequentialCommandGroup {
                 // An example trajectory to follow. All units in meters.
 
                         // if(SmartDashboard.getBoolean("isRed", false)) {
-                        // s_Swerve.setGyro(0);
-                        // s_Swerve.updateOdometryManual(1.91,
+                        // mSwerve.setGyro(0);
+                        // mSwerve.updateOdometryManual(1.91,
                         //                 3.82,
                         //                 Rotation2d.fromRadians(-3.1336563122823273).getDegrees()
                         //                 );
                         // } else {
-                        // s_Swerve.setGyro(180);
-                        // s_Swerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
+                        // mSwerve.setGyro(180);
+                        // mSwerve.updateOdometryManual(exampleTrajectory.getInitialPose().getX(),
                         // exampleTrajectory.getInitialPose().getY(), 0);
                         // }
 
@@ -115,7 +115,7 @@ public class TripleAuto extends SequentialCommandGroup {
 
 
                         addCommands(
-                                new InstantCommand(()-> s_Swerve.updateOdometryManual(initialState.poseMeters.getX(),
+                                new InstantCommand(()-> mSwerve.updateOdometryManual(initialState.poseMeters.getX(),
                                 initialState.poseMeters.getY(),
                                 initialState.holonomicRotation.getDegrees())),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "High Arm")),
@@ -123,7 +123,7 @@ public class TripleAuto extends SequentialCommandGroup {
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Waiting")),
                                 new WaitCommand(0.2),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Reset Lash"))
-                                , new InstantCommand(() -> s_Arm.resetLash()),
+                                , new InstantCommand(() -> mArm.resetLash()),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Set Grip")),
 
                                 new SetGrip().withTimeout(0.7),
@@ -135,7 +135,7 @@ public class TripleAuto extends SequentialCommandGroup {
                                         new SetGrip().withTimeout(2.5),
                                         firstPath
                                 ),
-                                // new InstantCommand(() -> s_Swerve.resetOdometry(new )),
+                                // new InstantCommand(() -> mSwerve.resetOdometry(new )),
                                 new InstantCommand(()->SmartDashboard.putString("TripleAuto", "Auto Grab")),
 
                                 charlieAutoGrab.getCommand().withTimeout(5).andThen(new LoggyPrintCommand("exited")),
